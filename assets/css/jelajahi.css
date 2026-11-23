@@ -78,8 +78,8 @@ body.jel .crowd .d i{background:rgba(244,241,226,.22)}
 body.jel .crowd.c0 .d i:nth-child(1){background:#A9D27C}
 body.jel .crowd.c1 .d i:nth-child(-n+2){background:var(--g-gold)}
 body.jel .crowd.c2 .d i{background:#F0896A}
-body.jel .ai-cta{margin-top:36px;min-height:0;flex-direction:row;align-items:flex-end;justify-content:space-between;gap:24px;padding:26px 30px;border:1px solid rgba(244,241,226,.14);border-radius:22px;
-  background:linear-gradient(90deg,rgba(20,14,10,.9) 0,rgba(20,14,10,.74) 55%,rgba(20,14,10,.5) 100%),url(../img/gallery/kelas-janur-canang.jpg) center 35%/cover}
+body.jel .ai-cta{margin-top:36px;min-height:170px;flex-direction:row;align-items:flex-end;justify-content:space-between;gap:24px;padding:26px 30px;border:1px solid rgba(244,241,226,.14);border-radius:22px;
+  background:linear-gradient(90deg,rgba(20,14,10,.97) 0,rgba(20,14,10,.95) 32%,rgba(20,14,10,.72) 58%,rgba(20,14,10,.32) 100%),url(../img/gallery/peselancar-banner.jpg) center 72%/cover;background-repeat:no-repeat;background-origin:border-box;background-clip:border-box}
 body.jel .ai-cta:hover{transform:none;box-shadow:none}
 body.jel .ai-cta .cta-t{display:flex;flex-direction:column;gap:6px;max-width:600px}
 body.jel .ai-cta .k{background:none;border:0;border-radius:0;padding:0;color:var(--g-gold);font:500 12px var(--font);letter-spacing:.04em}
