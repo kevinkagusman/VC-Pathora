@@ -62,7 +62,7 @@
   }
   function related(){
     const sc = (o) => (o.cats.filter((c) => a.cats.indexOf(c) >= 0).length * 2) + (o.region === a.region ? 1 : 0);
-    return A.filter((o) => o.id !== a.id).sort((x, y) => sc(y) - sc(x)).slice(0, 3);
+    return A.filter((o) => o.id !== a.id).sort((x, y) => sc(y) - sc(x)).slice(0, 4);
   }
 
   function goBtn(){
@@ -91,14 +91,14 @@
         '</aside></header>' +
 
       '<section class="kd-facts" aria-label="Sekilas">' +
-        '<div><span class="kd-fi" style="--c:#FCE6B7">' + ic('clock', 22) + '</span><b>' + num(a.dur) + ' jam</b><span class="t">Mulai pukul ' + esc(sessions) + '</span></div>' +
-        '<div><span class="kd-fi" style="--c:#7CCBC0">' + ic('users', 22) + '</span><b>' + a.cap + ' orang</b><span class="t">Maksimal per sesi, jadi tetap akrab</span></div>' +
-        '<div><span class="kd-fi" style="--c:#A9D18E">' + ic('leaf', 22) + '</span><b>' + CROWD_LABEL[lv] + '</b><span class="t">' + CROWD_NOTE[lv] + '</span></div>' +
-        '<div><span class="kd-fi" style="--c:#E8895F">' + ic('heart', 22) + '</span><b>' + (a.kid ? 'Ramah anak' : 'Dewasa') + '</b><span class="t">' + (a.kid ? 'Anak yang sudah cukup besar boleh ikut' : 'Lebih cocok untuk remaja dan dewasa') + '</span></div>' +
+        '<div><span class="l">Durasi</span><b>' + num(a.dur) + ' jam</b><span class="t">Mulai pukul ' + esc(sessions) + '</span></div>' +
+        '<div><span class="l">Kelompok</span><b>Maks. ' + a.cap + ' orang</b><span class="t">Kelompok kecil, jadi tetap akrab</span></div>' +
+        '<div><span class="l">Keramaian</span><b>' + CROWD_LABEL[lv] + '</b><span class="t">' + CROWD_NOTE[lv] + '</span></div>' +
+        '<div><span class="l">Untuk anak</span><b>' + (a.kid ? 'Ramah anak' : 'Dewasa') + '</b><span class="t">' + (a.kid ? 'Anak yang sudah cukup besar boleh ikut' : 'Lebih cocok untuk remaja dan dewasa') + '</span></div>' +
       '</section>' +
-      '<p class="kd-fit"><b>Cocok untuk</b>' + esc(a.fit) + '</p>' +
+      '<p class="kd-fit">' + esc(a.fit) + '</p>' +
 
-      '<section class="kd-sec"><h2>Yang akan kamu alami</h2><div class="kd-three">' +
+      '<section class="kd-sec"><h2>Pengalaman yang akan kamu dapat</h2><div class="kd-three">' +
         a.hl.map((h, i) => '<div><i>0' + (i + 1) + '</i><p>' + esc(h) + '</p></div>').join('') + '</div></section>' +
 
       '<section class="kd-split"><div class="kd-arch"><div class="glow"></div><div class="ph">' + PA.photo(a) + '</div><span class="chip2">Sesi ' + esc(sessions) + '</span></div>' +
