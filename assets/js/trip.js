@@ -30,6 +30,7 @@
     document.getElementById('tMembers').innerHTML = group() ? UI.avatars(s.members.map((m) => m.id), 'av-sm') + '<span>' + s.members.length + ' orang</span>' : '<span class="badge">Perjalanan pribadi</span>';
     document.getElementById('invite').innerHTML = ic('users', 15) + (group() ? ' Undang' : ' Ajak teman');
     const pend = s.items.filter((i) => i.status === 'disetujui').length;
+    if (document.getElementById('rail')) renderRail();
     document.getElementById('tabs').innerHTML = TABS.map((t) => '<button role="tab" class="' + (t[0] === tab ? 'on' : '') + '" data-t="' + t[0] + '">' + ic(t[2], 16) + t[1] + (t[0] === 'bayar' && pend ? ' <span class="badge b-ok" style="padding:0 7px">' + pend + '</span>' : '') + '</button>').join('');
   }
   document.getElementById('tabs').addEventListener('click', (e) => { const b = e.target.closest('[data-t]'); if (b) go(b.dataset.t); });
@@ -52,12 +53,20 @@
     ['Liburan keluarga dengan anak usia 6 tahun, anggaran Rp1,5 juta per orang', 'Hanya kegiatan yang aman untuk anak'],
     ['Cari tanggal terbaik untuk 4 hari di bulan November', 'Mempertimbangkan cuaca dan hari raya']
   ];
+  function renderRail() {
+    const el = document.getElementById('rail'); if (!el) return;
+    const RL = { chat: 'Asisten', kalender: 'Kalender', bayar: 'Bayar' };
+    const pend = PS.get().items.filter((i) => i.status === 'disetujui').length;
+    el.innerHTML = TABS.map((t) => '<button type="button" data-t="' + t[0] + '" class="' + (t[0] === tab ? 'on' : '') + '" aria-label="' + t[1] + '"' + (t[0] === tab ? ' aria-current="page"' : '') + '>' + ic(t[2], 22) + '<span>' + RL[t[0]] + '</span>' + (t[0] === 'bayar' && pend ? '<i class="dot">' + pend + '</i>' : '') + '</button>').join('');
+  }
   function buildChat() {
-    view.innerHTML = '<div class="ws2" id="ws"><section class="pane chatp" aria-label="Asisten perjalanan">' +
-      '<div class="pane-h"><h2 style="display:flex;gap:10px;align-items:center"><span class="av av-sm" style="background:var(--jungle)"><img src="assets/img/mark-white.png" alt="" style="width:14px"></span>Asisten perjalanan Pathora</h2><span style="display:flex;gap:8px;align-items:center"><span id="quotaPill" class="badge"></span><span class="badge b-demo" title="Jawaban disusun oleh aturan di browser, bukan model bahasa sungguhan">Mode demo</span></span></div>' +
+    view.innerHTML = '<div class="ws2" id="ws"><nav class="rail" id="rail" aria-label="Tab trip"></nav><section class="pane chatp" aria-label="Asisten perjalanan">' +
+      '<div class="pane-h"><h2>Asisten perjalanan</h2><span id="quotaPill" class="badge"></span></div>' +
       '<div class="chat-log" id="log" aria-live="polite"></div><div class="chips" id="chips"></div>' +
-      '<form class="composer" id="comp"><label class="sr" for="msg">Pesan</label><textarea id="msg" rows="1" placeholder="Ceritakan rencana perjalanan Anda, atau minta perubahan jadwal"></textarea><button class="btn btn-primary" aria-label="Kirim">' + ic('send', 18) + '</button></form></section>' +
-      '<aside class="pane sumpane" id="sumpane" aria-label="Ringkasan trip" hidden></aside></div>';
+      '<form class="composer" id="comp"><label class="sr" for="msg">Pesan</label><textarea id="msg" rows="1" placeholder="Ceritakan rencanamu atau minta perubahan"></textarea><button class="btn btn-primary" aria-label="Kirim pesan">' + ic('send', 18) + '</button></form></section>' +
+      '<aside class="pane sumpane" id="sumpane" aria-label="Rencana perjalanan"></aside></div>';
+    renderRail();
+    document.getElementById('rail').addEventListener('click', (e) => { const b = e.target.closest('[data-t]'); if (b) go(b.dataset.t); });
     renderLog(); renderChips(); renderQuota(); renderSummary();
     const ta = document.getElementById('msg');
     const grow = () => { ta.style.height = 'auto'; ta.style.height = Math.min(ta.scrollHeight, 130) + 'px'; };
@@ -66,12 +75,12 @@
     document.getElementById('comp').addEventListener('submit', (e) => { e.preventDefault(); const v = ta.value.trim(); if (!v) return; ta.value = ''; grow(); send(v); });
     document.getElementById('log').addEventListener('click', onLogClick);
     document.getElementById('chips').addEventListener('click', (e) => { const b = e.target.closest('[data-q]'); if (b) send(b.dataset.q); });
-    document.getElementById('sumpane').addEventListener('click', onSumClick);
+    document.getElementById('sumpane').addEventListener('click', onPaneClick);
     ta.focus({ preventScroll: true });
   }
   function msgHTML(m) {
     if (m.role === 'me') return '<div class="msg me"><div class="stack"><div class="bubble">' + esc(m.text) + '</div></div></div>';
-    return '<div class="msg ai" data-id="' + m.uid + '"><span class="mk"><img src="assets/img/mark-white.png" alt=""></span><div class="stack"><div class="bubble">' + esc(m.text) + '</div>' + (m.blocks || []).map((b, i) => blockHTML(b, m, i)).join('') + '</div></div>';
+    return '<div class="msg ai" data-id="' + m.uid + '"><span class="who">Pathora</span><div class="stack"><div class="bubble">' + esc(m.text) + '</div>' + (m.blocks || []).map((b, i) => blockHTML(b, m, i)).join('') + '</div></div>';
   }
   function renderLog() {
     const log = document.getElementById('log'); const ch = PS.get().chat;
@@ -105,14 +114,14 @@
     PS.pushChat({ role: 'me', text });
     const log = document.getElementById('log'); if (log.querySelector('.welcome')) log.innerHTML = '';
     log.insertAdjacentHTML('beforeend', msgHTML({ role: 'me', text }));
-    log.insertAdjacentHTML('beforeend', '<div class="msg ai" id="typ"><span class="mk"><img src="assets/img/mark-white.png" alt=""></span><div class="bubble"><span class="typing"><i></i><i></i><i></i></span></div></div>');
+    log.insertAdjacentHTML('beforeend', '<div class="msg ai" id="typ"><span class="who">Pathora</span><div class="bubble"><span class="typing"><i></i><i></i><i></i></span></div></div>');
     document.getElementById('chips').innerHTML = ''; scrollLog(); renderQuota();
     await new Promise((r) => setTimeout(r, 650 + Math.min(900, text.length * 8)));
     let res;
     try { res = AI.respond(text); } catch (err) { console.error(err); res = { text: 'Maaf, terjadi kendala saat menyusun jawaban. Silakan coba dengan kalimat lain.', blocks: [], chips: AI.chipsDefault }; }
     const msg = PS.pushChat({ role: 'ai', text: res.text, blocks: res.blocks, chips: res.chips });
     const typ = document.getElementById('typ'); if (typ) typ.remove();
-    log.insertAdjacentHTML('beforeend', '<div class="msg ai" data-id="' + msg.uid + '"><span class="mk"><img src="assets/img/mark-white.png" alt=""></span><div class="stack"><div class="bubble"></div></div></div>');
+    log.insertAdjacentHTML('beforeend', '<div class="msg ai" data-id="' + msg.uid + '"><span class="who">Pathora</span><div class="stack"><div class="bubble"></div></div></div>');
     const el = log.lastElementChild, bub = el.querySelector('.bubble'), stack = el.querySelector('.stack');
     await new Promise((resolve) => {
       const words = res.text.split(/(\s+)/); let i = 0;
@@ -130,11 +139,7 @@
   function blockHTML(b, m, idx) {
     const ref = 'data-m="' + m.uid + '" data-i="' + idx + '"';
     if (b.type === 'plan') {
-      const p = b.plan; const all = p.items.every((it) => inTrip(it.actId, it.date));
-      return '<div class="pc"><div class="pc-h"><span><b>' + D.span(p.start, p.end) + '</b> · ' + p.people + ' orang</span><span>' + rp(p.total) + ' total</span></div>' +
-        p.days.map((d) => '<div class="pc-day"><h4><span>' + D.long(d.date) + '</span><span style="display:flex;gap:10px;align-items:center;font-weight:500" class="faint">' + (d.moon ? ic('moon', 14) + d.moon : '') + UI.wx(d.wx) + '</span></h4>' +
-          (d.items.length ? d.items.map((it) => { const a = byId[it.actId]; const has = inTrip(it.actId, it.date); return '<div class="pc-item">' + thumb(a) + '<div style="flex:1;min-width:0"><b>' + esc(a.short) + ' · ' + it.time.replace(':', '.') + '</b><small>' + esc(it.reason) + '</small><small style="font-weight:600;color:var(--ink-2)">' + rp(a.price) + ' per orang</small></div>' + (has ? '<span class="badge b-ok"><i></i>Ditambahkan</span>' : '<button class="btn btn-line btn-sm" data-act="add1" data-a="' + it.actId + '" data-d="' + it.date + '" data-t="' + it.time + '" data-p="' + p.people + '" ' + ref + '>' + ic('plus', 14) + ' Tambah</button>') + '</div>'; }).join('') : '<p class="faint" style="font-size:13px">Tidak ada kegiatan pada hari ini.</p>') + '</div>').join('') +
-        '<div class="pc-f"><span class="faint" style="font-size:12.5px">' + rp(p.perPerson) + ' per orang</span>' + (all ? '<span class="badge b-ok"><i></i>Semua sudah ditambahkan</span>' : '<button class="btn btn-primary btn-sm" data-act="addall" ' + ref + '>Tambahkan semua ke trip</button>') + '</div></div>';
+      return '<button type="button" class="seeplan" data-seeplan="1">Lihat rencana di panel</button>';
     }
     if (b.type === 'dates') {
       return '<div>' + b.options.map((o, i) => '<div class="opt"><div><b>' + D.span(o.start, o.end) + '</b><div class="faint" style="font-size:12.5px;margin-top:2px">' + (o.rainy ? o.rainy + ' hari berpotensi hujan' : 'Cuaca relatif cerah') + (group() ? ' · ' + (o.busy.length ? 'Bentrok dengan ' + esc(o.busy.join(', ')) : 'Semua anggota tersedia') : '') + (o.moonDays ? ' · bertepatan purnama atau tilem' : '') + '</div></div>' +
@@ -169,6 +174,7 @@
   }
   function onLogClick(e) {
     const g = e.target.closest('[data-go]'); if (g) { e.preventDefault(); return go(g.dataset.go); }
+    if (e.target.closest('[data-seeplan]')) { const sp = document.getElementById('sumpane'); if (sp) sp.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
     const btn = e.target.closest('[data-act]'); if (!btn) return;
     const act = btn.dataset.act; const b = findBlock(btn) || {};
     const s = PS.get();
@@ -202,23 +208,87 @@
     }
   }
 
-  /* ---------- ringkasan di kanan: muncul setelah ada kegiatan ---------- */
-  function renderSummary() {
-    const pane = document.getElementById('sumpane'), ws = document.getElementById('ws'); if (!pane) return;
-    const s = PS.get(); const items = PS.sortedItems().filter((i) => i.status !== 'ditolak');
-    if (!items.length) { pane.hidden = true; ws.classList.remove('has-sum'); return; }
-    const was = !pane.hidden; pane.hidden = false; ws.classList.add('has-sum');
+  /* ---------- panel kanan: usulan rencana atau ringkasan trip ---------- */
+  const STAT = { draft: ['Belum dikirim', ''], diajukan: ['Menunggu host', 'wait'], disetujui: ['Disetujui', 'ok'], lunas: ['Lunas', 'ok'], ditolak: ['Ditolak', 'bad'] };
+  const PROTO = '<p class="proto">Versi prototype: harga dan ketersediaan masih contoh dan akan dikonfirmasi host.</p>';
+  let sideForce = null, sidePlanUid = null;
+  function lastPlan() {
+    const ch = PS.get().chat;
+    for (let k = ch.length - 1; k >= 0; k--) {
+      const m = ch[k]; if (m.role !== 'ai' || !m.blocks) continue;
+      const i = m.blocks.findIndex((b) => b.type === 'plan');
+      if (i >= 0) return { m, i, b: m.blocks[i] };
+    }
+    return null;
+  }
+  function stepsHTML(active) {
+    const L = ['Susun rencana', 'Ajukan ke host', 'Host menyetujui', 'Bayar']; let out = '';
+    L.forEach((lab, k) => {
+      const n = k + 1, st = n < active ? 'done' : (n === active ? 'on' : '');
+      out += '<li class="' + st + '"' + (n === active ? ' aria-current="step"' : '') + '><span class="n">' + (n < active ? ic('check', 14) : n) + '</span><span class="l">' + lab + '</span></li>';
+      if (n < 4) out += '<li class="ln" aria-hidden="true"></li>';
+    });
+    return '<ol class="pstep" aria-label="Langkah">' + out + '</ol>';
+  }
+  const durTxt = (a) => a.dur.toString().replace('.', ',') + ' jam';
+  function planPane(lp) {
+    const p = lp.b.plan, ref = 'data-m="' + lp.m.uid + '" data-i="' + lp.i + '"';
+    const all = p.items.every((it) => inTrip(it.actId, it.date));
+    const hasItems = PS.get().items.some((i) => i.status !== 'ditolak');
+    const days = p.days.map((d, n) => '<section class="dayg" aria-label="Hari ' + (n + 1) + '"><div class="dayn">' + (n + 1) + '</div><div class="dayb"><div class="dayh"><span>' + D.long(d.date) + '</span><span class="dayw">' + (d.moon ? ic('moon', 14) + d.moon : '') + UI.wx(d.wx) + '</span></div>' +
+      (d.items.length ? d.items.map((it) => {
+        const a = byId[it.actId], has = inTrip(it.actId, it.date);
+        return '<div class="it"><div class="it-m"><h3>' + esc(a.short) + '</h3><small>' + ic('pin', 13) + esc(a.place) + '<span aria-hidden="true">·</span>' + ic('clock', 13) + it.time.replace(':', '.') + '<span aria-hidden="true">·</span>' + durTxt(a) + '</small><small class="why">' + esc(it.reason) + '</small></div>' +
+          '<b class="pr">' + rp(a.price) + '<em>per orang</em></b>' +
+          (has ? '<span class="added">' + ic('check', 14) + ' Ditambahkan</span>' : '<button type="button" class="addb" aria-label="Tambah ' + esc(a.short) + ' ke trip" data-act="add1" data-a="' + it.actId + '" data-d="' + it.date + '" data-t="' + it.time + '" data-p="' + p.people + '" ' + ref + '>' + ic('plus', 15) + ' Tambah</button>') + '</div>';
+      }).join('') : '<p class="none">Tidak ada kegiatan pada hari ini.</p>') + '</div></section>').join('');
+    return '<div class="sp">' + stepsHTML(1) +
+      '<div><div class="sp-eb">Rencana usulan</div><h2 class="sp-h">' + p.days.length + ' hari di bali.</h2><div class="sp-meta">' + p.people + ' orang · ' + D.span(p.start, p.end) + '</div></div>' +
+      '<div class="days">' + days + '</div>' +
+      '<div class="ptot"><span class="ptl">Perkiraan total</span><span class="tv"><b>' + rp(p.total) + '</b><small>untuk ' + p.people + ' orang · ' + rp(p.perPerson) + ' per orang</small></span></div>' +
+      '<div class="sp-act">' + (all ? '' : '<button type="button" class="pbtn" data-act="addall" ' + ref + '>Tambahkan semua ke trip</button>') + (hasItems ? '<button type="button" class="gbtn" data-view="sum">Lihat ringkasan trip</button>' : '') + '</div>' +
+      '<p class="help">Belum dikirim ke host. Kamu bisa mengubahnya dulu.</p>' + PROTO + '</div>';
+  }
+  function sumPane(items, hasOpen) {
+    const s = PS.get();
     const dates = Array.from(new Set(items.map((i) => i.date)));
     const total = items.reduce((t, i) => t + PS.itemCost(i), 0);
     const drafts = items.filter((i) => i.status === 'draft').length;
-    pane.innerHTML = '<div class="pane-h"><div><h2>Ringkasan kegiatan</h2><small class="faint">' + items.length + ' kegiatan · ' + D.span(s.trip.start, s.trip.end) + '</small></div></div>' +
-      '<div class="pane-b"><div class="plist">' + dates.map((d) => '<div class="pday"><h3><span>' + D.long(d) + '</span><span style="font-weight:500;text-transform:none;letter-spacing:0">' + UI.wx(weatherFor(d)) + '</span></h3>' +
-        items.filter((i) => i.date === d).map((it) => { const a = byId[it.actId]; return '<div class="pit sm"><div class="top">' + thumb(a) + '<div style="flex:1;min-width:0"><b>' + esc(a.short) + '</b><small>' + it.time.replace(':', '.') + ' · ' + it.people + ' orang · ' + rp(PS.itemCost(it)) + '</small></div><button class="icon-btn" data-rm="' + it.uid + '" aria-label="Hapus ' + esc(a.short) + '">' + ic('trash', 16) + '</button></div><div>' + UI.statusBadge(it.status) + '</div></div>'; }).join('') + '</div>').join('') + '</div></div>' +
-      '<div class="sum-f"><div style="display:flex;justify-content:space-between;align-items:baseline"><span class="faint" style="font-size:13px">Estimasi total</span><b style="font-size:20px">' + rp(total) + '</b></div>' +
-      '<button class="btn btn-primary btn-block" data-open="kalender">' + ic('calendar', 16) + ' Buka kalender</button>' +
-      '<button class="btn btn-dark btn-block" data-open="bayar">' + ic('wallet', 16) + ' Rincian pembayaran</button>' +
-      (drafts ? '<button class="btn btn-line btn-block" data-sendall="1">Ajukan ' + drafts + ' draf ke host</button>' : '') + '</div>';
-    if (!was) pane.classList.add('in');
+    const sent = items.some((i) => i.status === 'diajukan'), ok = items.some((i) => i.status === 'disetujui' || i.status === 'lunas');
+    const active = ok ? 4 : (sent ? 3 : 2);
+    const grp = dates.map((d) => '<section class="dayg"><div class="dayb wide"><div class="dayh"><span>' + D.long(d) + '</span><span class="dayw">' + UI.wx(weatherFor(d)) + '</span></div>' +
+      items.filter((i) => i.date === d).map((it) => { const a = byId[it.actId], st = STAT[it.status] || [it.status, '']; return '<div class="it"><div class="it-m"><h3>' + esc(a.short) + '</h3><small>' + it.time.replace(':', '.') + '<span aria-hidden="true">·</span>' + it.people + ' orang<span aria-hidden="true">·</span>' + rp(PS.itemCost(it)) + '</small></div><span class="st ' + st[1] + '">' + st[0] + '</span><button type="button" class="rm" data-rm="' + it.uid + '" aria-label="Hapus ' + esc(a.short) + '">' + ic('trash', 16) + '</button></div>'; }).join('') + '</div></section>').join('');
+    const help = drafts ? 'Host mengonfirmasi dulu. Kamu baru membayar setelah disetujui.' : (ok ? 'Sudah disetujui host. Kamu bisa membayar sekarang.' : 'Menunggu konfirmasi host. Kamu belum perlu membayar.');
+    return '<div class="sp">' + stepsHTML(active) +
+      '<div><div class="sp-eb">Ringkasan trip</div><h2 class="sp-h">' + items.length + ' kegiatan di trip kamu.</h2><div class="sp-meta">' + D.span(s.trip.start, s.trip.end) + '</div></div>' +
+      '<div class="days">' + grp + '</div>' +
+      '<div class="ptot"><span class="ptl">Estimasi total</span><span class="tv"><b>' + rp(total) + '</b></span></div>' +
+      '<div class="sp-act">' + (drafts ? '<button type="button" class="pbtn" data-sendall="1">Ajukan ' + drafts + ' kegiatan ke host</button>' : (ok ? '<button type="button" class="pbtn" data-open="bayar">Rincian pembayaran</button>' : '')) +
+      '<button type="button" class="gbtn" data-open="kalender">' + ic('calendar', 16) + ' Buka kalender</button>' +
+      (drafts && ok ? '<button type="button" class="gbtn" data-open="bayar">' + ic('wallet', 16) + ' Rincian pembayaran</button>' : '') +
+      (hasOpen ? '<button type="button" class="gbtn" data-view="plan">Lihat usulan terbaru</button>' : '') + '</div>' +
+      '<p class="help">' + help + '</p>' + PROTO + '</div>';
+  }
+  function emptyPane() {
+    return '<div class="sp">' + stepsHTML(1) + '<div><div class="sp-eb">Rencana</div><h2 class="sp-h">mulai dari ceritamu.</h2><p class="sp-meta">Ceritakan berapa hari, berapa orang, dan suasana yang diinginkan. Rencana dari asisten akan muncul di sini.</p></div>' + PROTO + '</div>';
+  }
+  function renderSummary() {
+    const pane = document.getElementById('sumpane'); if (!pane) return;
+    const lp = lastPlan();
+    if (lp && lp.m.uid !== sidePlanUid) { sidePlanUid = lp.m.uid; sideForce = null; }
+    const items = PS.sortedItems().filter((i) => i.status !== 'ditolak');
+    const open = !!lp && !lp.b.plan.items.every((it) => inTrip(it.actId, it.date));
+    let v = sideForce || (open ? 'plan' : (items.length ? 'sum' : 'empty'));
+    if (v === 'plan' && !lp) v = items.length ? 'sum' : 'empty';
+    if (v === 'sum' && !items.length) v = lp ? 'plan' : 'empty';
+    const old = pane.querySelector('.sp'), top = old && pane.dataset.v === v ? old.scrollTop : 0;
+    pane.dataset.v = v;
+    pane.innerHTML = v === 'plan' ? planPane(lp) : (v === 'sum' ? sumPane(items, open) : emptyPane());
+    const nw = pane.querySelector('.sp'); if (nw && top) nw.scrollTop = top;
+  }
+  function onPaneClick(e) {
+    const v = e.target.closest('[data-view]'); if (v) { sideForce = v.dataset.view; renderSummary(); return; }
+    onLogClick(e); onSumClick(e);
   }
   function onSumClick(e) {
     const o = e.target.closest('[data-open]'); if (o) return go(o.dataset.open, o.dataset.open === 'bayar' ? 'pesanan' : undefined);
@@ -432,6 +502,7 @@
     if (b < a) { UI.toast('Tanggal pulang harus sama atau setelah tanggal tiba'); head(); return; }
     PS.update((st) => { st.trip.start = a; st.trip.end = b; }); cal.month = null; cal.sel = null; UI.toast('Tanggal di Bali diperbarui');
   }
+  document.querySelectorAll('.dt').forEach((l) => l.addEventListener('click', (e) => { const i = l.querySelector('input'); if (e.target !== i) { try { i.showPicker(); } catch (x) { i.focus(); } } }));
   document.getElementById('d1').addEventListener('change', () => { const a = document.getElementById('d1').value, b = document.getElementById('d2'); if (a && b.value && b.value < a) b.value = a; setDates(); });
   document.getElementById('d2').addEventListener('change', setDates);
 
@@ -439,6 +510,7 @@
   function build() {
     view.onclick = null;
     document.body.classList.toggle('fit', tab === 'chat' && window.innerWidth > 1060);
+    document.body.classList.toggle('chat-mode', tab === 'chat');
     if (tab === 'chat') buildChat(); else if (tab === 'kalender') buildCal(); else buildPay();
     window.scrollTo(0, 0);
   }

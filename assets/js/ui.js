@@ -31,6 +31,10 @@
         const links = '<a href="jelajahi.html" class="' + (active === 'jelajahi' ? 'on' : '') + '">Jelajahi</a>' +
           '<a href="trip.html" class="' + (active === 'trip' || active === 'ai' ? 'on' : '') + '">Trip saya</a>' +
           '<a href="paspor.html" class="' + (active === 'paspor' ? 'on' : '') + '">Paspor Alam</a>';
+        const lg = (localStorage.getItem('pathora_lang') || 'id');
+        const lang = '<div class="lang" role="group" aria-label="Bahasa / Language"><button type="button" data-lang="id" aria-pressed="' + (lg === 'id') + '">ID</button><button type="button" data-lang="en" aria-pressed="' + (lg === 'en') + '">EN</button></div>';
+        const nx = encodeURIComponent(location.pathname.split('/').pop() + location.search);
+        const mauth = acct ? '' : '<div class="m-auth"><a href="masuk.html?next=' + nx + '">Masuk</a><a class="pri" href="masuk.html?mode=daftar&next=' + nx + '">Daftar</a></div>';
         const right = acct && acct.role === 'traveler'
           ? '<a class="trip-pill" href="trip.html" title="Trip saya">' + ic('calendar', 16) + '<span>Trip</span><b id="navCount">' + n + '</b></a>' +
             '<button class="av nav-av" id="avBtn" aria-haspopup="true" aria-expanded="false" style="background:' + me.color + ';border:0;box-shadow:0 0 0 2px rgba(81,50,41,.18)" title="' + esc(acct.name) + '">' + esc(me.ini) + '</button>'
@@ -39,14 +43,15 @@
         html = '<header class="nav' + (over ? ' over' + (over === 'dark' ? ' dk' : '') : '') + '" id="nav"><div class="wrap">' +
           '<a class="logo" href="index.html" aria-label="Pathora, beranda"><img class="l-c" src="assets/img/logo.png" alt="Pathora"><img class="l-w" src="assets/img/logo-white.png" alt="" aria-hidden="true"></a>' +
           '<nav class="nav-links" aria-label="Utama">' + links + '</nav>' +
-          '<div class="nav-right">' + right + '<button class="icon-btn menu-btn" aria-label="Menu" id="menuBtn">' + ic('menu', 22) + '</button></div>' +
+          '<div class="nav-right">' + lang + right + '<button class="icon-btn menu-btn" aria-label="Buka menu" aria-expanded="false" id="menuBtn">' + ic('menu', 22) + '</button></div>' + mauth +
           (acct ? '<div class="menu-pop" id="avMenu" hidden><div class="who"><b>' + esc(acct.name) + '</b><small>' + esc(acct.email) + '</small><span class="badge ' + (acct.plan === 'plus' ? 'b-ok' : '') + '" style="margin-top:8px">' + (acct.plan === 'plus' ? 'Pathora Plus' : 'Paket gratis') + '</span></div>' +
             (acct.role === 'traveler' ? '<a href="akun.html">Akun dan langganan</a><a href="trip.html">Trip saya</a>' : '<a href="host.html">Studio Host</a>') + '<button data-out>Keluar</button></div>' : '') + '</div></header>';
       }
       el.outerHTML = html;
       const nav = document.getElementById('nav');
       if (over) { document.body.classList.add(over === 'dark' || mode === 'host' ? 'nav-pad' : 'nav-photo'); const sc = () => { nav.classList.toggle('solid', window.scrollY > 40); const y = nav.offsetHeight / 2; let dark = false; document.querySelectorAll('[data-tone="dark"]').forEach(function (e) { const r = e.getBoundingClientRect(); if (r.top <= y && r.bottom >= y) dark = true; }); nav.classList.toggle('ondark', dark); }; sc(); window.addEventListener('scroll', sc, { passive: true }); }
-      const mb = document.getElementById('menuBtn'); if (mb) mb.addEventListener('click', () => nav.classList.toggle('open'));
+      const mb = document.getElementById('menuBtn'); if (mb) mb.addEventListener('click', () => { const o = nav.classList.toggle('open'); mb.setAttribute('aria-expanded', String(o)); mb.setAttribute('aria-label', o ? 'Tutup menu' : 'Buka menu'); mb.innerHTML = ic(o ? 'x' : 'menu', 22); });
+      nav.querySelectorAll('[data-lang]').forEach((b) => b.addEventListener('click', () => { try { localStorage.setItem('pathora_lang', b.dataset.lang); } catch (e) {} document.documentElement.lang = b.dataset.lang; nav.querySelectorAll('[data-lang]').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); }));
       const ab = document.getElementById('avBtn'), mp = document.getElementById('avMenu');
       if (ab && mp) {
         ab.addEventListener('click', (e) => { e.stopPropagation(); mp.hidden = !mp.hidden; ab.setAttribute('aria-expanded', String(!mp.hidden)); });
