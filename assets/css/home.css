@@ -1,0 +1,201 @@
+/* ==========================================================================
+   Pathora, halaman Beranda (index.html)
+   Aktif hanya saat <body class="jel hm chat-mode">. Memakai variabel --g-* dari chat.css
+   dan dasar gelap dari jelajahi.css, supaya sama dengan Jelajahi, Kegiatan, dan Trip.
+   ========================================================================== */
+html,body{overflow-x:hidden}
+body.hm{--w:min(1480px,100% - 72px);--bg:#14100c;--glass:rgba(244,241,226,.06);--gl:rgba(244,241,226,.14)}
+body.hm .hm-w{width:var(--w);margin:0 auto}
+body.hm h1,body.hm h2,body.hm h3{font-family:var(--g-display);font-weight:400;color:var(--g-text)}
+body.hm h2{font-size:clamp(28px,3vw,40px);line-height:1.12;letter-spacing:-.01em;margin:0}
+body.hm .hm-eyebrow{display:block;font:500 11px var(--font);letter-spacing:.12em;text-transform:uppercase;color:var(--g-gold);margin-bottom:10px}
+body.hm .hm-sh{max-width:680px;margin:0 0 28px}
+body.hm .hm-sh p{margin:12px 0 0;color:var(--g-mute);font-size:15px;line-height:1.65}
+body.hm .hm-sec{position:relative;padding:64px 0 0}
+body.hm .hm-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:0 22px;border-radius:99px;border:0;background:var(--g-text);color:var(--g-ink);font:600 13px var(--font);cursor:pointer;transition:background .2s,transform .2s}
+body.hm .hm-btn:hover{background:#fff}
+body.hm .hm-btn.line{background:rgba(20,14,10,.5);color:var(--g-text);border:1px solid var(--g-line);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+body.hm .hm-btn.line:hover{background:rgba(244,241,226,.14)}
+body.hm .hm-btn.gold{background:var(--g-gold)}
+body.hm .hm-btn.glass{background:rgba(244,241,226,.18);color:var(--g-text);border:1px solid rgba(244,241,226,.38);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+body.hm .hm-btn.glass:hover{background:rgba(244,241,226,.3)}
+
+/* ---------- animasi masuk ---------- */
+.js body.hm .rv{opacity:0;transform:translateY(18px);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1);transition-delay:var(--d,0s)}
+.js body.hm .rv.in{opacity:1;transform:none}
+
+/* ---------- hero ---------- */
+body.hm .hm-hero{position:relative;min-height:100vh;min-height:100svh;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden}
+body.hm .hm-hero .bg{position:absolute;inset:0}
+body.hm .hm-hero .bg img{position:absolute;inset:0;width:100%;max-width:none;height:100%;object-fit:cover;opacity:0;transition:opacity 1.8s ease-in-out;z-index:0;filter:saturate(.95) brightness(.86)}
+body.hm .hm-hero .bg img.prev{opacity:1;transition:none;z-index:1}
+body.hm .hm-hero .bg img.on{opacity:1;z-index:2}
+body.hm .hm-hero::after{content:"";position:absolute;inset:0;z-index:3;background:linear-gradient(180deg,rgba(14,10,7,.62) 0,rgba(14,10,7,.28) 42%,rgba(20,16,12,.88) 86%,var(--bg) 100%)}
+body.hm .hm-hero .in{position:relative;z-index:4;width:min(720px,100% - 48px);padding:96px 0 56px}
+body.hm .hm-tag{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border:1px solid var(--g-line);border-radius:99px;background:rgba(20,14,10,.5);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-size:12px;color:var(--g-mute);margin-bottom:20px}
+body.hm .hm-hero h1{font-size:clamp(34px,4vw,54px);line-height:1.08;letter-spacing:-.015em;margin:0;text-shadow:0 2px 28px rgba(0,0,0,.35)}
+body.hm .hm-hero .lead{max-width:560px;margin:16px auto 28px;font-size:15px;line-height:1.65;color:var(--g-mute)}
+body.hm .ask{background:rgba(20,14,10,.55);border:1px solid var(--g-line);border-radius:22px;padding:14px;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);text-align:left;box-shadow:0 24px 60px rgba(0,0,0,.35)}
+body.hm .ask textarea{display:block;width:100%;height:64px;resize:none;border:0;outline:0;background:transparent;color:var(--g-text);font:400 15px/1.55 var(--font);padding:8px 10px}
+body.hm .ask textarea::placeholder{color:rgba(244,241,226,.55)}
+body.hm .ask .row{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:4px 4px 0 10px;font-size:12px;color:var(--g-mute)}
+body.hm .ask .go{display:inline-flex;align-items:center;gap:8px;min-height:42px;padding:0 22px;border:0;border-radius:99px;background:var(--g-text);color:var(--g-ink);font:600 13px var(--font);cursor:pointer;transition:background .2s}
+body.hm .ask .go:hover{background:#fff}
+body.hm .chips{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+body.hm .chips button{padding:5px 12px;border:1px solid var(--g-line);border-radius:99px;background:rgba(20,14,10,.5);color:var(--g-mute);font:500 11.5px var(--font);cursor:pointer;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:background .2s,color .2s}
+body.hm .chips button:hover{background:rgba(244,241,226,.14);color:var(--g-text)}
+body.hm .trust{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:14px;font-size:11px;color:var(--g-mute)}
+body.hm .trust span{display:inline-flex;align-items:center;gap:6px}
+body.hm .trust svg{width:14px;height:14px}
+
+/* ---------- planner: 3 kartu foto ---------- */
+body.hm .hm-trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+body.hm .hm-trio .t{position:relative;height:340px;border-radius:20px;overflow:hidden;border:1px solid var(--gl)}
+body.hm .hm-trio img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+body.hm .hm-trio .t::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,14,10,.1) 35%,rgba(20,14,10,.92))}
+body.hm .hm-trio .c{position:absolute;left:22px;right:22px;bottom:20px;z-index:2}
+body.hm .hm-trio h3{font-size:22px;margin:0}
+body.hm .hm-trio p{margin:5px 0 0;font-size:13px;color:var(--g-mute);line-height:1.55}
+body.hm .hm-trio b{position:absolute;left:22px;top:18px;z-index:2;font:500 12px var(--font);color:var(--g-gold)}
+
+/* ---------- kegiatan: panel kategori berlapis ---------- */
+body.hm .hm-scene{position:relative;margin-top:56px;padding:56px 0 0;overflow:hidden;--p:0;
+  background:linear-gradient(180deg,var(--bg) 0%,#2a1c12 14%,#7a4a2a 40%,#d79a5e 66%,#f1c58a 86%,#f6d9aa 100%)}
+body.hm .hm-scene .head{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:flex-end;gap:40px}
+body.hm .hm-scene .head p{max-width:440px;margin:0;color:var(--g-mute);font-size:14.5px;line-height:1.65}
+body.hm .hm-cards{position:relative;z-index:2;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;margin-top:44px;align-items:start;padding-bottom:0}
+body.hm .hm-k{position:relative;display:block;height:760px;border-radius:20px 20px 0 0;overflow:hidden;border:1px solid var(--gl);border-bottom:0;box-shadow:0 30px 60px rgba(0,0,0,.45);color:var(--g-text);
+  transform:translateY(calc(var(--p) * var(--sp,24px)));will-change:transform}
+body.hm .hm-k:nth-child(1){margin-top:34px;--sp:20px}
+body.hm .hm-k:nth-child(2){margin-top:0;--sp:34px}
+body.hm .hm-k:nth-child(3){margin-top:56px;--sp:14px}
+body.hm .hm-k:nth-child(4){margin-top:14px;--sp:28px}
+body.hm .hm-k:nth-child(5){margin-top:44px;--sp:18px}
+body.hm .hm-k img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.92) brightness(.92);transition:filter .5s}
+body.hm .hm-k:hover img{filter:saturate(1) brightness(1)}
+body.hm .hm-k::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(20,14,10,.92) 0%,rgba(20,14,10,.62) 24%,rgba(20,14,10,0) 55%)}
+body.hm .hm-k::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,transparent 40%,rgba(30,16,8,.55) 78%,rgba(30,16,8,.85) 100%)}
+body.hm .hm-k .c{position:absolute;z-index:2;left:22px;right:22px;top:22px}
+body.hm .hm-k .n{display:block;font:500 11px var(--font);letter-spacing:.1em;text-transform:uppercase;color:var(--g-gold);margin-bottom:8px}
+body.hm .hm-k h3{font-size:22px;line-height:1.15;margin:0}
+body.hm .hm-k p{margin:10px 0 0;font-size:13px;line-height:1.55;color:var(--g-mute)}
+body.hm .hm-k .pr{display:block;margin-top:14px;font-size:12.5px;color:var(--g-mute)}
+body.hm .hm-k .pr b{display:block;font:600 15px var(--font);color:var(--g-gold)}
+body.hm .hm-mist{position:absolute;left:0;right:0;bottom:0;height:60%;z-index:3;pointer-events:none;
+  background:radial-gradient(ellipse 70% 40% at 50% 100%,rgba(255,214,160,.55),rgba(255,214,160,0) 70%),linear-gradient(180deg,rgba(241,197,138,0) 0%,rgba(241,197,138,.28) 70%,rgba(241,197,138,.5) 100%)}
+body.hm .hm-fg{position:absolute;left:0;right:0;bottom:0;aspect-ratio:1672/801;z-index:4;pointer-events:none;
+  background:url("../img/layer/candi-depan.webp") center bottom/100% 100% no-repeat;
+  filter:drop-shadow(0 -14px 26px rgba(30,14,6,.55)) drop-shadow(0 -2px 6px rgba(30,14,6,.5)) saturate(1.05)}
+body.hm .hm-scene::after{content:"";position:absolute;left:0;right:0;bottom:0;height:140px;z-index:5;pointer-events:none;background:linear-gradient(180deg,transparent,var(--bg))}
+body.hm .hm-more{position:absolute;left:0;right:0;bottom:50px;z-index:6;text-align:center}
+/* tinggi adegan mengikuti candi: panel (juga tinggi) di belakang, candi menutup bawahnya */
+body.hm .hm-scene{height:1020px}
+
+/* ---------- cara kerja ---------- */
+body.hm .hm-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+body.hm .hm-st{padding:24px;border-radius:20px;background:var(--glass);border:1px solid var(--gl);display:flex;flex-direction:column;gap:14px;transition:background .25s,border-color .25s}
+body.hm .hm-st:hover{background:rgba(244,241,226,.09);border-color:rgba(244,241,226,.28)}
+body.hm .hm-st i{font:500 12px var(--font);color:var(--g-gold);font-style:normal}
+body.hm .hm-st h3{font-size:19px;margin:0 0 8px}
+body.hm .hm-st p{margin:0;font-size:13px;line-height:1.6;color:var(--g-mute)}
+body.hm .hm-try{margin-top:28px}
+
+/* ---------- statistik ---------- */
+body.hm .hm-why{position:relative;margin-top:64px;padding:72px 0;overflow:hidden}
+body.hm .hm-why>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+body.hm .hm-why::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,var(--bg),rgba(20,16,12,.56) 26%,rgba(20,16,12,.62) 74%,var(--bg))}
+body.hm .hm-why .hm-w{position:relative;z-index:2}
+body.hm .hm-why .hm-sh{max-width:780px}
+body.hm .hm-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+body.hm .stat{padding:28px;border-radius:20px;background:rgba(20,14,10,.55);border:1px solid var(--gl);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+body.hm .stat b{display:block;font:400 48px/1.1 var(--g-display);color:var(--g-gold)}
+body.hm .stat p{margin:8px 0 0;font-size:13.5px;line-height:1.6;color:var(--g-text)}
+body.hm .stat small{display:block;margin-top:12px;font-size:11px;color:var(--g-mute)}
+body.hm .fn{margin:20px 0 0;max-width:780px;font-size:11.5px;line-height:1.6;color:var(--g-mute)}
+
+/* ---------- paspor + paket ---------- */
+body.hm .hm-two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:64px;align-items:center}
+body.hm .seals{display:flex;gap:14px;margin-bottom:26px;flex-wrap:wrap}
+body.hm .seal{width:64px;height:64px;border-radius:50%;overflow:hidden;border:2px solid rgba(252,230,183,.5);box-shadow:0 8px 22px rgba(0,0,0,.4)}
+body.hm .seal>div{width:100%;height:100%}
+body.hm .seal svg{display:block;width:100%;height:100%}
+body.hm .hm-two .lead2{margin:12px 0 22px;max-width:480px;color:var(--g-mute);font-size:15px;line-height:1.65}
+body.hm .hm-plans{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+body.hm .plan{padding:26px;border-radius:20px;background:var(--glass);border:1px solid var(--gl);display:flex;flex-direction:column;justify-content:space-between;gap:20px}
+body.hm .plan.pro{background:var(--g-text);color:var(--g-ink);border-color:transparent}
+body.hm .plan h3{font-size:18px;margin:0}
+body.hm .plan.pro h3{color:var(--g-ink)}
+body.hm .plan .pr{font:400 34px/1.15 var(--g-display);margin-top:10px}
+body.hm .plan .pr small{display:block;font:400 11.5px var(--font);opacity:.7;margin-top:2px}
+body.hm .plan ul{list-style:none;margin:0;padding:0;display:grid;gap:10px;font-size:13px}
+body.hm .plan li{display:flex;gap:9px;align-items:flex-start}
+body.hm .plan li svg{flex:none;margin-top:2px;width:16px;height:16px}
+body.hm .plan .hm-btn{width:100%}
+body.hm .plan.pro .hm-btn{background:var(--g-ink);color:var(--g-text)}
+body.hm .plan-note{margin:14px 0 0;font-size:12px;color:var(--g-mute)}
+
+/* ---------- FAQ ---------- */
+body.hm .hm-faq{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:64px;align-items:start}
+body.hm .hm-faq .list{max-width:760px}
+body.hm .hm-faq details{border-bottom:1px solid var(--g-line);padding:18px 0}
+body.hm .hm-faq details:first-child{border-top:1px solid var(--g-line)}
+body.hm .hm-faq summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:16px;font:600 15px var(--font);color:var(--g-text)}
+body.hm .hm-faq summary::-webkit-details-marker{display:none}
+body.hm .hm-faq summary::after{content:"+";color:var(--g-gold);font-weight:500;transition:transform .25s}
+body.hm .hm-faq details[open] summary::after{transform:rotate(45deg)}
+body.hm .hm-faq details p{margin:12px 0 0;font-size:14px;line-height:1.7;color:var(--g-mute)}
+
+/* ---------- ajakan, host ---------- */
+body.hm .hm-cta{position:relative;margin-top:64px;padding:88px 0;text-align:center;overflow:hidden}
+body.hm .hm-cta>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+body.hm .hm-cta::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,var(--bg),rgba(20,16,12,.55) 35%,rgba(20,16,12,.62))}
+body.hm .hm-cta .in{position:relative;z-index:2;width:min(640px,100% - 48px);margin:0 auto}
+body.hm .hm-cta p{margin:12px 0 24px;color:var(--g-mute);font-size:15px;line-height:1.65}
+body.hm .hm-host{padding:64px 0;text-align:center;border-top:1px solid var(--g-line)}
+body.hm .hm-host .in{width:min(640px,100% - 48px);margin:0 auto}
+body.hm .hm-host p{margin:12px 0 22px;color:var(--g-mute);font-size:15px;line-height:1.65}
+body.hm .hm-host .small{margin:16px 0 0;font-size:12.5px}
+body.hm .hm-host .small a{color:var(--g-text);text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- gerak dikurangi ---------- */
+@media (prefers-reduced-motion:reduce){
+  .js body.hm .rv{opacity:1;transform:none;transition:none}
+  body.hm .hm-k{transform:none!important}
+  body.hm .hm-hero .bg img{transition:none}
+}
+
+/* ---------- layar sedang ---------- */
+@media (max-width:1180px){
+  body.hm .hm-cards{grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+  body.hm .hm-k h3{font-size:19px}
+  body.hm .hm-two,body.hm .hm-faq{gap:40px}
+}
+
+/* ---------- layar kecil ---------- */
+@media (max-width:900px){
+  body.hm{--w:calc(100% - 48px)}
+  body.hm .hm-sec{padding-top:52px}
+  body.hm .hm-trio{grid-template-columns:1fr}
+  body.hm .hm-trio .t{height:260px}
+  body.hm .hm-scene{height:auto;margin-top:44px;padding:48px 0 0}
+  body.hm .hm-scene .head{flex-direction:column;align-items:flex-start;gap:12px}
+  body.hm .hm-cards{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;margin:32px 0 0;padding:0 24px 0;width:100%;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  body.hm .hm-cards::-webkit-scrollbar{display:none}
+  body.hm .hm-k{flex:0 0 min(260px,74vw);height:460px;scroll-snap-align:start;margin-top:0!important;transform:none!important}
+  body.hm .hm-k:nth-child(odd){margin-top:0}
+  body.hm .hm-fg{position:relative;aspect-ratio:auto;height:210px;margin-top:-110px;background-size:auto 100%;background-position:left bottom}
+  body.hm .hm-mist{height:240px}
+  body.hm .hm-more{position:relative;bottom:auto;padding:0 0 44px;margin-top:-30px}
+  body.hm .hm-scene::after{height:90px}
+  body.hm .hm-steps{grid-template-columns:repeat(2,minmax(0,1fr))}
+  body.hm .hm-stats{grid-template-columns:1fr}
+  body.hm .hm-two,body.hm .hm-faq{grid-template-columns:1fr;gap:36px}
+  body.hm .hm-plans{grid-template-columns:1fr}
+}
+@media (max-width:560px){
+  body.hm .hm-steps{grid-template-columns:1fr}
+  body.hm .ask .row span:first-child{display:none}
+  body.hm .ask .row{justify-content:flex-end}
+  body.hm .hm-hero .in{padding:88px 0 56px}
+  body.hm .trust{gap:10px 16px}
+}
