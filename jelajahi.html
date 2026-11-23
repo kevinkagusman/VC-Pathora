@@ -31,6 +31,7 @@
   <div class="jel-meta"><span id="count"></span><button type="button" class="jel-hint" id="lgBtn"></button></div>
   <div class="jel-grid" id="grid"></div>
   <section class="jel-map" id="map" aria-label="Peta kegiatan" hidden></section>
+  <section class="ai-cta" aria-label="Rekomendasi asisten"><div class="cta-t"><span class="k">Perlu rekomendasi</span><h3>Biarkan asisten menyusun jadwal kamu.</h3><p>Sebutkan durasi dan suasana yang kamu cari. Jadwal lengkap dengan cuaca dan biaya tersusun dalam hitungan detik.</p></div><a class="btn btn-gold" href="trip.html?tab=chat">Buka asisten</a></section>
 </main>
 <div id="footer"></div>
 <script src="assets/js/data.js"></script>
@@ -116,8 +117,7 @@
     $('count').textContent = list.length + ' kegiatan';
     const grid = $('grid');
     if (!list.length) grid.innerHTML = '<div class="empty"><h3>Tidak ada yang cocok</h3><p style="margin:8px 0 18px">Ubah filter, atau tanyakan langsung ke asisten.</p><a class="btn" href="trip.html?tab=chat">Buka asisten</a></div>';
-    else grid.innerHTML = list.map(function(a){ return UI.actCard(a, { date: trip.start }); }).join('') +
-      '<div class="ai-cta"><span class="k">Perlu rekomendasi</span><h3>Biarkan asisten menyusun jadwal kamu.</h3><p>Sebutkan durasi dan suasana yang kamu cari. Jadwal lengkap dengan cuaca dan biaya tersusun dalam hitungan detik.</p><a class="btn btn-gold" href="trip.html?tab=chat">Buka asisten</a></div>';
+    else grid.innerHTML = list.map(function(a){ return UI.actCard(a, { date: trip.start }); }).join('');
     if (sel && list.every(function(a){ return a.id !== sel; })) sel = null;
     if (st.view === 'map') drawMap(list);
   }
@@ -141,7 +141,7 @@
     }).join('');
     const used = Array.from(new Set(list.map(function(a){ return a.cats[0]; })));
     const a = sel ? PD.byId[sel] : null, inTrip = a && PS.get().items.some(function(i){ return i.actId === a.id && i.status !== 'ditolak'; });
-    m.innerHTML = '<svg viewBox="0 0 ' + VW + ' ' + VH + '" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Peta ilustrasi Bali dengan titik kegiatan"><path d="' + smooth(OUT) + '" fill="#2f3d2c" stroke="#4a5d43" stroke-width="2"/><path d="' + smooth(NUSA) + '" fill="#2f3d2c" stroke="#4a5d43" stroke-width="2"/>' +
+    m.innerHTML = '<svg viewBox="140 0 720 ' + VH + '" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Peta ilustrasi Bali dengan titik kegiatan"><path d="' + smooth(OUT) + '" fill="#2f3d2c" stroke="#4a5d43" stroke-width="2"/><path d="' + smooth(NUSA) + '" fill="#2f3d2c" stroke="#4a5d43" stroke-width="2"/>' +
       '<path d="M300 250C420 215 560 235 700 205" stroke="#3b4c37" stroke-width="20" fill="none" stroke-linecap="round" opacity=".7"/>' +
       '<text x="' + (VW / 2) + '" y="' + (VH - 14) + '" fill="#6f9aa0" font-size="12" text-anchor="middle" letter-spacing="4">LAUT BALI</text>' + pins + '</svg>' +
       '<span class="mnote">Peta ilustrasi, posisi perkiraan</span>' +
