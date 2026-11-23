@@ -6,73 +6,31 @@
 <title>Jelajahi kegiatan — Pathora</title>
 <link rel="icon" href="assets/img/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Questrial&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/style.css">
 <link rel="stylesheet" href="assets/css/pages.css">
 <link rel="stylesheet" href="assets/css/header.css">
-<style>
-.jh{position:relative;color:var(--cream);padding:calc(var(--nav-h) + 40px) 0 130px;z-index:6}
-.jh-bg{position:absolute;inset:0;background:var(--jungle);-webkit-mask-image:linear-gradient(180deg,#000 0,#000 52%,rgba(0,0,0,.72) 66%,rgba(0,0,0,.4) 79%,rgba(0,0,0,.14) 90%,transparent 100%);mask-image:linear-gradient(180deg,#000 0,#000 52%,rgba(0,0,0,.72) 66%,rgba(0,0,0,.4) 79%,rgba(0,0,0,.14) 90%,transparent 100%);}
-.jh-bg>img{position:absolute;inset:0;width:100%;max-width:none;height:100%;object-fit:cover;filter:saturate(.8) brightness(.85)}
-.jh-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(46,27,19,.78),rgba(90,56,45,.6) 60%,rgba(36,20,14,.9))}
-.jh-in{position:relative;z-index:2;text-align:center}
-.jh h1{font-size:clamp(26px,3.6vw,40px);letter-spacing:-.035em;color:#fff}
-.jh p{max-width:620px;margin:14px auto 0;color:rgba(244,241,226,.9);font-size:15px;line-height:1.7}
-.jsearch{position:relative;max-width:620px;margin:30px auto 0}
-.jsearch #sIc{position:absolute;left:20px;top:50%;transform:translateY(-50%);color:var(--ink-3);display:flex}
-.jsearch .input{height:60px;padding:0 60px 0 52px;line-height:60px;border-radius:99px;font-size:16.5px;box-shadow:0 20px 50px rgba(14,22,14,.35);border:0}
-.tool{position:relative;z-index:5;margin-top:-64px;background:rgba(251,249,240,.92);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow-lg);padding:20px 24px;display:grid;gap:16px}
-.tool-row{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
-.tool-l{font-size:13px;font-weight:700;color:var(--ink-2);min-width:70px}
-.tool .cats{display:flex;gap:8px;flex-wrap:wrap}
-.tool-ctl{padding-top:16px;border-top:1px solid var(--line);gap:12px 22px}
-.ctl{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:700;color:var(--ink-2)}
-.ctl .select{width:auto;min-width:170px;padding-top:9px;padding-bottom:9px}
-.tool .tog{margin-left:auto}
-.legend{display:flex;gap:10px 22px;align-items:center;flex-wrap:wrap;margin-top:24px;padding:14px 20px;border-radius:16px;background:rgba(216,235,249,.55);border:1px solid rgba(81,50,41,.1);font-size:13.5px}
-.legend b{font-size:13.5px}.legend #lg{display:flex;gap:18px;flex-wrap:wrap}.legend small{color:var(--ink-2);flex-basis:100%;font-size:12.5px}
-@media(max-width:760px){.tool{padding:16px}.tool .tog{margin-left:0}.ctl{width:100%;justify-content:space-between}.ctl .select{flex:1}}
-.jsearch{position:relative}.jsearch input{color:var(--ink)}
-[hidden]{display:none!important}
-.jclr{position:absolute;right:15px;top:50%;margin-top:-15px;width:30px;height:30px;border:0;border-radius:50%;background:rgba(81,50,41,.1);color:var(--ink);display:grid;place-items:center;padding:0;cursor:pointer}
-.jclr:hover{background:rgba(81,50,41,.2)}
-.sgx{position:absolute;left:12px;right:12px;top:calc(100% + 8px);z-index:20;background:var(--paper);color:var(--ink);border-radius:18px;box-shadow:var(--shadow-lg);padding:8px;text-align:left;border:1px solid var(--line)}
-.sgx a{display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:12px}
-.sgx a:hover,.sgx a.act{background:rgba(81,50,41,.08)}
-.sgx .th{width:44px;height:44px;border-radius:10px;overflow:hidden;position:relative;flex:none}
-.sgx .th .art{position:absolute;inset:0}
-.sgx b{display:block;font-size:14px}.sgx small{color:var(--ink-3);font-size:12.5px}
-.sgx .all{justify-content:center;font-weight:600;font-size:13.5px;color:var(--canopy)}
-mark{background:rgba(252,230,183,.9);color:inherit;border-radius:4px;padding:0 2px}
-</style>
+<link rel="stylesheet" href="assets/css/chat.css">
+<link rel="stylesheet" href="assets/css/jelajahi.css">
 </head>
-<body class="mesh">
+<body class="jel chat-mode">
 <div id="nav"></div>
-<main>
-  <header class="jh" data-tone="dark">
-    <div class="jh-bg"><img src="assets/img/gallery/tari-topeng.jpg" alt=""></div>
-    <div class="jh-in wrap">
-      <h1>Kegiatan alam dan budaya Bali</h1>
-      <p>Seluruh kegiatan dipandu warga dan komunitas lokal. Tambahkan yang Anda minati ke trip, lalu asisten akan mengaturnya ke dalam jadwal.</p>
-      <div class="jsearch"><span id="sIc"></span><label class="sr" for="q">Cari kegiatan</label><input id="q" class="input" placeholder="Cari kegiatan" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="sg"><button type="button" class="jclr" id="jclr" aria-label="Hapus pencarian" hidden><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg></button><div class="sgx" id="sg" role="listbox" hidden></div></div>
+<div class="jel-bg" aria-hidden="true"></div>
+<main class="jel-main">
+  <header class="jel-head">
+    <h1>kegiatan alam dan budaya Bali.</h1>
+    <p>Dipandu warga dan komunitas lokal. Tambahkan yang kamu suka ke trip, lalu asisten akan mengaturnya ke dalam jadwal.</p>
+    <div class="jel-bar">
+      <div class="jsearch"><span id="sIc"></span><label class="sr" for="q">Cari kegiatan</label><input id="q" class="input" placeholder="Cari kegiatan" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="sg"><button type="button" class="jclr" id="jclr" aria-label="Hapus pencarian" hidden></button><div class="sgx" id="sg" role="listbox" hidden></div></div>
+      <button type="button" class="jel-f" id="fBtn" aria-expanded="false" aria-controls="fPanel"><span id="fIc"></span>Filter<b id="fN" hidden></b></button>
+      <div class="jel-tg" role="group" aria-label="Tampilan"><button type="button" data-v="list" aria-pressed="true" id="vL"></button><button type="button" data-v="map" aria-pressed="false" id="vM"></button></div>
     </div>
+    <div class="jel-panel" id="fPanel" hidden></div>
   </header>
-  <div class="wrap">
-    <section class="tool" aria-label="Penyaring kegiatan">
-      <div class="tool-row"><span class="tool-l">Kategori</span><div class="cats" id="cats" role="group" aria-label="Kategori"></div></div>
-      <div class="tool-row tool-ctl">
-        <label class="ctl"><span>Wilayah</span><select class="select" id="region"><option value="">Semua wilayah</option></select></label>
-        <label class="ctl"><span>Urutkan</span><select class="select" id="sort"><option value="rec">Rekomendasi</option><option value="sepi">Paling lengang</option><option value="murah">Termurah</option><option value="durasi">Durasi tersingkat</option></select></label>
-      </div>
-    </section>
-    <div class="legend" aria-label="Arti label keramaian">
-      <b>Label keramaian</b>
-      <span id="lg"></span>
-      <small>Perkiraan jumlah pengunjung lain di lokasi pada tanggal trip Anda. Data contoh.</small>
-    </div>
-    <p class="faint" id="count" style="margin:18px 0 16px;font-size:13px"></p>
-    <div class="grid-acts" id="grid"></div>
-  </div>
+  <div class="jel-act" id="fAct" hidden></div>
+  <div class="jel-meta"><span id="count"></span><button type="button" class="jel-hint" id="lgBtn"></button></div>
+  <div class="jel-grid" id="grid"></div>
+  <section class="jel-map" id="map" aria-label="Peta kegiatan" hidden></section>
 </main>
 <div id="footer"></div>
 <script src="assets/js/data.js"></script>
@@ -81,16 +39,19 @@ mark{background:rgba(252,230,183,.9);color:inherit;border-radius:4px;padding:0 2
 <script src="assets/js/ui.js"></script>
 <script>
 (function(){
-  const { A, D, crowdFor, dayScore } = PD, { ic } = PA;
+  const { A, D, crowdFor, dayScore, CROWD_LABEL } = PD, { ic } = PA;
   UI.mountNav('jelajahi', true); UI.mountFooter();
-  document.getElementById('sIc').innerHTML = ic('search', 16);
-  const CAT = { semua:'Semua', laut:'Laut', satwa:'Satwa', sawah:'Sawah', hutan:'Hutan', air:'Air', budaya:'Budaya', kuliner:'Kuliner', kerajinan:'Kerajinan' };
-  const st = { cat:'semua', q:'', region:'', sort:'rec' };
+  const $ = function(id){ return document.getElementById(id); };
+  $('sIc').innerHTML = ic('search', 18); $('jclr').innerHTML = ic('x', 14); $('fIc').innerHTML = ic('sliders', 17);
+  $('vL').innerHTML = ic('grid', 16) + 'Daftar'; $('vM').innerHTML = ic('map', 16) + 'Peta';
+  $('lgBtn').innerHTML = ic('info', 16) + 'Arti label keramaian';
+  const CAT = { laut:'Laut', satwa:'Satwa', sawah:'Sawah', hutan:'Hutan', air:'Air', budaya:'Budaya', kuliner:'Kuliner', kerajinan:'Kerajinan' };
+  const CATC = { laut:'#5b8fa8', satwa:'#C98A5A', sawah:'#9BBF6A', hutan:'#6b8f4e', air:'#6fb5c9', budaya:'#D9B46A', kuliner:'#E08A6B', kerajinan:'#B58BC4' };
+  const CROWDN = ['Sepi', 'Sedang', 'Ramai'];
+  const SORTN = { rec:'Rekomendasi', sepi:'Paling lengang', murah:'Termurah', durasi:'Durasi tersingkat' };
+  const st = { cat:'', q:'', region:'', crowd:-1, sort:'rec', view:'list' };
   const trip = PS.get().trip;
-  document.getElementById('lg').innerHTML = [[0, 'sedikit pengunjung lain'], [1, 'ada pengunjung lain, tidak padat'], [2, 'cenderung padat']].map(function(x){ return '<span style="display:inline-flex;gap:8px;align-items:center">' + UI.crowd(x[0]) + '<span class="faint">' + x[1] + '</span></span>'; }).join('');
-  document.getElementById('cats').innerHTML = Object.keys(CAT).map(function(k){ return '<button class="chip' + (k==='semua'?' on':'') + '" data-c="' + k + '">' + CAT[k] + '</button>'; }).join('');
-  const reg = document.getElementById('region');
-  Array.from(new Set(A.map(function(a){ return a.region; }))).forEach(function(r){ reg.insertAdjacentHTML('beforeend', '<option>' + r + '</option>'); });
+  const regions = Array.from(new Set(A.map(function(a){ return a.region; })));
 
   /* pencarian: kata dicocokkan satu per satu, tanpa peduli huruf besar dan tanda baca */
   const norm = function(t){ return String(t).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim(); };
@@ -107,28 +68,126 @@ mark{background:rgba(252,230,183,.9);color:inherit;border-radius:4px;padding:0 2
   }
   const hi = function(t, q){ const toks = norm(q).split(' ').filter(Boolean); let out = UI.esc(t); toks.forEach(function(k){ out = out.replace(new RegExp('(' + k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'ig'), '<mark>$1</mark>'); }); return out; };
   function avgScore(a){ const ds = D.range(trip.start, trip.end); return ds.reduce(function(t,d){ return t + dayScore(a, d, PS.get().hostClosed); }, 0) / ds.length; }
-  function render(){
-    let list = A.filter(function(a){
-      if (st.cat !== 'semua' && a.cats.indexOf(st.cat) < 0) return false;
+
+  /* ---------- panel filter ---------- */
+  function chips(group, items, cur){ return items.map(function(x){ return '<button type="button" class="fc" data-g="' + group + '" data-v="' + x[0] + '" aria-pressed="' + (String(cur) === String(x[0])) + '">' + x[1] + '</button>'; }).join(''); }
+  function drawPanel(n){
+    $('fPanel').innerHTML =
+      '<div class="fr"><b>Kategori</b><div class="fch">' + chips('cat', Object.keys(CAT).map(function(k){ return [k, CAT[k]]; }), st.cat) + '</div></div>' +
+      '<div class="fr"><b>Wilayah</b><div class="fch">' + chips('region', regions.map(function(r){ return [r, r]; }), st.region) + '</div></div>' +
+      '<div class="fr"><b>Keramaian</b><div class="fch">' + chips('crowd', CROWDN.map(function(c, i){ return [i, c]; }), st.crowd) + '</div></div>' +
+      '<div class="fr"><b>Urutkan</b><div class="fch">' + chips('sort', Object.keys(SORTN).map(function(k){ return [k, SORTN[k]]; }), st.sort) + '</div></div>' +
+      '<div class="fpf"><button type="button" class="reset" data-reset>Atur ulang</button><button type="button" class="go" data-go>Tampilkan ' + n + ' kegiatan</button></div>';
+  }
+  function setPanel(open){ $('fPanel').hidden = !open; $('fBtn').setAttribute('aria-expanded', String(open)); }
+  function nFilters(){ return (st.cat ? 1 : 0) + (st.region ? 1 : 0) + (st.crowd > -1 ? 1 : 0) + (st.sort !== 'rec' ? 1 : 0); }
+  function drawActive(){
+    const out = [];
+    if (st.cat) out.push(['cat', CAT[st.cat]]);
+    if (st.region) out.push(['region', st.region]);
+    if (st.crowd > -1) out.push(['crowd', 'Keramaian: ' + CROWDN[st.crowd]]);
+    if (st.sort !== 'rec') out.push(['sort', SORTN[st.sort]]);
+    $('fAct').hidden = !out.length;
+    $('fAct').innerHTML = out.map(function(o){ return '<button type="button" class="a" data-x="' + o[0] + '" aria-label="Hapus filter ' + o[1] + '">' + o[1] + ic('x', 13) + '</button>'; }).join('') + (out.length > 1 ? '<button type="button" class="clr" data-reset>Hapus semua</button>' : '');
+  }
+  function reset(){ st.cat = ''; st.region = ''; st.crowd = -1; st.sort = 'rec'; render(); }
+
+  /* ---------- hasil ---------- */
+  function results(){
+    const list = A.filter(function(a){
+      if (st.cat && a.cats.indexOf(st.cat) < 0) return false;
       if (st.region && a.region !== st.region) return false;
+      if (st.crowd > -1 && crowdFor(a, trip.start) !== st.crowd) return false;
       if (st.q && score(a, st.q) <= 0) return false;
       return true;
     });
-    const sc = function(a){ return crowdFor(a, trip.start); };
-    const byRel = !!st.q;
-    if (st.sort === 'sepi') list.sort(function(a,b){ return sc(a) - sc(b) || a.price - b.price; });
+    if (st.sort === 'sepi') list.sort(function(a,b){ return crowdFor(a, trip.start) - crowdFor(b, trip.start) || a.price - b.price; });
     else if (st.sort === 'murah') list.sort(function(a,b){ return a.price - b.price; });
     else if (st.sort === 'durasi') list.sort(function(a,b){ return a.dur - b.dur; });
     else list.sort(function(a,b){ return avgScore(b) - avgScore(a); });
-    if (byRel && st.sort === 'rec') list.sort(function(a,b){ return score(b, st.q) - score(a, st.q); });
-    document.getElementById('count').textContent = list.length + ' kegiatan' + ' · harga dan kondisi adalah data contoh';
-    const g = document.getElementById('grid');
-    if (!list.length) { g.innerHTML = '<div class="empty" style="grid-column:1/-1"><h3>Tidak ada yang cocok</h3><p style="margin:8px 0 16px">Ubah filter, atau tanyakan langsung ke asisten AI.</p><a class="btn btn-dark" href="trip.html?tab=chat">Buka asisten AI</a></div>'; return; }
-    g.innerHTML = list.map(function(a){ return UI.actCard(a, { date: trip.start }); }).join('') +
-      '<div class="ai-cta"><span class="k">Perlu rekomendasi</span><h3>Biarkan asisten menyusun jadwal Anda.</h3><p>Sebutkan durasi dan suasana yang Anda cari. Jadwal lengkap dengan cuaca dan biaya tersusun dalam hitungan detik.</p><a class="btn btn-gold" href="trip.html?tab=chat">Buka asisten AI</a></div>';
+    if (st.q && st.sort === 'rec') list.sort(function(a,b){ return score(b, st.q) - score(a, st.q); });
+    return list;
   }
-  document.getElementById('cats').addEventListener('click', function(e){ const b = e.target.closest('[data-c]'); if (!b) return; st.cat = b.dataset.c; Array.prototype.forEach.call(this.children, function(x){ x.classList.toggle('on', x === b); }); render(); });
-  const qi = document.getElementById('q'), sg = document.getElementById('sg'), clr = document.getElementById('jclr'); let ai = -1;
+  let sel = null;
+  function render(){
+    const list = results();
+    const n = nFilters(); $('fN').hidden = !n; $('fN').textContent = n;
+    drawPanel(list.length); drawActive();
+    $('count').textContent = list.length + ' kegiatan';
+    const grid = $('grid');
+    if (!list.length) grid.innerHTML = '<div class="empty"><h3>Tidak ada yang cocok</h3><p style="margin:8px 0 18px">Ubah filter, atau tanyakan langsung ke asisten.</p><a class="btn" href="trip.html?tab=chat">Buka asisten</a></div>';
+    else grid.innerHTML = list.map(function(a){ return UI.actCard(a, { date: trip.start }); }).join('') +
+      '<div class="ai-cta"><span class="k">Perlu rekomendasi</span><h3>Biarkan asisten menyusun jadwal kamu.</h3><p>Sebutkan durasi dan suasana yang kamu cari. Jadwal lengkap dengan cuaca dan biaya tersusun dalam hitungan detik.</p><a class="btn btn-gold" href="trip.html?tab=chat">Buka asisten</a></div>';
+    if (sel && list.every(function(a){ return a.id !== sel; })) sel = null;
+    if (st.view === 'map') drawMap(list);
+  }
+
+  /* ---------- peta ilustrasi Bali (posisi dari koordinat kegiatan) ---------- */
+  const OUT = [[114.43,-8.17],[114.55,-8.13],[114.70,-8.14],[114.90,-8.15],[115.05,-8.13],[115.20,-8.11],[115.35,-8.14],[115.50,-8.22],[115.66,-8.28],[115.70,-8.40],[115.62,-8.50],[115.50,-8.54],[115.40,-8.59],[115.30,-8.65],[115.26,-8.72],[115.24,-8.78],[115.20,-8.83],[115.12,-8.85],[115.08,-8.80],[115.14,-8.76],[115.16,-8.72],[115.12,-8.65],[115.08,-8.61],[114.97,-8.54],[114.85,-8.46],[114.70,-8.40],[114.56,-8.33],[114.48,-8.25]];
+  const NUSA = [[115.45,-8.67],[115.55,-8.66],[115.60,-8.72],[115.55,-8.78],[115.46,-8.77],[115.43,-8.72]];
+  const VW = 1000, VH = 480, SC = 520, LNG0 = 115.05, LAT0 = -8.07, PADY = 22;
+  const px = function(p){ return [VW / 2 + (p[0] - LNG0) * SC, PADY + (LAT0 - p[1]) * SC]; };
+  function smooth(pts){
+    const q = pts.map(px), m = function(a, b){ return [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2]; };
+    let d = 'M' + m(q[q.length - 1], q[0]).map(function(v){ return v.toFixed(1); }).join(' ');
+    for (let i = 0; i < q.length; i++) { const c = q[i], e = m(q[i], q[(i + 1) % q.length]); d += 'Q' + c[0].toFixed(1) + ' ' + c[1].toFixed(1) + ' ' + e[0].toFixed(1) + ' ' + e[1].toFixed(1); }
+    return d + 'Z';
+  }
+  function drawMap(list){
+    const m = $('map');
+    const pins = list.map(function(a){
+      const p = px([a.lng, a.lat]), c = CATC[a.cats[0]] || '#D9B46A';
+      return '<g class="pg' + (sel === a.id ? ' on' : '') + '" data-pin="' + a.id + '" tabindex="0" role="button" aria-label="' + UI.esc(a.short) + ', ' + UI.esc(a.place) + '"><circle class="ring" cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="19"/><circle class="pin" cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="12" fill="' + c + '" stroke="#14100c" stroke-width="3"/></g>';
+    }).join('');
+    const used = Array.from(new Set(list.map(function(a){ return a.cats[0]; })));
+    const a = sel ? PD.byId[sel] : null, inTrip = a && PS.get().items.some(function(i){ return i.actId === a.id && i.status !== 'ditolak'; });
+    m.innerHTML = '<svg viewBox="0 0 ' + VW + ' ' + VH + '" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Peta ilustrasi Bali dengan titik kegiatan"><path d="' + smooth(OUT) + '" fill="#2f3d2c" stroke="#4a5d43" stroke-width="2"/><path d="' + smooth(NUSA) + '" fill="#2f3d2c" stroke="#4a5d43" stroke-width="2"/>' +
+      '<path d="M300 250C420 215 560 235 700 205" stroke="#3b4c37" stroke-width="20" fill="none" stroke-linecap="round" opacity=".7"/>' +
+      '<text x="' + (VW / 2) + '" y="' + (VH - 14) + '" fill="#6f9aa0" font-size="12" text-anchor="middle" letter-spacing="4">LAUT BALI</text>' + pins + '</svg>' +
+      '<span class="mnote">Peta ilustrasi, posisi perkiraan</span>' +
+      '<div class="mleg">' + used.map(function(k){ return '<span><i style="background:' + CATC[k] + '"></i>' + CAT[k] + '</span>'; }).join('') + '</div>' +
+      (a ? '<div class="mcard"><a class="th" href="kegiatan.html?id=' + a.id + '">' + PA.photo(a) + '</a><div style="min-width:0;flex:1"><b>' + UI.esc(a.short) + '</b><small>' + UI.esc(a.place) + ' · ' + PD.rp(a.price) + '/orang</small><div class="row"><a href="kegiatan.html?id=' + a.id + '">Lihat detail</a><button class="act-add' + (inTrip ? ' on' : '') + '" data-add="' + a.id + '" aria-label="' + (inTrip ? 'Sudah ada di trip' : 'Tambah ke trip') + '">' + ic(inTrip ? 'check' : 'plus', 16) + '</button></div></div></div>' : '');
+  }
+  $('map').addEventListener('click', function(e){ const g = e.target.closest('[data-pin]'); if (!g) return; sel = g.dataset.pin; drawMap(results()); });
+  $('map').addEventListener('keydown', function(e){ const g = e.target.closest('[data-pin]'); if (g && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); sel = g.dataset.pin; drawMap(results()); } });
+
+  function setView(v){
+    st.view = v; $('grid').hidden = v === 'map'; $('map').hidden = v !== 'map';
+    $('vL').setAttribute('aria-pressed', String(v === 'list')); $('vM').setAttribute('aria-pressed', String(v === 'map'));
+    if (v === 'map') drawMap(results());
+  }
+  document.querySelector('.jel-tg').addEventListener('click', function(e){ const b = e.target.closest('[data-v]'); if (b) setView(b.dataset.v); });
+
+  /* ---------- interaksi filter ---------- */
+  $('fBtn').addEventListener('click', function(){ setPanel($('fPanel').hidden); });
+  $('fPanel').addEventListener('click', function(e){
+    if (e.target.closest('[data-reset]')) { reset(); return; }
+    if (e.target.closest('[data-go]')) { setPanel(false); (st.view === 'map' ? $('map') : $('grid')).scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
+    const b = e.target.closest('.fc'); if (!b) return;
+    const g = b.dataset.g, v = b.dataset.v;
+    if (g === 'sort') st.sort = v;
+    else if (g === 'crowd') st.crowd = st.crowd === +v ? -1 : +v;
+    else st[g] = st[g] === v ? '' : v;
+    render();
+  });
+  $('fAct').addEventListener('click', function(e){
+    if (e.target.closest('[data-reset]')) { reset(); return; }
+    const b = e.target.closest('[data-x]'); if (!b) return;
+    const g = b.dataset.x; if (g === 'sort') st.sort = 'rec'; else if (g === 'crowd') st.crowd = -1; else st[g] = '';
+    render();
+  });
+  document.addEventListener('click', function(e){ if (!document.body.contains(e.target)) return; if (!$('fPanel').hidden && !e.target.closest('#fPanel,#fBtn,#fAct')) setPanel(false); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !$('fPanel').hidden) { setPanel(false); $('fBtn').focus(); } });
+
+  /* ---------- penjelasan label keramaian ---------- */
+  $('lgBtn').addEventListener('click', function(){
+    UI.modal('<div class="modal-h"><h3>Arti label keramaian</h3><button class="icon-btn" data-close aria-label="Tutup">' + ic('x', 18) + '</button></div><div class="modal-b mo"><p class="muted">Perkiraan jumlah pengunjung lain di lokasi pada tanggal trip kamu. Untuk membantu memilih kegiatan yang tenang.</p><div class="mo-l">' +
+      [[0, 'Sedikit pengunjung lain. Cocok kalau kamu ingin suasana tenang.'], [1, 'Ada pengunjung lain, tapi tidak padat.'], [2, 'Cenderung padat, terutama di akhir pekan dan hari raya.']].map(function(x){ return '<div>' + UI.crowd(x[0]) + '<span class="t">' + x[1] + '</span></div>'; }).join('') +
+      '</div><p class="faint" style="font-size:12.5px">Angka masih data contoh untuk prototype.</p></div>');
+  });
+
+  /* ---------- pencarian ---------- */
+  const qi = $('q'), sg = $('sg'), clr = $('jclr'); let ai = -1;
   function suggest(){
     const v = qi.value.trim(); clr.hidden = !v;
     const hits = v ? A.filter(function(a){ return score(a, v) > 0; }).sort(function(a,b){ return score(b, v) - score(a, v); }).slice(0, 5) : [];
@@ -139,25 +198,27 @@ mark{background:rgba(252,230,183,.9);color:inherit;border-radius:4px;padding:0 2
       : '<a class="all" href="#" data-none>Tidak ada kegiatan yang cocok. Coba kata lain, misalnya penyu, sawah, atau tenun.</a>';
     sg.hidden = false; qi.setAttribute('aria-expanded', 'true');
   }
+  function toResults(){ sg.hidden = true; (st.view === 'map' ? $('map') : $('grid')).scrollIntoView({ behavior: 'smooth', block: 'start' }); }
   qi.addEventListener('input', function(){ st.q = this.value.trim(); render(); suggest(); });
   qi.addEventListener('focus', suggest);
   qi.addEventListener('keydown', function(e){
     const items = Array.from(sg.querySelectorAll('a'));
     if (e.key === 'ArrowDown' && items.length) { e.preventDefault(); ai = (ai + 1) % items.length; }
     else if (e.key === 'ArrowUp' && items.length) { e.preventDefault(); ai = (ai - 1 + items.length) % items.length; }
-    else if (e.key === 'Enter') { if (ai > -1 && items[ai] && !items[ai].hasAttribute('data-all') && !items[ai].hasAttribute('data-none')) { location.href = items[ai].href; } else { sg.hidden = true; document.getElementById('grid').scrollIntoView({ behavior: 'smooth', block: 'start' }); } return; }
+    else if (e.key === 'Enter') { if (ai > -1 && items[ai] && !items[ai].hasAttribute('data-all') && !items[ai].hasAttribute('data-none')) { location.href = items[ai].href; } else { toResults(); } return; }
     else if (e.key === 'Escape') { qi.value = ''; st.q = ''; render(); suggest(); return; }
     else return;
     items.forEach(function(a, j){ a.classList.toggle('act', j === ai); });
   });
-  sg.addEventListener('mousedown', function(e){ const t = e.target.closest('[data-all],[data-none]'); if (t) { e.preventDefault(); sg.hidden = true; document.getElementById('grid').scrollIntoView({ behavior: 'smooth', block: 'start' }); } });
+  sg.addEventListener('mousedown', function(e){ if (e.target.closest('[data-all],[data-none]')) { e.preventDefault(); toResults(); } });
   document.addEventListener('click', function(e){ if (!e.target.closest('.jsearch')) { sg.hidden = true; } });
   clr.addEventListener('click', function(){ qi.value = ''; st.q = ''; render(); suggest(); qi.focus(); });
   document.addEventListener('keydown', function(e){ if (e.key === '/' && document.activeElement !== qi && !/input|textarea|select/i.test(document.activeElement.tagName)) { e.preventDefault(); qi.focus(); } });
-  reg.addEventListener('change', function(){ st.region = this.value; render(); });
-  document.getElementById('sort').addEventListener('change', function(){ st.sort = this.value; render(); });
-  UI.bindAdd(document.getElementById('grid'));
-  const p = new URLSearchParams(location.search); if (p.get('q')) { document.getElementById('q').value = p.get('q'); st.q = p.get('q'); document.getElementById('jclr').hidden = false; }
+
+  UI.bindAdd(document.querySelector('.jel-main'));
+  const p = new URLSearchParams(location.search);
+  if (p.get('q')) { qi.value = p.get('q'); st.q = p.get('q'); clr.hidden = false; }
+  if (p.get('cat') && CAT[p.get('cat')]) st.cat = p.get('cat');
   render();
 })();
 </script>
