@@ -208,3 +208,43 @@ body.chat-mode .dt{align-items:center}
 
 body.chat-mode .tb-dates{gap:12px}
 body.chat-mode .tb-dates input[type=date]::-webkit-datetime-edit{padding:0}
+
+/* ---------- scrollbar tipis dan gelap ---------- */
+body.chat-mode *{scrollbar-width:thin;scrollbar-color:rgba(244,241,226,.26) transparent}
+body.chat-mode *::-webkit-scrollbar{width:10px;height:10px}
+body.chat-mode *::-webkit-scrollbar-track{background:transparent}
+body.chat-mode *::-webkit-scrollbar-thumb{background:rgba(244,241,226,.24);border-radius:10px;border:3px solid transparent;background-clip:padding-box}
+body.chat-mode *::-webkit-scrollbar-thumb:hover{background:rgba(244,241,226,.4);background-clip:padding-box;border:3px solid transparent}
+body.chat-mode .ws2 .chat-log,body.chat-mode .sp,body.chat-mode .ag-scroll{margin-block:10px}
+
+/* ---------- jendela pop-up: kaca gelap, senada dengan halaman ---------- */
+body.chat-mode .overlay{background:rgba(10,7,5,.62);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+body.chat-mode .modal{background:rgba(24,17,12,.94);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid var(--g-line);color:var(--g-text);border-radius:28px;box-shadow:0 30px 80px rgba(0,0,0,.55);width:min(480px,100%)}
+body.chat-mode .modal-h{padding:24px 28px 0}
+body.chat-mode .modal-h h3{font:400 22px/1.25 var(--g-display);color:var(--g-text);letter-spacing:0}
+body.chat-mode .modal-b{padding:16px 28px 28px}
+body.chat-mode .modal .muted{color:var(--g-mute);font-size:14px;line-height:1.7}
+body.chat-mode .modal .faint{color:var(--g-mute)}
+body.chat-mode .modal .icon-btn{color:var(--g-mute);border-radius:50%}
+body.chat-mode .modal .icon-btn:hover{color:var(--g-text);background:rgba(244,241,226,.1)}
+body.chat-mode .modal .btn{border-radius:999px;font-weight:600;min-height:48px;font-size:14.5px}
+body.chat-mode .modal .btn-primary,body.chat-mode .modal .btn-dark,body.chat-mode .modal .btn-gold{background:var(--g-text);color:var(--g-ink)}
+body.chat-mode .modal .btn-primary:hover,body.chat-mode .modal .btn-dark:hover{background:#fff}
+body.chat-mode .modal .btn-line{background:transparent;color:var(--g-text);box-shadow:inset 0 0 0 1px rgba(244,241,226,.32);font-weight:500}
+body.chat-mode .modal .btn-line:hover{box-shadow:inset 0 0 0 1px rgba(244,241,226,.6)}
+body.chat-mode .modal .btn-ghost{color:var(--g-mute);font-weight:500}
+body.chat-mode .modal .btn:disabled{opacity:.6}
+body.chat-mode .modal .sim-note{background:rgba(252,230,183,.1);color:var(--g-gold);border-radius:16px;padding:12px 14px}
+body.chat-mode .modal .sum>div{color:var(--g-mute)}
+body.chat-mode .modal .sum b,body.chat-mode .modal .sum .tot{color:var(--g-text)}
+body.chat-mode .modal .sum .tot{border-top:1px solid var(--g-line)}
+body.chat-mode .modal .pay-opt{border:1px solid var(--g-line);background:rgba(17,12,9,.35);color:var(--g-text);border-radius:16px}
+body.chat-mode .modal .pay-opt:has(input:checked){border-color:var(--g-gold);background:rgba(252,230,183,.08)}
+body.chat-mode .modal input[type=radio],body.chat-mode .modal input[type=checkbox]{accent-color:#FCE6B7}
+body.chat-mode .modal .card{background:rgba(17,12,9,.35);border:1px solid var(--g-line);border-radius:18px;color:var(--g-text);box-shadow:none}
+body.chat-mode .modal .checklist li{color:var(--g-mute)}
+body.chat-mode .modal .checklist svg{color:var(--g-gold)}
+body.chat-mode .modal .input,body.chat-mode .modal .select,body.chat-mode .modal .textarea{background:rgba(17,12,9,.45);border:1px solid rgba(244,241,226,.28);color:var(--g-text);border-radius:14px;color-scheme:dark}
+body.chat-mode .modal label,body.chat-mode .modal .field label{color:var(--g-mute)}
+body.chat-mode .modal .chip{background:rgba(17,12,9,.45);color:var(--g-text);box-shadow:inset 0 0 0 1px rgba(244,241,226,.28)}
+body.chat-mode .modal .badge{background:rgba(244,241,226,.14);color:var(--g-text)}
