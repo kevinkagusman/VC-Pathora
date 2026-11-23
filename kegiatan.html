@@ -67,7 +67,7 @@
 
   function goBtn(){
     return inTrip()
-      ? '<button type="button" class="kd-go on" data-go aria-label="Sudah ada di trip">' + ic('check', 18) + 'Sudah di trip</button>'
+      ? '<button type="button" class="kd-go on" data-go aria-label="Sudah ada di trip">Sudah di trip</button>'
       : '<button type="button" class="kd-go" data-go>Tambah ke trip</button>';
   }
   const askHref = 'trip.html?tab=chat&prompt=' + encodeURIComponent('Ceritakan ' + a.short.toLowerCase() + ' dan hari terbaik untuk mengikutinya');
@@ -114,7 +114,7 @@
 
       '<section class="kd-more"><h2>Kegiatan lain yang mungkin cocok buat kamu</h2><div class="kd-rel" id="rel">' + related().map((r) => UI.actCard(r, {})).join('') + '</div></section>' +
     '</main>' +
-    '<div class="kd-bar" id="kdBar" role="region" aria-label="Pesan cepat"><span class="p">' + rp(a.price) + '<small>/ orang</small></span><span class="kd-chip chipx" style="margin:0">Harga contoh</span><span class="sp"></span><a class="kd-ask" href="' + askHref + '">Tanya asisten</a><span data-gowrap>' + goBtn() + '</span></div>';
+    '<div class="kd-bar" id="kdBar" role="region" aria-label="Pesan cepat"><span class="p">' + rp(a.price) + '<small>/ orang</small></span><span class="sp"></span><a class="kd-ask" href="' + askHref + '">Tanya asisten</a><span data-gowrap>' + goBtn() + '</span></div>';
 
   UI.bindAdd(document.getElementById('rel'));
 
