@@ -69,7 +69,7 @@
       const nav = document.getElementById('nav');
       if (over) { document.body.classList.add(over === 'dark' || mode === 'host' ? 'nav-pad' : 'nav-photo'); const sc = () => { nav.classList.toggle('solid', window.scrollY > 40); const y = nav.offsetHeight / 2; let dark = false; document.querySelectorAll('[data-tone="dark"]').forEach(function (e) { const r = e.getBoundingClientRect(); if (r.top <= y && r.bottom >= y) dark = true; }); nav.classList.toggle('ondark', dark); }; sc(); window.addEventListener('scroll', sc, { passive: true }); }
       const mb = document.getElementById('menuBtn'); if (mb) mb.addEventListener('click', () => { const o = nav.classList.toggle('open'); mb.setAttribute('aria-expanded', String(o)); mb.setAttribute('aria-label', o ? 'Tutup menu' : 'Buka menu'); mb.innerHTML = ic(o ? 'x' : 'menu', 22); });
-      nav.querySelectorAll('[data-lang]').forEach((b) => b.addEventListener('click', () => { try { localStorage.setItem('pathora_lang', b.dataset.lang); } catch (e) {} document.documentElement.lang = b.dataset.lang; nav.querySelectorAll('[data-lang]').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); }));
+      nav.querySelectorAll('[data-lang]').forEach((b) => b.addEventListener('click', () => { if (b.dataset.lang === ((g.I18N && g.I18N.lang) || 'id')) return; if (g.I18N) g.I18N.set(b.dataset.lang); else { try { localStorage.setItem('pathora_lang', b.dataset.lang); } catch (e) {} location.reload(); } }));
       const ab = document.getElementById('avBtn'), mp = document.getElementById('avMenu');
       if (ab && mp) {
         ab.addEventListener('click', (e) => { e.stopPropagation(); mp.hidden = !mp.hidden; ab.setAttribute('aria-expanded', String(!mp.hidden)); });

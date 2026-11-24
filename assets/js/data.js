@@ -4,10 +4,12 @@
   'use strict';
 
   /* ---------- tanggal ---------- */
-  const HARI = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-  const HARI_S = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
-  const BULAN = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-  const BULAN_S = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+  const EN = !!(g.I18N && g.I18N.lang === 'en');
+  const HARI = EN ? ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] : ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+  const HARI_S = EN ? ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] : ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+  const BULAN = EN ? ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] : ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+  const BULAN_S = EN ? ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] : ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+  const TO = EN ? ' to ' : ' sampai ';
   const pad = (n) => String(n).padStart(2, '0');
   const D = {
     HARI, HARI_S, BULAN, BULAN_S,
@@ -23,14 +25,14 @@
     span(a, b) {
       const x = D.parse(a), y = D.parse(b);
       if (a === b) return D.med(a);
-      if (x.getMonth() === y.getMonth()) return x.getDate() + ' sampai ' + y.getDate() + ' ' + BULAN_S[y.getMonth()];
-      return D.med(a) + ' sampai ' + D.med(b);
+      if (x.getMonth() === y.getMonth()) return x.getDate() + TO + y.getDate() + ' ' + BULAN_S[y.getMonth()];
+      return D.med(a) + TO + D.med(b);
     },
     today() { return '2026-10-20'; } /* tanggal acuan prototype */
   };
 
   /* ---------- util ---------- */
-  const rp = (n) => 'Rp' + Math.round(n).toLocaleString('id-ID');
+  const rp = (n) => 'Rp' + Math.round(n).toLocaleString(EN ? 'en-US' : 'id-ID');
   const hash = (s) => { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } h ^= h >>> 16; h = Math.imul(h, 2246822507); h ^= h >>> 13; h = Math.imul(h, 3266489909); h ^= h >>> 16; return (h >>> 0) / 4294967295; };
   const hav = (a, b) => {
     const R = 6371, t = (x) => x * Math.PI / 180;
