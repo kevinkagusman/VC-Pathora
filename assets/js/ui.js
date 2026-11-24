@@ -118,7 +118,12 @@
       return { el: ov, close };
     },
 
-    avatar(m, cls) { return '<span class="av ' + (cls || '') + '" style="background:' + m.color + '" title="' + esc(m.name) + '">' + m.ini + '</span>'; },
+    avatar(m, cls) {
+      /* anggota 'me' memakai avatar yang dipilih di halaman Akun, anggota lain tetap inisial */
+      const acct = m.id === 'me' ? g.PAUTH.current() : null;
+      const svg = acct && acct.avatar ? avatarSVG(acct.avatar) : '';
+      return '<span class="av ' + (cls || '') + '" style="background:' + m.color + (svg ? ';overflow:hidden' : '') + '" title="' + esc(m.name) + '">' + (svg || m.ini) + '</span>';
+    },
     avatars(ids, cls) { return '<span class="av-stack">' + ids.map((id) => { const m = S.member(id); return m ? UI.avatar(m, cls) : ''; }).join('') + '</span>'; },
 
     crowd(level) { return '<span class="crowd c' + level + '" title="Perkiraan keramaian: ' + CROWD_LABEL[level] + '"><span class="d"><i></i><i></i><i></i></span>' + CROWD_LABEL[level] + '</span>'; },
