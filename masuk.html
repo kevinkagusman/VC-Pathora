@@ -48,7 +48,7 @@
     <div class="au-sep">atau</div>
     <button class="au-btn gh" id="demo" type="button"></button>
     <p class="au-sw" id="switch"></p>
-    <a class="au-guest" id="guest" href="trip.html">Lanjutkan tanpa akun</a>
+    <a class="au-guest" id="guest" href="trip">Lanjutkan tanpa akun</a>
   </section>
 </main>
 <script src="assets/js/i18n.js"></script>
@@ -92,7 +92,7 @@
   $('rTraveler').onclick = function(){ setRole('traveler'); }; $('rHost').onclick = function(){ setRole('host'); };
   function err(m){ const e = $('err'); e.textContent = m; e.classList.toggle('show', !!m); }
   function done(a){
-    const dest = a.role === 'host' ? 'host.html' : (next && !/^(https?:|\/\/|javascript:)/i.test(next) ? next : 'trip.html');
+    const dest = a.role === 'host' ? 'host' : (next && !/^(https?:|\/\/|javascript:)/i.test(next) ? next : 'trip');
     location.href = dest;
   }
   $('f').addEventListener('submit', function(e){

@@ -53,7 +53,7 @@
   </div>
   <div class="hm-mist" aria-hidden="true"></div>
   <div class="hm-fg" aria-hidden="true"></div>
-  <div class="hm-more"><a class="hm-btn glass" href="jelajahi.html" id="allB"></a></div>
+  <div class="hm-more"><a class="hm-btn glass" href="jelajahi" id="allB"></a></div>
 </section>
 
 <section class="hm-sec" id="cara" style="padding-top:28px">
@@ -65,7 +65,7 @@
       <div class="hm-st rv"><i>03</i><div><h3>Ajukan ke host</h3><p>Permintaan dikirim ke host lokal. Host menyetujui atau menolak sesuai jadwal dan kuotanya.</p></div></div>
       <div class="hm-st rv"><i>04</i><div><h3>Bayar setelah disetujui</h3><p>Kamu baru membayar ketika kegiatan dipastikan tersedia. Jika ditolak, asisten menawarkan pengganti.</p></div></div>
     </div>
-    <div class="hm-try rv"><a class="hm-btn line" href="trip.html?tab=chat" id="tryB"></a></div>
+    <div class="hm-try rv"><a class="hm-btn line" href="trip?tab=chat" id="tryB"></a></div>
   </div>
 </section>
 
@@ -89,12 +89,12 @@
       
       <h2 class="rv">Paspor Alam</h2>
       <p class="lead2 rv">Setiap kegiatan yang kamu selesaikan bersama host mendapat satu stempel. Kumpulkan stempel dari seluruh pulau sebagai catatan perjalananmu.</p>
-      <a class="hm-btn line rv" href="paspor.html">Lihat Paspor Alam</a>
+      <a class="hm-btn line rv" href="paspor">Lihat Paspor Alam</a>
     </div>
     <div id="paket">
       <div class="hm-plans">
-        <div class="plan rv"><div><h3>Gratis</h3><div class="pr">Rp0<small>selamanya</small></div></div><ul id="pf"></ul><a class="hm-btn line" href="masuk.html?mode=daftar">Buat akun gratis</a></div>
-        <div class="plan pro rv"><div><h3>Pathora Plus</h3><div class="pr">Rp49.000<small>per bulan, gratis 7 hari pertama</small></div></div><ul id="pp"></ul><a class="hm-btn" href="masuk.html?mode=daftar&next=akun.html">Coba 7 hari gratis</a></div>
+        <div class="plan rv"><div><h3>Gratis</h3><div class="pr">Rp0<small>selamanya</small></div></div><ul id="pf"></ul><a class="hm-btn line" href="masuk?mode=daftar">Buat akun gratis</a></div>
+        <div class="plan pro rv"><div><h3>Pathora Plus</h3><div class="pr">Rp49.000<small>per bulan, gratis 7 hari pertama</small></div></div><ul id="pp"></ul><a class="hm-btn" href="masuk?mode=daftar&next=akun">Coba 7 hari gratis</a></div>
       </div>
     </div>
   </div>
@@ -115,15 +115,15 @@
 
 <section class="hm-cta">
   <img src="assets/img/gallery/hero-yoga-senja.jpg" alt="" loading="lazy">
-  <div class="in rv"><h2>Mulai susun perjalanan kamu hari ini.</h2><p>Cukup satu kalimat tentang perjalanan yang kamu bayangkan. Sisanya diatur asisten.</p><a class="hm-btn gold" href="trip.html?tab=chat" id="ctaB"></a></div>
+  <div class="in rv"><h2>Mulai susun perjalanan kamu hari ini.</h2><p>Cukup satu kalimat tentang perjalanan yang kamu bayangkan. Sisanya diatur asisten.</p><a class="hm-btn gold" href="trip?tab=chat" id="ctaB"></a></div>
 </section>
 
 <section class="hm-host" id="host">
   <div class="in rv">
     <h2>Punya kegiatan alam atau budaya di desa kamu</h2>
     <p>Daftarkan sebagai host lokal. Kamu mengatur jadwal dan kuota, menerima permintaan di Studio Host, dan tidak membayar biaya bulanan.</p>
-    <a class="hm-btn" href="masuk.html?role=host&mode=daftar">Daftar sebagai host</a>
-    <p class="small">Sudah terdaftar sebagai host? <a href="masuk.html?role=host">Masuk ke Studio Host</a></p>
+    <a class="hm-btn" href="masuk?role=host&mode=daftar">Daftar sebagai host</a>
+    <p class="small">Sudah terdaftar sebagai host? <a href="masuk?role=host">Masuk ke Studio Host</a></p>
   </div>
 </section>
 
@@ -152,7 +152,7 @@
   const SUG = [['3 hari, suka alam', '3 hari di Bali, suka alam, ingin menghindari tempat ramai'], ['Liburan keluarga', 'Liburan keluarga dengan anak usia 6 tahun, anggaran Rp1,5 juta per orang'], ['Akhir pekan sendirian', 'Akhir pekan sendirian, ingin belajar budaya dan masak']];
   $('chips').innerHTML = SUG.map(function(t, i){ return '<button type="button" data-i="' + i + '">' + esc(t[0]) + '</button>'; }).join('');
   $('chips').addEventListener('click', function(e){ const b = e.target.closest('button'); if (!b) return; q.value = SUG[+b.dataset.i][1]; q.focus(); });
-  $('ask').addEventListener('submit', function(e){ e.preventDefault(); const v = q.value.trim(); location.href = 'trip.html?tab=chat' + (v ? '&prompt=' + encodeURIComponent(v) : ''); });
+  $('ask').addEventListener('submit', function(e){ e.preventDefault(); const v = q.value.trim(); location.href = 'trip?tab=chat' + (v ? '&prompt=' + encodeURIComponent(v) : ''); });
   q.addEventListener('keydown', function(e){ if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('ask').requestSubmit(); } });
   $('trust').innerHTML = [['shield', 'Bayar setelah host menyetujui'], ['users', 'Sendiri atau bersama teman'], ['sparkles', '5 pertanyaan gratis per hari']].map(function(x){ return '<span>' + ic(x[0], 16) + x[1] + '</span>'; }).join('');
 
@@ -196,7 +196,7 @@
     const list = A.filter(function(a){ return a.cats.indexOf(c[0]) > -1; });
     const from = Math.min.apply(null, list.map(function(a){ return a.price; }));
     const regs = REG.filter(function(r){ return list.some(function(a){ return a.region === r; }); });
-    return '<a class="hm-k rv" href="jelajahi.html?cat=' + c[0] + '"><img src="assets/img/photos/' + c[3] + '" alt="" loading="lazy"' + (c[4] ? ' style="object-position:' + c[4] + '"' : '') + '>' +
+    return '<a class="hm-k rv" href="jelajahi?cat=' + c[0] + '"><img src="assets/img/photos/' + c[3] + '" alt="" loading="lazy"' + (c[4] ? ' style="object-position:' + c[4] + '"' : '') + '>' +
       '<div class="c"><span class="n">' + list.length + ' kegiatan</span><h3>' + esc(c[1]) + '</h3><p>' + esc(c[2]) + '</p>' +
       '<span class="pr"><b>Mulai ' + rp(from) + '</b>' + esc(regs.join(', ')) + '</span></div></a>';
   }).join('');

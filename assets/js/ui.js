@@ -39,31 +39,31 @@
       if (mode === 'host') {
         const nm = acct && acct.role === 'host' ? (acct.community || acct.name) : 'Host';
         html = '<header class="nav' + (over ? ' over dk' : '') + '" id="nav"><div class="wrap">' +
-          '<a class="logo" href="host.html" aria-label="Pathora Studio Host"><img class="l-c" src="assets/img/logo.png" alt="Pathora"><img class="l-w" src="assets/img/logo-white.png" alt="" aria-hidden="true"></a>' +
+          '<a class="logo" href="host" aria-label="Pathora Studio Host"><img class="l-c" src="assets/img/logo.png" alt="Pathora"><img class="l-w" src="assets/img/logo-white.png" alt="" aria-hidden="true"></a>' +
           '<span class="badge" style="margin-left:4px">Studio Host</span>' +
-          '<div class="nav-right"><a class="btn btn-ghost btn-sm" href="index.html">Beranda Pathora</a>' +
+          '<div class="nav-right"><a class="btn btn-ghost btn-sm" href="./">Beranda Pathora</a>' +
           '<button class="av nav-av" id="avBtn" aria-haspopup="true" aria-expanded="false" style="background:var(--olive);border:0;box-shadow:0 0 0 2px rgba(81,50,41,.18)">' + esc(ini2(nm)) + '</button></div>' +
           '<div class="menu-pop" id="avMenu" hidden><div class="who"><b>' + esc(nm) + '</b><small>' + esc(acct ? acct.email : '') + '</small></div><button data-out>Keluar</button></div></div></header>';
       } else {
         const n = S.get().items.length; const me = S.me();
-        const links = '<a href="jelajahi.html" class="' + (active === 'jelajahi' ? 'on' : '') + '">Jelajahi</a>' +
-          '<a href="trip.html" class="' + (active === 'trip' || active === 'ai' ? 'on' : '') + '">Trip saya</a>' +
-          '<a href="paspor.html" class="' + (active === 'paspor' ? 'on' : '') + '">Paspor Alam</a>';
+        const links = '<a href="jelajahi" class="' + (active === 'jelajahi' ? 'on' : '') + '">Jelajahi</a>' +
+          '<a href="trip" class="' + (active === 'trip' || active === 'ai' ? 'on' : '') + '">Trip saya</a>' +
+          '<a href="paspor" class="' + (active === 'paspor' ? 'on' : '') + '">Paspor Alam</a>';
         const lg = (localStorage.getItem('pathora_lang') || 'id');
         const lang = '<div class="lang" role="group" aria-label="Bahasa / Language"><button type="button" data-lang="id" aria-pressed="' + (lg === 'id') + '">ID</button><button type="button" data-lang="en" aria-pressed="' + (lg === 'en') + '">EN</button></div>';
         const nx = encodeURIComponent(location.pathname.split('/').pop() + location.search);
-        const mauth = acct ? '' : '<div class="m-auth"><a href="masuk.html?next=' + nx + '">Masuk</a><a class="pri" href="masuk.html?mode=daftar&next=' + nx + '">Daftar</a></div>';
+        const mauth = acct ? '' : '<div class="m-auth"><a href="masuk?next=' + nx + '">Masuk</a><a class="pri" href="masuk?mode=daftar&next=' + nx + '">Daftar</a></div>';
         const right = acct && acct.role === 'traveler'
-          ? '<a class="trip-pill" href="trip.html" title="Trip saya">' + ic('calendar', 16) + '<span>Trip</span><b id="navCount">' + n + '</b></a>' +
+          ? '<a class="trip-pill" href="trip" title="Trip saya">' + ic('calendar', 16) + '<span>Trip</span><b id="navCount">' + n + '</b></a>' +
             '<button class="av nav-av" id="avBtn" aria-haspopup="true" aria-expanded="false" style="background:' + me.color + ';border:0;padding:0;overflow:hidden;box-shadow:0 0 0 2px rgba(81,50,41,.18)" title="' + esc(acct.name) + '">' + (avatarSVG(acct.avatar) || esc(me.ini)) + '</button>'
-          : '<a class="btn btn-ghost btn-sm nav-login" href="masuk.html?next=' + encodeURIComponent(location.pathname.split('/').pop() + location.search) + '">Masuk</a>' +
-            '<a class="btn btn-gold btn-sm" href="masuk.html?mode=daftar&next=' + encodeURIComponent(location.pathname.split('/').pop() + location.search) + '">Daftar</a>';
+          : '<a class="btn btn-ghost btn-sm nav-login" href="masuk?next=' + encodeURIComponent(location.pathname.split('/').pop() + location.search) + '">Masuk</a>' +
+            '<a class="btn btn-gold btn-sm" href="masuk?mode=daftar&next=' + encodeURIComponent(location.pathname.split('/').pop() + location.search) + '">Daftar</a>';
         html = '<header class="nav' + (over ? ' over' + (over === 'dark' ? ' dk' : '') : '') + '" id="nav"><div class="wrap">' +
-          '<a class="logo" href="index.html" aria-label="Pathora, beranda"><img class="l-c" src="assets/img/logo.png" alt="Pathora"><img class="l-w" src="assets/img/logo-white.png" alt="" aria-hidden="true"></a>' +
+          '<a class="logo" href="./" aria-label="Pathora, beranda"><img class="l-c" src="assets/img/logo.png" alt="Pathora"><img class="l-w" src="assets/img/logo-white.png" alt="" aria-hidden="true"></a>' +
           '<nav class="nav-links" aria-label="Utama">' + links + '</nav>' +
           '<div class="nav-right">' + lang + right + '<button class="icon-btn menu-btn" aria-label="Buka menu" aria-expanded="false" id="menuBtn">' + ic('menu', 22) + '</button></div>' + mauth +
           (acct ? '<div class="menu-pop" id="avMenu" hidden><div class="who"><b>' + esc(acct.name) + '</b><small>' + esc(acct.email) + '</small><span class="badge ' + (acct.plan === 'plus' ? 'b-ok' : '') + '" style="margin-top:8px">' + (acct.plan === 'plus' ? 'Pathora Plus' : 'Paket gratis') + '</span></div>' +
-            (acct.role === 'traveler' ? '<a href="akun.html">Akun dan langganan</a><a href="trip.html">Trip saya</a>' : '<a href="host.html">Studio Host</a>') + '<button data-out>Keluar</button></div>' : '') + '</div></header>';
+            (acct.role === 'traveler' ? '<a href="akun">Akun dan langganan</a><a href="trip">Trip saya</a>' : '<a href="host">Studio Host</a>') + '<button data-out>Keluar</button></div>' : '') + '</div></header>';
       }
       el.outerHTML = html;
       const nav = document.getElementById('nav');
@@ -74,7 +74,7 @@
       if (ab && mp) {
         ab.addEventListener('click', (e) => { e.stopPropagation(); mp.hidden = !mp.hidden; ab.setAttribute('aria-expanded', String(!mp.hidden)); });
         document.addEventListener('click', (e) => { if (!mp.contains(e.target)) { mp.hidden = true; ab.setAttribute('aria-expanded', 'false'); } });
-        mp.querySelector('[data-out]').addEventListener('click', () => { g.PAUTH.logout(); location.href = 'index.html'; });
+        mp.querySelector('[data-out]').addEventListener('click', () => { g.PAUTH.logout(); location.href = './'; });
       }
       S.on(() => { const c = document.getElementById('navCount'); if (c) c.textContent = S.get().items.length; });
     },
@@ -82,7 +82,7 @@
     /* meminta masuk sebelum tindakan yang memerlukan akun */
     needLogin(reason) {
       const next = encodeURIComponent(location.pathname.split('/').pop() + location.search);
-      UI.modal('<div class="modal-h"><h3>Masuk untuk melanjutkan</h3><button class="icon-btn" data-close aria-label="Tutup">' + ic('x', 18) + '</button></div><div class="modal-b" style="display:grid;gap:16px"><p class="muted">' + esc(reason || 'Akun diperlukan untuk melanjutkan.') + ' Trip yang sudah kamu susun tidak hilang.</p><a class="btn btn-primary btn-lg btn-block" href="masuk.html?mode=daftar&next=' + next + '">Buat akun gratis</a><a class="btn btn-line btn-block" href="masuk.html?next=' + next + '">Saya sudah punya akun</a></div>');
+      UI.modal('<div class="modal-h"><h3>Masuk untuk melanjutkan</h3><button class="icon-btn" data-close aria-label="Tutup">' + ic('x', 18) + '</button></div><div class="modal-b" style="display:grid;gap:16px"><p class="muted">' + esc(reason || 'Akun diperlukan untuk melanjutkan.') + ' Trip yang sudah kamu susun tidak hilang.</p><a class="btn btn-primary btn-lg btn-block" href="masuk?mode=daftar&next=' + next + '">Buat akun gratis</a><a class="btn btn-line btn-block" href="masuk?next=' + next + '">Saya sudah punya akun</a></div>');
     },
 
     mountFooter() {
@@ -92,9 +92,9 @@
       el.outerHTML = '<footer class="footer" data-tone="dark"><div class="wrap"><div class="cols">' +
         '<div><img src="assets/img/logo-white.png" alt="Pathora"><p style="max-width:300px">Perencana perjalanan alam dan budaya Bali dengan bantuan AI, bersama pemandu dan komunitas lokal.</p>' +
         '<div class="social"><a href="https://www.instagram.com/pathora_id" target="_blank" rel="noopener" aria-label="Instagram Pathora, pathora_id">' + ig + '<span>@pathora_id</span></a><a href="https://www.tiktok.com/@pathora_id" target="_blank" rel="noopener" aria-label="TikTok Pathora, pathora_id">' + tt + '<span>@pathora_id</span></a></div></div>' +
-        '<div><h4>Traveler</h4><a href="jelajahi.html">Jelajahi kegiatan</a><a href="trip.html">Asisten perjalanan</a><a href="paspor.html">Paspor Alam</a><a href="masuk.html?mode=daftar">Buat akun</a></div>' +
-        '<div><h4>Host lokal</h4><a href="masuk.html?role=host&mode=daftar">Daftar sebagai host</a></div>' +
-        '<div><h4>Pathora</h4><a href="index.html#cara">Cara kerja</a><a href="index.html#prinsip">Prinsip kami</a><a href="index.html#faq">Pertanyaan umum</a></div></div>' +
+        '<div><h4>Traveler</h4><a href="jelajahi">Jelajahi kegiatan</a><a href="trip">Asisten perjalanan</a><a href="paspor">Paspor Alam</a><a href="masuk?mode=daftar">Buat akun</a></div>' +
+        '<div><h4>Host lokal</h4><a href="masuk?role=host&mode=daftar">Daftar sebagai host</a></div>' +
+        '<div><h4>Pathora</h4><a href="./#cara">Cara kerja</a><a href="./#prinsip">Prinsip kami</a><a href="./#faq">Pertanyaan umum</a></div></div>' +
         '</div></footer>';
     },
 
@@ -142,10 +142,10 @@
       const lvl = crowdFor(a, date);
       const inTrip = S.get().items.some((i) => i.actId === a.id && i.status !== 'ditolak');
       return '<article class="act-card" data-id="' + a.id + '">' +
-        '<a class="act-img" href="kegiatan.html?id=' + a.id + '" aria-label="' + esc(a.name) + '">' + photo(a) +
+        '<a class="act-img" href="kegiatan?id=' + a.id + '" aria-label="' + esc(a.name) + '">' + photo(a) +
         '<span class="act-cat">' + esc(a.cats[0]) + '</span></a>' +
         '<button class="act-add' + (inTrip ? ' on' : '') + '" data-add="' + a.id + '" aria-label="' + (inTrip ? 'Sudah ada di trip' : 'Tambah ke trip') + '" title="' + (inTrip ? 'Sudah ada di trip' : 'Tambah ke trip') + '">' + ic(inTrip ? 'check' : 'plus', 18) + '</button>' +
-        '<div class="act-body"><h3><a href="kegiatan.html?id=' + a.id + '">' + esc(a.name) + '</a></h3>' +
+        '<div class="act-body"><h3><a href="kegiatan?id=' + a.id + '">' + esc(a.name) + '</a></h3>' +
         '<p class="act-meta">' + ic('pin', 14) + esc(a.place) + '<span>·</span>' + ic('clock', 14) + a.dur.toString().replace('.', ',') + ' jam</p>' +
         '<div class="act-foot">' + UI.crowd(lvl) + '<span class="act-price">' + rp(a.price) + '<small> /orang</small></span></div></div></article>';
     },
@@ -160,7 +160,7 @@
       const used = s.items.filter((i) => i.date === best).length;
       if (used >= 2) { const free = days.filter((d) => s.items.filter((i) => i.date === d).length < 2 && g.PD.dayScore(a, d, s.hostClosed) >= 0); if (free.length) best = free[0]; }
       const it = S.addItem({ actId, date: best });
-      UI.toast(a.short + ' ditambahkan pada ' + D.long(it.date), '<a href="trip.html">Buka trip</a>');
+      UI.toast(a.short + ' ditambahkan pada ' + D.long(it.date), '<a href="trip">Buka trip</a>');
       if (btn) { btn.classList.add('on'); btn.innerHTML = ic('check', 18); }
     },
 

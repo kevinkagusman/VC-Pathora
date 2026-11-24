@@ -31,7 +31,7 @@
 (function(){
   const { A, byId, D, rp, weatherFor, crowdFor, moonFor, isClosed, seatsLeft, uid } = PD, { ic } = PA, esc = UI.esc;
   const acct = PAUTH.current();
-  if (!acct || acct.role !== 'host') { location.replace('masuk.html?role=host&next=host.html'); return; }
+  if (!acct || acct.role !== 'host') { location.replace('masuk?role=host&next=host'); return; }
   UI.mountNav('', 'dark', 'host');
   const HOST = acct.community || acct.name;
   const MY = A.filter(function(a){ return a.host.name === HOST; }).map(function(a){ return a.id; });
@@ -93,7 +93,7 @@
   function vKegiatan(){
     const drafts = PS.get().seen.hostDrafts || [];
     return '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap"><div><h1>Kegiatanku</h1><p class="sub">Kegiatan yang tampil kepada tamu di halaman Jelajahi.</p></div><button class="btn btn-dark" id="newAct">' + ic('plus', 16) + ' Tambah kegiatan</button></div>' +
-      MY.map(function(id){ const a = byId[id]; return '<div class="order"><span class="th" style="width:120px;height:92px">' + PA.photo(a) + '</span><div class="i"><h3>' + esc(a.name) + '</h3><p>' + rp(a.price) + ' per orang · ' + a.dur.toString().replace('.', ',') + ' jam · maks. ' + a.cap + ' orang · sesi ' + a.times.join(', ') + '</p><div style="margin-top:8px"><span class="badge b-ok"><i></i>Tayang</span></div></div><a class="btn btn-line btn-sm" href="kegiatan.html?id=' + id + '">Lihat sebagai tamu</a></div>'; }).join('') +
+      MY.map(function(id){ const a = byId[id]; return '<div class="order"><span class="th" style="width:120px;height:92px">' + PA.photo(a) + '</span><div class="i"><h3>' + esc(a.name) + '</h3><p>' + rp(a.price) + ' per orang · ' + a.dur.toString().replace('.', ',') + ' jam · maks. ' + a.cap + ' orang · sesi ' + a.times.join(', ') + '</p><div style="margin-top:8px"><span class="badge b-ok"><i></i>Tayang</span></div></div><a class="btn btn-line btn-sm" href="kegiatan?id=' + id + '">Lihat sebagai tamu</a></div>'; }).join('') +
       drafts.map(function(d){ return '<div class="order"><div class="i"><h3>' + esc(d.name) + '</h3><p>' + rp(d.price) + ' per orang · ' + esc(d.place) + '</p><div style="margin-top:8px"><span class="badge b-mid"><i></i>Menunggu peninjauan Pathora</span></div></div></div>'; }).join('');
   }
   function vKuota(){

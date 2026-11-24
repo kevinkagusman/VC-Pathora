@@ -33,7 +33,7 @@
   const a = byId[id];
   const root = document.getElementById('root');
   if (!a) {
-    root.innerHTML = '<div class="kd-empty"><h2 style="font:400 28px var(--g-display)">Kegiatan tidak ditemukan</h2><p style="margin:10px 0 22px;color:var(--g-mute)">Mungkin tautannya sudah berubah.</p><a class="btn" href="jelajahi.html">Kembali ke Jelajahi</a></div>';
+    root.innerHTML = '<div class="kd-empty"><h2 style="font:400 28px var(--g-display)">Kegiatan tidak ditemukan</h2><p style="margin:10px 0 22px;color:var(--g-mute)">Mungkin tautannya sudah berubah.</p><a class="btn" href="jelajahi">Kembali ke Jelajahi</a></div>';
     return;
   }
   document.title = a.name + ' — Pathora';
@@ -73,14 +73,14 @@
       ? '<button type="button" class="kd-go on" data-go aria-label="Sudah ada di trip">Sudah di trip</button>'
       : '<button type="button" class="kd-go" data-go>Tambah ke trip</button>';
   }
-  const askHref = 'trip.html?tab=chat&prompt=' + encodeURIComponent('Ceritakan ' + a.short.toLowerCase() + ' dan hari terbaik untuk mengikutinya');
+  const askHref = 'trip?tab=chat&prompt=' + encodeURIComponent('Ceritakan ' + a.short.toLowerCase() + ' dan hari terbaik untuk mengikutinya');
   const sessions = a.times.map(clock).join(' atau ');
   const lv = typicalCrowd();
 
   root.innerHTML =
     '<div class="kd-bg" aria-hidden="true">' + PA.photo(a) + '</div>' +
     '<main class="kd-main">' +
-      '<a href="jelajahi.html" class="kd-back">' + ic('back', 14) + ' Semua kegiatan</a>' +
+      '<a href="jelajahi" class="kd-back">' + ic('back', 14) + ' Semua kegiatan</a>' +
       '<header class="kd-hero"><div>' +
         '<div class="kd-eb">' + a.cats.map(esc).join(' · ') + ' · ' + esc(a.place) + '</div>' +
         '<h1>' + esc(a.name) + '</h1>' +
@@ -124,7 +124,7 @@
   /* tombol Tambah ke trip (hero dan bar bawah) */
   root.addEventListener('click', function(e){
     const b = e.target.closest('[data-go]'); if (!b) return;
-    if (inTrip()) { location.href = 'trip.html'; return; }
+    if (inTrip()) { location.href = 'trip'; return; }
     UI.quickAdd(a.id);
     root.querySelectorAll('[data-gowrap]').forEach((w) => { w.innerHTML = goBtn(); });
   });
