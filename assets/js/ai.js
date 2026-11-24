@@ -211,8 +211,8 @@
     if (notes.length) parts.push(notes.join('. ').replace(/^./, (c) => c.toUpperCase()) + '.');
     if (ctx.cap) parts.push('Untuk perjalanan seminggu, rancangan dibatasi lima hari agar tidak terlalu padat. Hari lainnya dapat ditambahkan kemudian.');
     if (!plan.items.length) parts.push('Seluruh kegiatan tidak tersedia pada tanggal tersebut karena jadwal tutup host. Silakan ubah tanggal, atau minta saya mencari tanggal terbaik.');
-    else if (ctx.budgetPP && plan.perPerson > ctx.budgetPP) parts.push('Estimasi biaya Rp' + plan.perPerson.toLocaleString('id-ID') + ' per orang, sedikit di atas anggaran Anda. Saya dapat mencarikan alternatif yang lebih hemat.');
-    else parts.push('Estimasi total ' + rp(plan.total) + ', atau ' + rp(plan.perPerson) + ' per orang. Anda belum dikenai biaya sampai host mengonfirmasi.');
+    else if (ctx.budgetPP && plan.perPerson > ctx.budgetPP) parts.push('Estimasi biaya Rp' + plan.perPerson.toLocaleString('id-ID') + ' per orang, sedikit di atas anggaran kamu. Saya dapat mencarikan alternatif yang lebih hemat.');
+    else parts.push('Estimasi total ' + rp(plan.total) + ', atau ' + rp(plan.perPerson) + ' per orang. Kamu belum dikenai biaya sampai host mengonfirmasi.');
     if (ctx.people && ctx.people > s.members.length && s.members.length > 1) parts.push('Catatan: trip ini baru memiliki ' + s.members.length + ' anggota. Anggota lain dapat diundang dari tombol Undang.');
     return { text: parts.join('\n\n'), blocks: plan.items.length ? [{ type: 'plan', plan }] : [], chips: plan.items.length ? ['Cari alternatif yang lebih hemat', 'Tambahkan kuliner lokal', 'Cari tanggal terbaik', 'Bagaimana jika hujan'] : ['Cari tanggal terbaik', 'Tampilkan semua kegiatan'] };
   }
@@ -221,9 +221,9 @@
     const s = S.get(); const ctx = parse(raw); const t = ctx.t.trim();
     const group = s.members.length > 1;
 
-    if (/^(mulai ulang|reset|hapus semua|bersihkan)/.test(t)) return { text: 'Untuk mengosongkan trip dan riwayat obrolan, gunakan menu opsi trip, lalu pilih Mulai ulang. Saya tidak menghapus data tanpa konfirmasi dari Anda.', blocks: [], chips: chipsDefault };
-    if (/bisa apa|fitur|cara pakai|bantuan|help/.test(t)) return { text: 'Saya dapat menyusun jadwal dari kalimat bebas, misalnya "3 hari di Bali, suka alam, hindari tempat ramai". Saya juga dapat menambah atau mengganti kegiatan, memeriksa cuaca dan hari raya adat, mencari tanggal yang paling sesuai' + (group ? ' untuk seluruh anggota' : '') + ', serta merinci biaya. Setiap kegiatan yang Anda tambahkan otomatis masuk ke kalender.', blocks: [], chips: chipsDefault };
-    if (/^(halo|hai|hi|hello|hey|selamat (pagi|siang|sore|malam))\b/.test(t) && t.length < 30) return { text: 'Halo, ' + first(S.me()) + '. Ceritakan rencana perjalanan Anda: berapa hari, berapa orang, dan suasana yang diinginkan. Saya akan menyusun jadwalnya.', blocks: [], chips: chipsDefault };
+    if (/^(mulai ulang|reset|hapus semua|bersihkan)/.test(t)) return { text: 'Untuk mengosongkan trip dan riwayat obrolan, gunakan menu opsi trip, lalu pilih Mulai ulang. Saya tidak menghapus data tanpa konfirmasi dari kamu.', blocks: [], chips: chipsDefault };
+    if (/bisa apa|fitur|cara pakai|bantuan|help/.test(t)) return { text: 'Saya dapat menyusun jadwal dari kalimat bebas, misalnya "3 hari di Bali, suka alam, hindari tempat ramai". Saya juga dapat menambah atau mengganti kegiatan, memeriksa cuaca dan hari raya adat, mencari tanggal yang paling sesuai' + (group ? ' untuk seluruh anggota' : '') + ', serta merinci biaya. Setiap kegiatan yang kamu tambahkan otomatis masuk ke kalender.', blocks: [], chips: chipsDefault };
+    if (/^(halo|hai|hi|hello|hey|selamat (pagi|siang|sore|malam))\b/.test(t) && t.length < 30) return { text: 'Halo, ' + first(S.me()) + '. Ceritakan rencana perjalanan kamu: berapa hari, berapa orang, dan suasana yang diinginkan. Saya akan menyusun jadwalnya.', blocks: [], chips: chipsDefault };
 
     if (/tanggal (terbaik|yang cocok|bagus)|kapan (waktu|sebaiknya|enaknya|bagusnya|paling)|semua (bisa|kosong)|cari tanggal|waktu terbaik/.test(t)) {
       const len = ctx.days || (D.diff(s.trip.start, s.trip.end) + 1);
@@ -243,7 +243,7 @@
     let m = t.match(/^(?:tolong\s+)?(?:hapus|batalkan|buang|cancel|keluarkan)\s+(.+)/);
     if (m) {
       const a = findAct(m[1]); const it = a && s.items.find((i) => i.actId === a.id);
-      if (!it) return { text: 'Kegiatan tersebut tidak ditemukan di trip Anda. Saat ini ada: ' + (s.items.length ? fmtList(s.items.map((i) => byId[i.actId].short)) : 'belum ada kegiatan') + '.', blocks: [], chips: [] };
+      if (!it) return { text: 'Kegiatan tersebut tidak ditemukan di trip kamu. Saat ini ada: ' + (s.items.length ? fmtList(s.items.map((i) => byId[i.actId].short)) : 'belum ada kegiatan') + '.', blocks: [], chips: [] };
       S.removeItem(it.uid);
       return { text: byId[it.actId].short + ' sudah dihapus dari ' + D.long(it.date) + '. Ingin saya isi dengan kegiatan lain', blocks: [], chips: ['Tambahkan kuliner lokal', 'Susun ulang hari itu'], undo: it };
     }
@@ -259,7 +259,7 @@
         if (!pool.length) return { text: byId[target.actId].short + ' sudah menjadi pilihan paling hemat untuk hari tersebut.', blocks: [], chips: [] };
         const alt = pool[0]; const tm = freeTime(alt, target.date, s.items.filter((i) => i.uid !== target.uid));
         const save = (a0.price - alt.price) * target.people;
-        return { text: 'Untuk ' + D.long(target.date) + ', saya menyarankan mengganti ' + a0.short + ' dengan ' + alt.short + ' (' + rp(alt.price) + ' per orang, ' + alt.place.split(',')[0] + ').' + (save > 0 ? ' Penghematan ' + rp(save) + ' untuk ' + target.people + ' orang.' : '') + ' Apakah Anda ingin menggantinya', blocks: [{ type: 'swap', from: target.uid, actId: alt.id, date: target.date, time: tm }], chips: [] };
+        return { text: 'Untuk ' + D.long(target.date) + ', saya menyarankan mengganti ' + a0.short + ' dengan ' + alt.short + ' (' + rp(alt.price) + ' per orang, ' + alt.place.split(',')[0] + ').' + (save > 0 ? ' Penghematan ' + rp(save) + ' untuk ' + target.people + ' orang.' : '') + ' Apakah kamu ingin menggantinya', blocks: [{ type: 'swap', from: target.uid, actId: alt.id, date: target.date, time: tm }], chips: [] };
       }
     }
 
@@ -286,7 +286,7 @@
       const wet = days.filter((x) => x.w.rain >= 55);
       const outd = s.items.filter((i) => byId[i.actId].outdoor && wet.some((x) => x.d === i.date));
       const tail = wet.length ? (outd.length ? 'Pada hari yang berpotensi hujan terdapat kegiatan luar ruangan (' + fmtList(outd.map((i) => byId[i.actId].short)) + '). Saya dapat menggantinya dengan kegiatan dalam ruangan.' : 'Hari yang berpotensi hujan aman karena kegiatannya di dalam ruangan atau belum terisi.') : 'Tidak ada hari dengan risiko hujan tinggi.';
-      return { text: 'Prakiraan cuaca (data contoh) untuk trip Anda:\n' + lines + '\n\n' + tail, blocks: outd.length ? [{ type: 'rainfix', ids: outd.map((i) => i.uid) }] : [], chips: ['Cari tanggal terbaik', 'Cari alternatif yang lebih hemat'] };
+      return { text: 'Prakiraan cuaca (data contoh) untuk trip kamu:\n' + lines + '\n\n' + tail, blocks: outd.length ? [{ type: 'rainfix', ids: outd.map((i) => i.uid) }] : [], chips: ['Cari tanggal terbaik', 'Cari alternatif yang lebih hemat'] };
     }
 
     if (/(upacara|purnama|tilem|hari raya|nyepi|galungan|adat|libur)/.test(t)) {
@@ -300,11 +300,11 @@
     if (m && findAct(m[1])) { const a = findAct(m[1]); return { text: a.story + ' Host: ' + a.host.name + '.', blocks: [{ type: 'acts', ids: [a.id], detail: true }], chips: ['Tambahkan ' + a.short.toLowerCase()] }; }
 
     if (/kalender|agenda|jadwal saya/.test(t)) return { text: 'Seluruh kegiatan, acara pribadi, hari raya' + (group ? ', dan hari sibuk anggota' : '') + ' tersedia di halaman Kalender.', blocks: [{ type: 'go', tab: 'kalender', label: 'Buka kalender' }], chips: [] };
-    if (/tampilkan semua|lihat semua|daftar kegiatan|semua kegiatan/.test(t)) return { text: 'Berikut kegiatan di katalog, diurutkan dari yang paling lengang pada tanggal trip Anda.', blocks: [{ type: 'acts', ids: A.slice().sort((a, b) => crowdFor(a, s.trip.start) - crowdFor(b, s.trip.start) || a.price - b.price).slice(0, 6).map((a) => a.id) }, { type: 'go', href: 'jelajahi.html', label: 'Buka halaman Jelajahi' }], chips: [] };
+    if (/tampilkan semua|lihat semua|daftar kegiatan|semua kegiatan/.test(t)) return { text: 'Berikut kegiatan di katalog, diurutkan dari yang paling lengang pada tanggal trip kamu.', blocks: [{ type: 'acts', ids: A.slice().sort((a, b) => crowdFor(a, s.trip.start) - crowdFor(b, s.trip.start) || a.price - b.price).slice(0, 6).map((a) => a.id) }, { type: 'go', href: 'jelajahi.html', label: 'Buka halaman Jelajahi' }], chips: [] };
 
     const signal = ctx.days || ctx.dates || ctx.cats.size || ctx.people || /trip|rencana|liburan|susun|atur|bikin|plan|jalan|itinerary|bali/.test(t) || t.length > 24;
     if (signal) return respondPlan(ctx);
-    return { text: 'Saya belum menangkap maksud pesan tersebut. Silakan ceritakan rencana Anda: berapa hari, berapa orang, dan suasana yang diinginkan. Atau pilih salah satu contoh di bawah.', blocks: [], chips: chipsDefault };
+    return { text: 'Saya belum menangkap maksud pesan tersebut. Silakan ceritakan rencana kamu: berapa hari, berapa orang, dan suasana yang diinginkan. Atau pilih salah satu contoh di bawah.', blocks: [], chips: chipsDefault };
   }
 
   function applyPlan(plan) {

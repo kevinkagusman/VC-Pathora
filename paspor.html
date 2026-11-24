@@ -98,7 +98,7 @@
   }
 
   function identity(got, regs, hosts){
-    const first = PS.me().name, nm = (!first || first === 'Anda') ? 'Traveler Pathora' : first;
+    const first = PS.me().name, nm = (!first || (first === 'Anda' || first === 'Kamu')) ? 'Traveler Pathora' : first;
     const ini = nm.split(' ').map(function(w){ return w[0]; }).slice(0, 2).join('').toUpperCase();
     const pct = Math.round(got.length / A.length * 100), no = 'PA-' + (1000 + hash(nm) % 9000);
     const mz = function(t, n){ t = t.toUpperCase().replace(/[^A-Z0-9]+/g, '<'); while (t.length < n) t += '<'; return t.slice(0, n).replace(/</g, '&lt;'); };
@@ -156,7 +156,7 @@
     }
     nav2.innerHTML = navHTML();
     const nb = document.getElementById('bk'); if (nb && nb.classList.contains('noanim')) requestAnimationFrame(function(){ requestAnimationFrame(function(){ nb.classList.remove('noanim'); }); });
-    const me = PS.me().name, nm = (!me || me === 'Anda') ? 'Traveler Pathora' : me;
+    const me = PS.me().name, nm = (!me || (me === 'Anda' || me === 'Kamu')) ? 'Traveler Pathora' : me;
     stage.querySelectorAll('.cv-n').forEach(function(e){ e.textContent = nm; });
     snap(); firstRender = false; bind();
   }
@@ -230,7 +230,7 @@
     const pm = $('pm'); if (pm) pm.onclick = zone(pm);
   }
   if (/[?&]demo\b/.test(location.search)) { ['tukik','subak','tenun'].forEach(function(id, i){ if (!PS.get().passport[id]) PS.stamp(id, D.add('2026-09-05', i * 6)); }); }
-  const first = PS.me().name.split(' ')[0]; if (first && first !== 'Anda') document.getElementById('hTitle').textContent = 'Jejak perjalanan ' + first + ' di Bali.';
+  const first = PS.me().name.split(' ')[0]; if (first && first !== 'Anda' && first !== 'Kamu') document.getElementById('hTitle').textContent = 'Jejak perjalanan ' + first + ' di Bali.';
   document.addEventListener('keydown', function(e){ if (e.key === 'ArrowRight') go(1); if (e.key === 'ArrowLeft') go(-1); });
   mq.addEventListener ? mq.addEventListener('change', function(){ pg = 0; firstRender = true; render(); }) : mq.addListener(function(){ pg = 0; firstRender = true; render(); });
   render();
