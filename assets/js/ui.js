@@ -64,7 +64,7 @@
     /* meminta masuk sebelum tindakan yang memerlukan akun */
     needLogin(reason) {
       const next = encodeURIComponent(location.pathname.split('/').pop() + location.search);
-      UI.modal('<div class="modal-h"><h3>Masuk untuk melanjutkan</h3><button class="icon-btn" data-close aria-label="Tutup">' + ic('x', 18) + '</button></div><div class="modal-b" style="display:grid;gap:16px"><p class="muted">' + esc(reason || 'Tindakan ini memerlukan akun Pathora.') + ' Trip yang sudah Anda susun akan tetap tersimpan.</p><a class="btn btn-primary btn-lg btn-block" href="masuk.html?mode=daftar&next=' + next + '">Buat akun gratis</a><a class="btn btn-line btn-block" href="masuk.html?next=' + next + '">Saya sudah punya akun</a></div>');
+      UI.modal('<div class="modal-h"><h3>Masuk untuk melanjutkan</h3><button class="icon-btn" data-close aria-label="Tutup">' + ic('x', 18) + '</button></div><div class="modal-b" style="display:grid;gap:16px"><p class="muted">' + esc(reason || 'Akun diperlukan untuk melanjutkan.') + ' Trip yang sudah kamu susun tidak hilang.</p><a class="btn btn-primary btn-lg btn-block" href="masuk.html?mode=daftar&next=' + next + '">Buat akun gratis</a><a class="btn btn-line btn-block" href="masuk.html?next=' + next + '">Saya sudah punya akun</a></div>');
     },
 
     mountFooter() {

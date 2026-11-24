@@ -248,3 +248,7 @@ body.chat-mode .modal .input,body.chat-mode .modal .select,body.chat-mode .modal
 body.chat-mode .modal label,body.chat-mode .modal .field label{color:var(--g-mute)}
 body.chat-mode .modal .chip{background:rgba(17,12,9,.45);color:var(--g-text);box-shadow:inset 0 0 0 1px rgba(244,241,226,.28)}
 body.chat-mode .modal .badge{background:rgba(244,241,226,.14);color:var(--g-text)}
+
+/* tombol di dalam modal: ramping, tidak lebih mencolok dari judul */
+body.chat-mode .modal .btn-lg,body.chat-mode .modal .btn-block{min-height:38px;padding:0 18px;font-size:13px;font-weight:600;border-radius:99px}
+body.chat-mode .modal .btn-line{box-shadow:inset 0 0 0 1px rgba(244,241,226,.28);color:var(--g-text)}

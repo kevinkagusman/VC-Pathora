@@ -43,13 +43,13 @@ body.chat-mode #nav.nav{background:linear-gradient(180deg,rgba(17,12,9,.5),rgba(
 .lang button:hover{color:var(--hd-text)}
 
 /* menu akun */
-.menu-pop{top:calc(100% + 6px);right:0;width:272px;padding:10px;border-radius:20px;background:rgba(17,12,9,.94);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border:1px solid var(--hd-line);color:var(--hd-text);box-shadow:0 20px 50px rgba(0,0,0,.45)}
-.menu-pop .who{border-bottom:1px solid var(--hd-line)}
-.menu-pop .who small{color:var(--hd-mute)}
-.menu-pop .badge{background:rgba(244,241,226,.14);color:var(--hd-text)}
-.menu-pop a,.menu-pop button{color:var(--hd-text);min-height:42px;border-radius:12px}
-.menu-pop a:hover,.menu-pop button:hover{background:rgba(244,241,226,.1)}
-.menu-pop [data-out]{color:#FFC2AE}
+#nav .menu-pop{top:calc(100% + 6px);right:0;width:272px;padding:10px;border-radius:20px;background:rgba(17,12,9,.94);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border:1px solid var(--hd-line);color:var(--hd-text);box-shadow:0 20px 50px rgba(0,0,0,.45)}
+#nav .menu-pop .who{border-bottom:1px solid var(--hd-line)}
+#nav .menu-pop .who small{color:var(--hd-mute)}
+#nav .menu-pop .badge{background:rgba(244,241,226,.14);color:var(--hd-text)}
+#nav .menu-pop a,#nav .menu-pop button{color:var(--hd-text);min-height:42px;border-radius:12px}
+#nav .menu-pop a:hover,#nav .menu-pop button:hover{background:rgba(244,241,226,.1)}
+#nav .menu-pop [data-out]{color:#FFC2AE}
 
 #nav .m-auth{display:none}
 

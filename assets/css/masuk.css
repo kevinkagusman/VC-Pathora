@@ -1,0 +1,61 @@
+/* Halaman Masuk / Daftar: gaya kaca gelap */
+body.au-pg *,body.au-pg *::before,body.au-pg *::after{box-sizing:border-box}
+body.au-pg{--g-text:#F4F1E2;--g-mute:rgba(244,241,226,.72);--g-line:rgba(244,241,226,.18);--g-gold:#FCE6B7;--g-ink:#1A120D;--g-display:'Questrial','Plus Jakarta Sans',system-ui,sans-serif;margin:0;min-height:100svh;background:#15100c;color:var(--g-text);font-family:'Plus Jakarta Sans',system-ui,sans-serif;position:relative;overflow-x:hidden}
+.au-bg{position:fixed;inset:0;background:url("../img/gallery/pura-pagi-kabut.jpg") 50% 45%/cover no-repeat}
+.au-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(14,10,7,.78) 0,rgba(14,10,7,.35) 55%,rgba(14,10,7,.6) 100%),linear-gradient(180deg,rgba(14,10,7,.35),rgba(14,10,7,.2) 40%,rgba(14,10,7,.7))}
+.au{position:relative;z-index:2;min-height:100svh;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,480px);gap:80px;align-items:center;padding:84px 96px 56px}
+.au-l h1{font:400 clamp(30px,3.4vw,42px)/1.12 var(--g-display);letter-spacing:-.015em;margin:0;max-width:560px}
+.au-l p{margin:14px 0 0;font-size:14px;line-height:1.7;color:var(--g-mute);max-width:470px}
+.au-l ul{list-style:none;padding:0;margin:26px 0 0;display:grid;gap:11px}
+.au-l li{display:flex;gap:12px;align-items:center;font-size:13.5px;color:rgba(244,241,226,.9)}
+.au-l li i{flex:none;width:22px;height:22px;border-radius:50%;border:1px solid var(--g-line);display:grid;place-items:center;color:var(--g-gold);background:rgba(20,14,10,.42)}
+.au-note{margin-top:40px;font-size:12px;color:rgba(244,241,226,.5)}
+.au-card{padding:28px 28px 24px;border-radius:24px;background:rgba(20,14,10,.5);border:1px solid var(--g-line);backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.au-seg{display:grid;grid-template-columns:1fr 1fr;background:rgba(244,241,226,.08);border:1px solid var(--g-line);border-radius:999px;padding:4px;gap:4px}
+.au-seg button{border:0;background:transparent;color:var(--g-mute);font:400 13px 'Plus Jakarta Sans',sans-serif;min-height:36px;border-radius:999px;cursor:pointer;transition:background .25s ease,color .25s ease}
+.au-seg button.on{background:var(--g-text);color:var(--g-ink);font-weight:600}
+.au-card h2{font:400 22px/1.2 var(--g-display);margin:22px 0 0}
+.au-sub{font-size:13px;color:var(--g-mute);margin:4px 0 0}
+.au-chips{display:flex;gap:8px;margin-top:14px}
+.au-chips button{font:400 12px 'Plus Jakarta Sans',sans-serif;min-height:32px;padding:0 13px;border-radius:999px;border:1px solid var(--g-line);color:var(--g-mute);background:transparent;cursor:pointer;transition:border-color .2s ease,color .2s ease,background .2s ease}
+.au-chips button.on{border-color:var(--g-gold);color:var(--g-gold);background:rgba(252,230,183,.08)}
+.au-err{display:none;margin-top:16px;padding:11px 14px;border-radius:12px;background:rgba(214,96,64,.16);border:1px solid rgba(214,96,64,.4);color:#FFD9CC;font-size:13.5px;line-height:1.5}
+.au-err.show{display:block}
+.au-f{display:grid;gap:12px;margin-top:16px}
+.au-f label{display:block;font-size:12px;color:var(--g-mute);margin-bottom:5px}
+.au-f input{width:100%;min-height:42px;height:42px;border-radius:14px;border:1px solid rgba(244,241,226,.28);background:rgba(17,12,9,.45);padding:0 14px;font:400 13.5px 'Plus Jakarta Sans',sans-serif;color:var(--g-text);outline:none;transition:border-color .2s ease,background .2s ease}
+.au-f input::placeholder{color:rgba(244,241,226,.42)}
+.au-f input:focus{border-color:var(--g-gold);background:rgba(244,241,226,.09)}
+.au-hf{display:grid;gap:12px}
+.au-btn{display:grid;place-items:center;width:100%;min-height:38px;border-radius:99px;border:0;font:600 13px 'Plus Jakarta Sans',sans-serif;cursor:pointer;text-decoration:none;transition:background .2s ease,transform .2s ease}
+.au-btn.pri{background:var(--g-text);color:var(--g-ink);margin-top:6px}
+.au-btn.pri:hover{background:#fff}
+.au-btn.gh{min-height:38px;border:1px solid rgba(244,241,226,.28);background:transparent;color:var(--g-text);font-weight:600;font-size:13px}
+.au-btn.gh:hover{background:rgba(244,241,226,.1)}
+.au-sep{display:flex;gap:12px;align-items:center;margin:16px 0 12px;font-size:12px;color:var(--g-mute)}
+.au-sep::before,.au-sep::after{content:"";flex:1;height:1px;background:var(--g-line)}
+.au-sw{text-align:center;font-size:12.5px;color:var(--g-mute);margin:14px 0 0}
+.au-sw a,.au-guest{text-decoration:underline;text-underline-offset:3px}.au-sw a{color:var(--g-gold)}
+.au-guest{display:block;text-align:center;font-size:12.5px;color:var(--g-mute);margin-top:4px;min-height:32px;line-height:32px}
+.au-guest:hover{color:var(--g-text)}
+.au-seg button:focus-visible,.au-chips button:focus-visible,.au-btn:focus-visible,.au-sw a:focus-visible,.au-guest:focus-visible{outline:2px solid var(--g-gold);outline-offset:3px}
+@media(max-width:1100px){.au{gap:48px;padding:84px 48px 56px}}
+@media(max-width:860px){
+  .au{grid-template-columns:minmax(0,1fr);padding:72px 16px 32px;align-items:start}
+  .au-l{display:none}
+  .au-card{padding:20px 18px 18px;border-radius:22px;max-width:380px;width:100%;margin:0 auto}
+  .au-card h2{font-size:19px;margin-top:16px}
+  .au-seg button{min-height:36px;font-size:12.5px}
+  .au-bg::after{background:linear-gradient(180deg,rgba(14,10,7,.55),rgba(14,10,7,.7))}
+}
+@media(prefers-reduced-motion:reduce){.au-seg button,.au-chips button,.au-f input,.au-btn{transition:none}}
+
+/* desktop: sisi kiri diam, hanya isi kartu kanan yang bisa di-scroll */
+@media(min-width:861px){
+  body.au-pg{overflow:hidden;height:100svh}
+  .au{height:100svh;min-height:0;padding-top:84px;padding-bottom:36px;overflow:hidden}
+  .au-card{max-height:calc(100svh - 84px - 36px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:rgba(244,241,226,.28) transparent}
+  .au-card::-webkit-scrollbar{width:6px}
+  .au-card::-webkit-scrollbar-thumb{background:rgba(244,241,226,.28);border-radius:99px}
+  .au-card::-webkit-scrollbar-track{background:transparent;margin:18px 0}
+}
