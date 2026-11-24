@@ -7,8 +7,8 @@
   const KEY = 'pathora.v3', KEYA = 'pathora.accounts', KEYS = 'pathora.session';
   let mem = null; const subs = [];
 
-  const ini = (n) => (n || 'Anda').trim().split(/\s+/).map((x) => x[0]).join('').slice(0, 2).toUpperCase() || 'AN';
-  const meMember = (name) => ({ id: 'me', name: name || 'Anda', ini: ini(name), color: COLORS[0], busy: [] });
+  const ini = (n) => (n || 'Kamu').trim().split(/\s+/).map((x) => x[0]).join('').slice(0, 2).toUpperCase() || 'AN';
+  const meMember = (name) => ({ id: 'me', name: name || 'Kamu', ini: ini(name), color: COLORS[0], busy: [] });
 
   function fresh() {
     return {

@@ -10,8 +10,26 @@
   const $ = (sel, el) => (el || document).querySelector(sel);
   const $$ = (sel, el) => Array.from((el || document).querySelectorAll(sel));
 
+
+  /* avatar sementara: ikon sederhana bertema Bali. Nanti bisa diganti dengan gambar buatan sendiri
+     (ganti isi AVATARS, tiap item: id, label, bg, g = isi SVG 52x52) */
+  const CR = '#FFF3DF';
+  const pet = (n, rx, ry, off) => { let o = ''; for (let i = 0; i < n; i++) o += '<ellipse rx="' + rx + '" ry="' + ry + '" transform="rotate(' + (i * 360 / n) + ') translate(0,-' + off + ')" fill="' + CR + '"/>'; return o; };
+  const AVATARS = [
+    { id: 'sun', label: 'Matahari', bg: '#E8963F', g: '<circle cx="26" cy="26" r="8" fill="' + CR + '"/>' + [0, 45, 90, 135, 180, 225, 270, 315].map((a) => '<line x1="26" y1="8" x2="26" y2="13" stroke="' + CR + '" stroke-width="3" stroke-linecap="round" transform="rotate(' + a + ' 26 26)"/>').join('') },
+    { id: 'wave', label: 'Ombak', bg: '#3E8DA6', g: [19, 27, 35].map((y) => '<path d="M10 ' + y + ' q4 -6 8 0 t8 0 t8 0 t8 0" fill="none" stroke="' + CR + '" stroke-width="3" stroke-linecap="round"/>').join('') },
+    { id: 'frang', label: 'Kamboja', bg: '#F2C35B', g: '<g transform="translate(26 26)">' + pet(5, 5.5, 10, 8) + '<circle r="3.5" fill="#E8963F"/></g>' },
+    { id: 'hib', label: 'Kembang sepatu', bg: '#D9624A', g: '<g transform="translate(26 26)">' + pet(5, 7, 10, 8) + '<circle r="3" fill="#B8334F"/></g>' },
+    { id: 'turtle', label: 'Penyu', bg: '#4E7F44', g: '<ellipse cx="26" cy="28" rx="11" ry="9" fill="' + CR + '"/><circle cx="38" cy="25" r="4" fill="' + CR + '"/><ellipse cx="17" cy="37" rx="4" ry="2.5" fill="' + CR + '"/><ellipse cx="33" cy="37" rx="4" ry="2.5" fill="' + CR + '"/><path d="M22 24 l4 8 M30 24 l-4 8" stroke="#4E7F44" stroke-width="1.5"/>' },
+    { id: 'bird', label: 'Jalak bali', bg: '#8E87A8', g: '<g fill="' + CR + '"><circle cx="26" cy="29" r="12"/><path d="M26 17 l-6 -9 l6 5 l2 -8 l3 8 l6 -5 l-5 9z"/></g><path d="M22 31 l-6 2 l6 2z" fill="#F0B860"/><circle cx="24" cy="27" r="2" fill="#2B1A12"/>' },
+    { id: 'mount', label: 'Gunung', bg: '#406F8C', g: '<polygon points="8,40 22,16 34,40" fill="' + CR + '"/><polygon points="26,40 36,24 46,40" fill="' + CR + '" opacity=".85"/>' },
+    { id: 'leaf', label: 'Daun', bg: '#6E9B4E', g: '<path d="M14 38 C14 18 30 12 40 14 C40 28 34 38 14 38Z" fill="' + CR + '"/><path d="M16 36 L32 20" stroke="#6E9B4E" stroke-width="2"/>' },
+    { id: 'meru', label: 'Meru', bg: '#7A4A32', g: '<g fill="' + CR + '"><rect x="23" y="9" width="3" height="6"/><path d="M20 17 L26 12 L32 17Z"/><path d="M17 25 L26 17 L35 25Z"/><path d="M14 33 L26 24 L38 33Z"/><rect x="12" y="34" width="28" height="4"/></g>' }
+  ];
+  const avatarSVG = (id) => { const a = AVATARS.find((x) => x.id === id); return a ? '<svg viewBox="0 0 52 52" width="100%" height="100%" aria-hidden="true" style="display:block;border-radius:50%"><circle cx="26" cy="26" r="26" fill="' + a.bg + '"/>' + a.g + '</svg>' : ''; };
+
   const UI = {
-    esc, $, $$,
+    esc, $, $$, AVATARS, avatarSVG,
 
     /* mode: 'host' memakai navigasi khusus Studio Host, tanpa tautan traveler */
     mountNav(active, over, mode) {
@@ -31,22 +49,27 @@
         const links = '<a href="jelajahi.html" class="' + (active === 'jelajahi' ? 'on' : '') + '">Jelajahi</a>' +
           '<a href="trip.html" class="' + (active === 'trip' || active === 'ai' ? 'on' : '') + '">Trip saya</a>' +
           '<a href="paspor.html" class="' + (active === 'paspor' ? 'on' : '') + '">Paspor Alam</a>';
+        const lg = (localStorage.getItem('pathora_lang') || 'id');
+        const lang = '<div class="lang" role="group" aria-label="Bahasa / Language"><button type="button" data-lang="id" aria-pressed="' + (lg === 'id') + '">ID</button><button type="button" data-lang="en" aria-pressed="' + (lg === 'en') + '">EN</button></div>';
+        const nx = encodeURIComponent(location.pathname.split('/').pop() + location.search);
+        const mauth = acct ? '' : '<div class="m-auth"><a href="masuk.html?next=' + nx + '">Masuk</a><a class="pri" href="masuk.html?mode=daftar&next=' + nx + '">Daftar</a></div>';
         const right = acct && acct.role === 'traveler'
           ? '<a class="trip-pill" href="trip.html" title="Trip saya">' + ic('calendar', 16) + '<span>Trip</span><b id="navCount">' + n + '</b></a>' +
-            '<button class="av nav-av" id="avBtn" aria-haspopup="true" aria-expanded="false" style="background:' + me.color + ';border:0;box-shadow:0 0 0 2px rgba(81,50,41,.18)" title="' + esc(acct.name) + '">' + esc(me.ini) + '</button>'
+            '<button class="av nav-av" id="avBtn" aria-haspopup="true" aria-expanded="false" style="background:' + me.color + ';border:0;padding:0;overflow:hidden;box-shadow:0 0 0 2px rgba(81,50,41,.18)" title="' + esc(acct.name) + '">' + (avatarSVG(acct.avatar) || esc(me.ini)) + '</button>'
           : '<a class="btn btn-ghost btn-sm nav-login" href="masuk.html?next=' + encodeURIComponent(location.pathname.split('/').pop() + location.search) + '">Masuk</a>' +
             '<a class="btn btn-gold btn-sm" href="masuk.html?mode=daftar&next=' + encodeURIComponent(location.pathname.split('/').pop() + location.search) + '">Daftar</a>';
         html = '<header class="nav' + (over ? ' over' + (over === 'dark' ? ' dk' : '') : '') + '" id="nav"><div class="wrap">' +
           '<a class="logo" href="index.html" aria-label="Pathora, beranda"><img class="l-c" src="assets/img/logo.png" alt="Pathora"><img class="l-w" src="assets/img/logo-white.png" alt="" aria-hidden="true"></a>' +
           '<nav class="nav-links" aria-label="Utama">' + links + '</nav>' +
-          '<div class="nav-right">' + right + '<button class="icon-btn menu-btn" aria-label="Menu" id="menuBtn">' + ic('menu', 22) + '</button></div>' +
+          '<div class="nav-right">' + lang + right + '<button class="icon-btn menu-btn" aria-label="Buka menu" aria-expanded="false" id="menuBtn">' + ic('menu', 22) + '</button></div>' + mauth +
           (acct ? '<div class="menu-pop" id="avMenu" hidden><div class="who"><b>' + esc(acct.name) + '</b><small>' + esc(acct.email) + '</small><span class="badge ' + (acct.plan === 'plus' ? 'b-ok' : '') + '" style="margin-top:8px">' + (acct.plan === 'plus' ? 'Pathora Plus' : 'Paket gratis') + '</span></div>' +
             (acct.role === 'traveler' ? '<a href="akun.html">Akun dan langganan</a><a href="trip.html">Trip saya</a>' : '<a href="host.html">Studio Host</a>') + '<button data-out>Keluar</button></div>' : '') + '</div></header>';
       }
       el.outerHTML = html;
       const nav = document.getElementById('nav');
       if (over) { document.body.classList.add(over === 'dark' || mode === 'host' ? 'nav-pad' : 'nav-photo'); const sc = () => { nav.classList.toggle('solid', window.scrollY > 40); const y = nav.offsetHeight / 2; let dark = false; document.querySelectorAll('[data-tone="dark"]').forEach(function (e) { const r = e.getBoundingClientRect(); if (r.top <= y && r.bottom >= y) dark = true; }); nav.classList.toggle('ondark', dark); }; sc(); window.addEventListener('scroll', sc, { passive: true }); }
-      const mb = document.getElementById('menuBtn'); if (mb) mb.addEventListener('click', () => nav.classList.toggle('open'));
+      const mb = document.getElementById('menuBtn'); if (mb) mb.addEventListener('click', () => { const o = nav.classList.toggle('open'); mb.setAttribute('aria-expanded', String(o)); mb.setAttribute('aria-label', o ? 'Tutup menu' : 'Buka menu'); mb.innerHTML = ic(o ? 'x' : 'menu', 22); });
+      nav.querySelectorAll('[data-lang]').forEach((b) => b.addEventListener('click', () => { if (b.dataset.lang === ((g.I18N && g.I18N.lang) || 'id')) return; if (g.I18N) g.I18N.set(b.dataset.lang); else { try { localStorage.setItem('pathora_lang', b.dataset.lang); } catch (e) {} location.reload(); } }));
       const ab = document.getElementById('avBtn'), mp = document.getElementById('avMenu');
       if (ab && mp) {
         ab.addEventListener('click', (e) => { e.stopPropagation(); mp.hidden = !mp.hidden; ab.setAttribute('aria-expanded', String(!mp.hidden)); });
@@ -59,7 +82,7 @@
     /* meminta masuk sebelum tindakan yang memerlukan akun */
     needLogin(reason) {
       const next = encodeURIComponent(location.pathname.split('/').pop() + location.search);
-      UI.modal('<div class="modal-h"><h3>Masuk untuk melanjutkan</h3><button class="icon-btn" data-close aria-label="Tutup">' + ic('x', 18) + '</button></div><div class="modal-b" style="display:grid;gap:16px"><p class="muted">' + esc(reason || 'Tindakan ini memerlukan akun Pathora.') + ' Trip yang sudah Anda susun akan tetap tersimpan.</p><a class="btn btn-primary btn-lg btn-block" href="masuk.html?mode=daftar&next=' + next + '">Buat akun gratis</a><a class="btn btn-line btn-block" href="masuk.html?next=' + next + '">Saya sudah punya akun</a></div>');
+      UI.modal('<div class="modal-h"><h3>Masuk untuk melanjutkan</h3><button class="icon-btn" data-close aria-label="Tutup">' + ic('x', 18) + '</button></div><div class="modal-b" style="display:grid;gap:16px"><p class="muted">' + esc(reason || 'Akun diperlukan untuk melanjutkan.') + ' Trip yang sudah kamu susun tidak hilang.</p><a class="btn btn-primary btn-lg btn-block" href="masuk.html?mode=daftar&next=' + next + '">Buat akun gratis</a><a class="btn btn-line btn-block" href="masuk.html?next=' + next + '">Saya sudah punya akun</a></div>');
     },
 
     mountFooter() {
@@ -72,7 +95,7 @@
         '<div><h4>Traveler</h4><a href="jelajahi.html">Jelajahi kegiatan</a><a href="trip.html">Asisten perjalanan</a><a href="paspor.html">Paspor Alam</a><a href="masuk.html?mode=daftar">Buat akun</a></div>' +
         '<div><h4>Host lokal</h4><a href="masuk.html?role=host&mode=daftar">Daftar sebagai host</a></div>' +
         '<div><h4>Pathora</h4><a href="index.html#cara">Cara kerja</a><a href="index.html#prinsip">Prinsip kami</a><a href="index.html#faq">Pertanyaan umum</a></div></div>' +
-        '<p class="fine">Prototipe Kelompok 2. Nama host, harga, cuaca, dan angka lainnya adalah data contoh. Pembayaran hanya simulasi.</p></div></footer>';
+        '</div></footer>';
     },
 
     toast(msg, linkHtml) {
@@ -95,7 +118,12 @@
       return { el: ov, close };
     },
 
-    avatar(m, cls) { return '<span class="av ' + (cls || '') + '" style="background:' + m.color + '" title="' + esc(m.name) + '">' + m.ini + '</span>'; },
+    avatar(m, cls) {
+      /* anggota 'me' memakai avatar yang dipilih di halaman Akun, anggota lain tetap inisial */
+      const acct = m.id === 'me' ? g.PAUTH.current() : null;
+      const svg = acct && acct.avatar ? avatarSVG(acct.avatar) : '';
+      return '<span class="av ' + (cls || '') + '" style="background:' + m.color + (svg ? ';overflow:hidden' : '') + '" title="' + esc(m.name) + '">' + (svg || m.ini) + '</span>';
+    },
     avatars(ids, cls) { return '<span class="av-stack">' + ids.map((id) => { const m = S.member(id); return m ? UI.avatar(m, cls) : ''; }).join('') + '</span>'; },
 
     crowd(level) { return '<span class="crowd c' + level + '" title="Perkiraan keramaian: ' + CROWD_LABEL[level] + '"><span class="d"><i></i><i></i><i></i></span>' + CROWD_LABEL[level] + '</span>'; },

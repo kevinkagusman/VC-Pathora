@@ -1,0 +1,181 @@
+/* ==========================================================================
+   Pathora, tampilan Kalender dan Bayar (trip.html?tab=kalender / ?tab=bayar)
+   Semua aturan di bawah .ws3, jadi tidak mengubah halaman lain.
+   Dimuat setelah chat.css (memakai variabel --g-* yang sama).
+   ========================================================================== */
+body.chat-mode .ws2.ws3{grid-template-columns:auto minmax(0,1fr) 340px;height:auto;min-height:calc(100vh - 230px);align-items:stretch;padding-bottom:36px}
+body.chat-mode .ws2.ws3.ws-split{grid-template-columns:auto minmax(0,1fr)}
+
+/* kontrol umum, versi gelap */
+.ws3 .input,.ws3 .select,.ws3 .textarea{background:rgba(17,12,9,.45);border:1px solid rgba(244,241,226,.28);color:var(--g-text);border-radius:14px;color-scheme:dark;min-height:42px;font-size:13.5px;padding:8px 14px}
+.ws3 .input:focus,.ws3 .select:focus{border-color:var(--g-gold);box-shadow:0 0 0 3px rgba(252,230,183,.16)}
+.ws3 .btn{border-radius:999px;font-weight:500}
+.ws3 .btn-primary,.ws3 .btn-dark,.ws3 .btn-gold{background:var(--g-text);color:var(--g-ink);font-weight:600}
+.ws3 .btn-primary:hover,.ws3 .btn-dark:hover,.ws3 .btn-gold:hover{background:#fff}
+.ws3 .btn-line{background:var(--g-glass);color:var(--g-text);box-shadow:inset 0 0 0 1px rgba(244,241,226,.32)}
+.ws3 .btn-danger{background:transparent;color:#FFC2AE;box-shadow:inset 0 0 0 1px rgba(255,160,130,.4)}
+.ws3 .icon-btn{color:var(--g-mute);border-radius:50%}
+.ws3 .icon-btn:hover{color:var(--g-text);background:rgba(244,241,226,.1)}
+.ws3 .badge{background:rgba(244,241,226,.14);color:var(--g-text)}
+.ws3 .b-ok{background:rgba(252,230,183,.16);color:var(--g-gold)}
+.ws3 .faint,.ws3 .muted{color:var(--g-mute)}
+.ws3 label{color:var(--g-mute)}
+
+/* ---------- Kalender ---------- */
+.calp{display:flex;flex-direction:column;overflow:hidden;min-height:0}
+.ws3 .cal-h{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding:24px 28px 14px;border:0}
+.ws3 .cal-h h2{margin:0;font:400 26px/1.1 var(--g-display);letter-spacing:-.005em;color:var(--g-text)}
+.cal-nav{display:flex;gap:6px;align-items:center}
+.ws3 .cal-g{padding:0 20px;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));align-content:start;flex:1;min-height:0;overflow:auto}
+.ws3 .cal-dow{padding:10px 0;font:600 10.5px var(--font);letter-spacing:.12em;color:var(--g-mute);border-bottom:1px solid var(--g-line)}
+.ws3 .cell{min-height:92px;padding:7px 8px;border-right:1px solid var(--g-line);border-bottom:1px solid var(--g-line);border-top:0;background:transparent;color:var(--g-text);gap:4px;text-align:left}
+.ws3 .cell:hover{background:rgba(244,241,226,.06)}
+.ws3 .cell.intrip{background:rgba(244,241,226,.05)}
+.ws3 .cell.sel{background:rgba(252,230,183,.1);box-shadow:inset 0 0 0 1.5px var(--g-gold)}
+.ws3 .cell .dn{font:600 12.5px var(--font);color:var(--g-text)}
+.ws3 .cell .dn span[style]{color:var(--g-mute)!important}
+.ws3 .cell.today .dn span:first-child{background:var(--g-gold);color:var(--g-ink);border-radius:99px;padding:0 7px}
+.ws3 .cell .ev{font:500 10.5px/1.3 var(--font);border-radius:7px;padding:3px 6px}
+.ws3 .ev.act{background:rgba(252,230,183,.18);color:var(--g-gold)}
+.ws3 .ev.me{background:rgba(244,241,226,.12);color:var(--g-text)}
+.ws3 .ev.fest{background:rgba(252,230,183,.08);color:var(--g-gold)}
+.ws3 .cell .meta,.ws3 .cell .faint{color:var(--g-mute)}
+.ws3 .legend{display:flex;gap:18px;flex-wrap:nowrap;white-space:nowrap;align-items:center;padding:14px 28px 18px;flex:none;border:0;font-size:12px;color:var(--g-mute)}
+.ws3 .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px}
+.ws3 .legend .lg-act{background:rgba(252,230,183,.5)}
+.ws3 .legend .lg-me{background:rgba(244,241,226,.35)}
+
+.dayp{display:block;overflow:auto;min-height:0}
+.ws3 .dayp .pane-h{border:0;padding:24px 26px 6px}
+.ws3 .dayp .pane-h h2{font:400 20px/1.25 var(--g-display);letter-spacing:0;color:var(--g-text)}
+.ws3 .dayp .pane-b{padding:10px 26px 26px}
+.ws3 .agenda-d{gap:14px;color:var(--g-mute)}
+.ws3 .ag{background:rgba(17,12,9,.35);border:1px solid var(--g-line);border-radius:16px;color:var(--g-text);align-items:center}
+.ws3 .ag time{color:var(--g-gold);font:600 12.5px var(--font)}
+.ws3 .ag b{font:500 14px var(--font)}
+.ws3 .agenda-d form{border-color:var(--g-line)!important}
+.ws3 .agenda-d form b{color:var(--g-text)}
+.ws3 .busy-row{color:var(--g-mute)}
+.ws3 .neg{color:#FFC2AE}
+
+/* ---------- Bayar ---------- */
+.payp{display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.payp #payBody{flex:1;min-height:0;overflow:auto}
+.payside{display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.pay-top{padding:24px 30px 0}
+.subtabs{display:inline-flex;gap:2px;padding:4px;border-radius:999px;background:var(--g-glass);border:1px solid var(--g-line)}
+.subtabs button{min-height:36px;padding:0 18px;border-radius:999px;border:0;background:transparent;color:var(--g-mute);font:500 13.5px var(--font);cursor:pointer}
+.subtabs button:hover{color:var(--g-text)}
+.subtabs button.on{background:rgba(244,241,226,.18);color:var(--g-text)}
+.ws3 .payp .sp{padding:22px 30px 28px}
+.ords{display:flex;flex-direction:column;margin-top:4px}
+.ord{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;padding:16px 0;border-top:1px solid var(--g-line)}
+.ord-m{flex:1 1 220px;min-width:0}
+.ord-m h3{margin:0 0 5px;font:400 17px/1.3 var(--g-display);color:var(--g-text);letter-spacing:0}
+.ord-m p{margin:0;font-size:12.5px;color:var(--g-mute)}
+.ord-p{min-width:92px;text-align:right;font:600 14px var(--font);color:var(--g-text)}
+.ord .st{min-width:112px;justify-content:center}
+.ord-a{display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:flex-end;align-items:center;min-width:130px}
+.ord-lnk{border:0;background:none;padding:6px 0;font:500 12.5px var(--font);color:var(--g-mute);cursor:pointer;text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(244,241,226,.3)}
+.ord-lnk:hover{color:var(--g-text)}
+.ord-lnk.bad{color:#FFC2AE}
+.payside .sp{padding:26px 26px 28px;gap:18px}
+.ps-row{display:flex;justify-content:space-between;gap:12px;font-size:13.5px;color:var(--g-mute)}
+.payside .ptot{padding-top:16px}
+.payside .pbtn{width:100%}
+.payside .gbtn{width:100%}
+
+/* Patungan / rincian biaya */
+.ws3 .payp .split{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:28px;padding:20px 30px 30px}
+.ws3 .payp .split .pane{background:none;border:0;border-radius:0;backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:none}
+.ws3 .payp .split .pane+.pane{margin-top:22px}
+.ws3 .payp .split .pane-h{border:0;padding:0 0 8px}
+.ws3 .payp .split .pane-h h2{font:400 17px var(--g-display);color:var(--g-text);letter-spacing:0}
+.ws3 .payp .split .pane-b{padding:0}
+.ws3 .kpis{gap:12px;margin-bottom:22px}
+.ws3 .kpi{background:rgba(17,12,9,.3);border:1px solid var(--g-line);border-radius:18px;padding:16px 18px;color:var(--g-text)}
+.ws3 .kpi small{color:var(--g-mute);font-size:11px}
+.ws3 .kpi b{font:400 22px var(--g-display);letter-spacing:0}
+.ws3 .ex{border-color:var(--g-line);color:var(--g-text)}
+.ws3 .ex .ico{background:rgba(244,241,226,.1);color:var(--g-text)}
+.ws3 .ex .t small{color:var(--g-mute)}
+.ws3 .tx{background:rgba(17,12,9,.35);border:1px solid var(--g-line);border-radius:16px;color:var(--g-text)}
+.ws3 .bal{color:var(--g-text)}
+.ws3 .neg{color:#FFC2AE}.ws3 .pos{color:var(--g-gold)}
+
+@media (max-width:1060px){
+  body.chat-mode .ws2.ws3,body.chat-mode .ws2.ws3.ws-split{grid-template-columns:1fr}
+  .ws3 .payp .split{grid-template-columns:1fr}
+  .ws3 .cell{min-height:64px;padding:5px}
+  .ws3 .cell .ev{font-size:0;padding:0;height:5px;border-radius:99px}
+  .ws3 .kpis{grid-template-columns:1fr}
+  .ord-p{text-align:left}
+}
+.ws3 .agenda-d>div:first-child{color:rgba(244,241,226,.88)!important}
+.ws3 input[type=time]{min-width:112px;padding:8px 10px}
+
+.ws3 .legend span{display:inline-flex;align-items:center;gap:6px}
+.ws3 .legend i{margin-right:0}
+
+/* panel hari: daftar di atas (bisa bergulir), formulir tambah selalu terlihat di bawah */
+.dayp{display:flex!important;flex-direction:column;overflow:hidden}
+.dayp .pane-b{flex:1;min-height:0;display:flex;flex-direction:column;padding:6px 22px 20px}
+.dayp .agenda-d{flex:1;min-height:0;display:flex;flex-direction:column;gap:12px}
+.ag-scroll{flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column;gap:10px;padding-right:2px}
+.ws3 .ag{padding:10px 12px;gap:10px;border-radius:14px}
+.ws3 .ag small{font-size:11.5px}
+.ag-add{flex:none;display:flex;flex-direction:column;gap:10px;padding-top:14px;border-top:1px solid var(--g-line)}
+.seg{display:flex;gap:2px;padding:3px;border-radius:999px;background:var(--g-glass);border:1px solid var(--g-line)}
+.seg button{flex:1;min-height:32px;border:0;border-radius:999px;background:transparent;color:var(--g-mute);font:500 12.5px var(--font);cursor:pointer}
+.seg button.on{background:rgba(244,241,226,.18);color:var(--g-text)}
+.ag-add form{display:flex;flex-direction:column;gap:10px}
+.ws3 .ag-add .input,.ws3 .ag-add .select{min-height:40px;height:40px;padding:0 14px;font-size:13px;width:100%}
+.frow{display:flex;gap:8px;align-items:flex-end}
+.fld{display:flex;flex-direction:column;gap:4px;font:500 11px var(--font);color:var(--g-mute);flex:none}
+.fld .input{width:auto!important}
+.fld input[type=time]{width:122px!important;padding:0 10px}
+.fld input[type=number]{width:62px!important;padding:0 10px}
+.ws3 .ag-add .fbtn{flex:1;min-height:40px;height:40px;padding:0 14px;font-size:13px}
+.ws3 .ag-add .btn-dark{background:var(--g-text);color:var(--g-ink)}
+
+/* kalender selalu terlihat penuh, tanpa gulir */
+.ws3 .cal-g{grid-template-rows:auto;grid-auto-rows:minmax(48px,1fr);overflow:hidden}
+.ws3 .cell{min-height:0;overflow:hidden;padding:5px 7px;gap:3px}
+.ws3 .cell .ev{font-size:10.5px;padding:2px 6px;flex:none}
+.ws3 .cal-h{padding:20px 26px 10px}
+.ws3 .cal-h h2{font-size:24px}
+.ws3 .legend{padding:10px 26px 16px}
+
+/* tagline hanya di Asisten */
+body.chat-mode:not(.tab-chat) .tb-tag{display:none}
+
+.ords+*{margin-top:0}
+.how{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:14px;counter-reset:h}
+.how li{counter-increment:h;display:grid;grid-template-columns:30px 1fr;column-gap:14px;align-items:start}
+.how li::before{content:counter(h);grid-row:1 / span 2;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;border:1px solid rgba(244,241,226,.32);font:600 12.5px var(--font);color:var(--g-text)}
+.how b{font:600 14px var(--font);color:var(--g-text)}
+.how span{font-size:13px;line-height:1.6;color:var(--g-mute)}
+.cal-sub{margin:6px 0 0;font-size:12.5px;color:var(--g-mute)}
+.ws3 .ag-scroll>div:first-child,.ws3 .ag-scroll>div:first-child *{color:rgba(244,241,226,.88)!important}
+.ws3 .ag-scroll .b-mid{background:rgba(252,230,183,.14);color:var(--g-gold)!important}
+/* kolom jam: ikon jam disembunyikan supaya "09:00 AM" tidak terpotong */
+.fld input[type=time]{width:136px!important;padding:0 12px!important;font-variant-numeric:tabular-nums}
+.ws3 input[type=time]::-webkit-calendar-picker-indicator{filter:invert(1);opacity:.55;cursor:pointer;margin-left:4px}
+.ws3 input[type=time]{min-width:0}
+
+.lg-help{display:inline-flex;align-items:center;gap:7px;border:0;background:none;padding:2px 0;color:var(--g-mute);font:inherit;font-size:12px;cursor:pointer}
+.lg-help:hover{color:var(--g-text)}
+.lg-i{display:inline-grid;place-items:center;width:16px;height:16px;border-radius:50%;border:1px solid rgba(244,241,226,.4);font:600 10px var(--font);color:var(--g-text)}
+body.chat-mode .modal .mo{display:flex;flex-direction:column;gap:14px;max-height:68vh;overflow:auto}
+.mo-g{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mo-g>div{padding:14px;border:1px solid var(--g-line);border-radius:16px;background:rgba(17,12,9,.35);display:flex;flex-direction:column;gap:6px}
+.mo-g b{font:400 17px var(--g-display);color:var(--g-text)}
+.mo-g span{font-size:12.5px;line-height:1.6;color:var(--g-mute)}
+.mo h4{margin:6px 0 0;font:600 11px var(--font);letter-spacing:.12em;text-transform:uppercase;color:var(--g-gold)}
+.mo ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:7px;font-size:13px;line-height:1.65;color:var(--g-mute)}
+@media(max-width:520px){.mo-g{grid-template-columns:1fr}}
+
+.lg-help .lg-i{border:0;width:15px;height:15px;flex:none;display:block}
+.ws3 .pbtn,.ws3 .gbtn{min-height:40px;padding:0 20px;font-size:13px}
+
+.fld select[name=time]{width:104px!important;padding:0 12px!important;font-variant-numeric:tabular-nums}

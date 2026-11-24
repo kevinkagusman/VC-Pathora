@@ -6,6 +6,8 @@
           dari daun pada logo), emas #A87B36 (teks aksen di atas krem)
    Font : Plus Jakarta Sans
    ========================================================================== */
+/* tanpa efek memantul saat scroll sampai ujung halaman */
+html{overscroll-behavior:none}
 :root{
   --jungle:#2E1B13; --canopy:#513229; --olive:#5F6E3A;
   --bamboo:#A87B36; --sand:#D7D4B1; --rust:#A3431D; --sky:#D8EBF9;

@@ -1,0 +1,71 @@
+/* ==========================================================================
+   Pathora, header (navbar) bersama. Dimuat setelah style.css di semua halaman.
+   Selalu gelap: transparan di atas foto, kaca gelap saat discroll atau
+   di halaman terang. Logo memakai versi putih.
+   ========================================================================== */
+:root{--nav-h:58px;--hd-glass:rgba(17,12,9,.78);--hd-line:rgba(244,241,226,.16);--hd-text:#F4F1E2;--hd-mute:rgba(244,241,226,.74);--hd-gold:#FCE6B7;--hd-ink:#1A120D}
+
+#nav,#nav.over.solid,#nav.over.dk{
+  background:var(--hd-glass);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+  color:var(--hd-text);border-bottom:1px solid var(--hd-line);
+}
+/* halaman chat: header benar-benar transparan, menyatu dengan foto */
+body.chat-mode #nav.nav{background:linear-gradient(180deg,rgba(17,12,9,.5),rgba(17,12,9,0));backdrop-filter:none;-webkit-backdrop-filter:none;border-bottom:0;height:calc(var(--nav-h) + 1px)}
+#nav.over:not(.solid):not(.dk){background:transparent;backdrop-filter:none;-webkit-backdrop-filter:none;border-bottom-color:transparent}
+#nav .wrap{gap:16px}
+#nav .logo img{height:32px}
+#nav .logo .l-c,#nav.over .logo .l-c,#nav.over.solid .logo .l-c,#nav.over.dk .logo .l-c{display:none}
+#nav .logo .l-w,#nav.over .logo .l-w,#nav.over.solid .logo .l-w,#nav.over.dk .logo .l-w{display:block}
+
+/* menu tengah: tiga tujuan dalam satu pil kaca */
+#nav .nav-links{margin:0 auto 0 12px;gap:2px;padding:3px;border-radius:999px;background:rgba(20,14,10,.38);border:1px solid var(--hd-line)}
+#nav .nav-links a,#nav.over .nav-links a,#nav.over.solid .nav-links a{padding:0 15px;min-height:34px;display:inline-flex;align-items:center;border-radius:999px;font-size:13.5px;font-weight:500;color:var(--hd-mute)}
+#nav .nav-links a:hover,#nav.over .nav-links a:hover,#nav.over.solid .nav-links a:hover{color:var(--hd-text);background:rgba(244,241,226,.1)}
+#nav .nav-links a.on,#nav.over .nav-links a.on,#nav.over.solid .nav-links a.on{color:var(--hd-text);background:rgba(244,241,226,.18)}
+
+@media (min-width:861px){#nav .nav-links{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);margin:0}}
+
+/* kanan */
+.nav-right{gap:10px}
+#nav .btn-ghost,#nav.over .btn-ghost,#nav.over.solid .btn-ghost{min-height:34px;padding:0 15px;border-radius:999px;border:1px solid rgba(244,241,226,.32);background:rgba(20,14,10,.38);color:var(--hd-text);font-size:13px;font-weight:500}
+#nav .btn-ghost:hover{border-color:rgba(244,241,226,.6);background:rgba(244,241,226,.1)}
+#nav .btn-gold{min-height:34px;padding:0 17px;border-radius:999px;background:var(--hd-text);color:var(--hd-ink);font-size:13px;font-weight:600}
+#nav .btn-gold:hover{background:#fff}
+#nav .trip-pill,#nav.over .trip-pill,#nav.over.solid .trip-pill,#nav.over.dk .trip-pill{min-height:34px;gap:8px;padding:0 5px 0 13px;border:1px solid rgba(244,241,226,.32);background:rgba(20,14,10,.38);color:var(--hd-text);font-size:13px;font-weight:500}
+#nav .trip-pill b{background:var(--hd-gold);color:var(--hd-ink);min-width:22px;height:22px;font-size:11.5px;font-weight:700}
+#nav .nav-av{width:36px;height:36px;display:grid;place-items:center;border-radius:50%;font:600 13px var(--font)}
+#nav .menu-btn,#nav.over .menu-btn,#nav.over.solid .menu-btn{width:36px;height:36px;border-radius:50%;border:1px solid rgba(244,241,226,.32);background:rgba(20,14,10,.38);color:var(--hd-text)}
+
+/* pilihan bahasa */
+.lang{display:inline-flex;align-items:center;padding:2px;border-radius:999px;border:1px solid var(--hd-line);background:rgba(20,14,10,.38)}
+.lang button{min-width:34px;height:28px;padding:0 10px;border:0;border-radius:999px;background:transparent;color:var(--hd-mute);font:600 12px var(--font);letter-spacing:.06em;cursor:pointer}
+.lang button[aria-pressed="true"]{background:rgba(244,241,226,.18);color:var(--hd-text)}
+.lang button:hover{color:var(--hd-text)}
+
+/* menu akun */
+#nav .menu-pop{top:calc(100% + 6px);right:0;width:272px;padding:10px;border-radius:20px;background:rgba(17,12,9,.94);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border:1px solid var(--hd-line);color:var(--hd-text);box-shadow:0 20px 50px rgba(0,0,0,.45)}
+#nav .menu-pop .who{border-bottom:1px solid var(--hd-line)}
+#nav .menu-pop .who small{color:var(--hd-mute)}
+#nav .menu-pop .badge{background:rgba(244,241,226,.14);color:var(--hd-text)}
+#nav .menu-pop a,#nav .menu-pop button{color:var(--hd-text);min-height:42px;border-radius:12px}
+#nav .menu-pop a:hover,#nav .menu-pop button:hover{background:rgba(244,241,226,.1)}
+#nav .menu-pop [data-out]{color:#FFC2AE}
+
+#nav .m-auth{display:none}
+
+/* HP */
+@media (max-width:860px){
+  #nav .logo img{height:28px}
+  #nav .wrap{gap:10px}
+  .nav-right{gap:8px}
+  .nav-right .nav-login,.nav-right .btn-gold{display:none}
+  #nav.open{background:rgba(17,12,9,.94)}
+  #nav.open .nav-links,#nav.over:not(.solid).open .nav-links{display:flex;flex-direction:column;align-items:stretch;gap:0;position:absolute;top:var(--nav-h);left:0;right:0;margin:0;padding:8px 16px 96px;border-radius:0;border:0;border-bottom:1px solid var(--hd-line);background:rgba(17,12,9,.96)}
+  #nav.open .nav-links a,#nav.over:not(.solid).open .nav-links a{min-height:56px;padding:0 6px;border-radius:0;border-bottom:1px solid var(--hd-line);font:400 22px var(--font-display,'Questrial',sans-serif);color:var(--hd-text);background:transparent}
+  #nav.open .nav-links a.on{color:var(--hd-gold);background:transparent}
+  #nav .m-auth{display:none}
+  #nav.open .m-auth{display:flex;flex-direction:column;gap:10px;position:absolute;top:calc(var(--nav-h) + 8px + 168px);left:16px;right:16px}
+  #nav .m-auth a{display:flex;justify-content:center;align-items:center;min-height:50px;border-radius:999px;font-size:15px;font-weight:500;border:1px solid rgba(244,241,226,.32);color:var(--hd-text)}
+  #nav .m-auth a.pri{background:var(--hd-text);color:var(--hd-ink);border-color:transparent;font-weight:600}
+}
+@media (prefers-reduced-motion:no-preference){#nav,#nav *{transition:background .25s,border-color .25s,color .2s}}

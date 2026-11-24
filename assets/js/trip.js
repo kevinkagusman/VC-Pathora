@@ -12,7 +12,7 @@
   let tab = 'chat', sub = 'pesanan';
   const qt = q.get('tab');
   if (legacy[qt]) { tab = legacy[qt][0]; sub = legacy[qt][1]; } else if (TABS.some((t) => t[0] === qt)) tab = qt;
-  const cal = { month: null, sel: null };
+  const cal = { month: null, sel: null, mode: 'act' };
   let busyAI = false;
   const isTraveler = () => { const a = PAUTH.current(); return !!(a && a.role === 'traveler'); };
   const group = () => PS.get().members.length > 1;
@@ -28,8 +28,10 @@
     d2.min = s.trip.start;
     document.getElementById('tDays').textContent = (D.diff(s.trip.start, s.trip.end) + 1) + ' hari';
     document.getElementById('tMembers').innerHTML = group() ? UI.avatars(s.members.map((m) => m.id), 'av-sm') + '<span>' + s.members.length + ' orang</span>' : '<span class="badge">Perjalanan pribadi</span>';
-    document.getElementById('invite').innerHTML = ic('users', 15) + (group() ? ' Undang' : ' Ajak teman');
+    document.getElementById('invite').innerHTML = ic('users', 15) + '<span class="inv-t">' + (group() ? ' Undang' : ' Ajak teman') + '</span>';
+    document.getElementById('invite').setAttribute('aria-label', group() ? 'Undang anggota' : 'Ajak teman');
     const pend = s.items.filter((i) => i.status === 'disetujui').length;
+    if (document.getElementById('rail')) renderRail();
     document.getElementById('tabs').innerHTML = TABS.map((t) => '<button role="tab" class="' + (t[0] === tab ? 'on' : '') + '" data-t="' + t[0] + '">' + ic(t[2], 16) + t[1] + (t[0] === 'bayar' && pend ? ' <span class="badge b-ok" style="padding:0 7px">' + pend + '</span>' : '') + '</button>').join('');
   }
   document.getElementById('tabs').addEventListener('click', (e) => { const b = e.target.closest('[data-t]'); if (b) go(b.dataset.t); });
@@ -52,12 +54,20 @@
     ['Liburan keluarga dengan anak usia 6 tahun, anggaran Rp1,5 juta per orang', 'Hanya kegiatan yang aman untuk anak'],
     ['Cari tanggal terbaik untuk 4 hari di bulan November', 'Mempertimbangkan cuaca dan hari raya']
   ];
+  function renderRail() {
+    const el = document.getElementById('rail'); if (!el) return;
+    const RL = { chat: 'Asisten', kalender: 'Kalender', bayar: 'Bayar' };
+    const pend = PS.get().items.filter((i) => i.status === 'disetujui').length;
+    el.innerHTML = TABS.map((t) => '<button type="button" data-t="' + t[0] + '" class="' + (t[0] === tab ? 'on' : '') + '" aria-label="' + t[1] + '"' + (t[0] === tab ? ' aria-current="page"' : '') + '>' + ic(t[2], 22) + '<span>' + RL[t[0]] + '</span>' + (t[0] === 'bayar' && pend ? '<i class="dot">' + pend + '</i>' : '') + '</button>').join('');
+  }
   function buildChat() {
-    view.innerHTML = '<div class="ws2" id="ws"><section class="pane chatp" aria-label="Asisten perjalanan">' +
-      '<div class="pane-h"><h2 style="display:flex;gap:10px;align-items:center"><span class="av av-sm" style="background:var(--jungle)"><img src="assets/img/mark-white.png" alt="" style="width:14px"></span>Asisten perjalanan Pathora</h2><span style="display:flex;gap:8px;align-items:center"><span id="quotaPill" class="badge"></span><span class="badge b-demo" title="Jawaban disusun oleh aturan di browser, bukan model bahasa sungguhan">Mode demo</span></span></div>' +
+    view.innerHTML = '<div class="ws2" id="ws"><nav class="rail" id="rail" aria-label="Tab trip"></nav><section class="pane chatp" aria-label="Asisten perjalanan">' +
+      '<div class="pane-h"><h2>Asisten perjalanan</h2><span id="quotaPill" class="badge"></span></div>' +
       '<div class="chat-log" id="log" aria-live="polite"></div><div class="chips" id="chips"></div>' +
-      '<form class="composer" id="comp"><label class="sr" for="msg">Pesan</label><textarea id="msg" rows="1" placeholder="Ceritakan rencana perjalanan Anda, atau minta perubahan jadwal"></textarea><button class="btn btn-primary" aria-label="Kirim">' + ic('send', 18) + '</button></form></section>' +
-      '<aside class="pane sumpane" id="sumpane" aria-label="Ringkasan trip" hidden></aside></div>';
+      '<form class="composer" id="comp"><label class="sr" for="msg">Pesan</label><textarea id="msg" rows="1" placeholder="Ceritakan rencanamu atau minta perubahan"></textarea><button class="btn btn-primary" aria-label="Kirim pesan">' + ic('send', 18) + '</button></form></section>' +
+      '<aside class="pane sumpane" id="sumpane" aria-label="Rencana perjalanan"></aside></div>';
+    renderRail();
+    document.getElementById('rail').addEventListener('click', (e) => { const b = e.target.closest('[data-t]'); if (b) go(b.dataset.t); });
     renderLog(); renderChips(); renderQuota(); renderSummary();
     const ta = document.getElementById('msg');
     const grow = () => { ta.style.height = 'auto'; ta.style.height = Math.min(ta.scrollHeight, 130) + 'px'; };
@@ -66,17 +76,17 @@
     document.getElementById('comp').addEventListener('submit', (e) => { e.preventDefault(); const v = ta.value.trim(); if (!v) return; ta.value = ''; grow(); send(v); });
     document.getElementById('log').addEventListener('click', onLogClick);
     document.getElementById('chips').addEventListener('click', (e) => { const b = e.target.closest('[data-q]'); if (b) send(b.dataset.q); });
-    document.getElementById('sumpane').addEventListener('click', onSumClick);
+    document.getElementById('sumpane').addEventListener('click', onPaneClick);
     ta.focus({ preventScroll: true });
   }
   function msgHTML(m) {
     if (m.role === 'me') return '<div class="msg me"><div class="stack"><div class="bubble">' + esc(m.text) + '</div></div></div>';
-    return '<div class="msg ai" data-id="' + m.uid + '"><span class="mk"><img src="assets/img/mark-white.png" alt=""></span><div class="stack"><div class="bubble">' + esc(m.text) + '</div>' + (m.blocks || []).map((b, i) => blockHTML(b, m, i)).join('') + '</div></div>';
+    return '<div class="msg ai" data-id="' + m.uid + '"><span class="who">Pathora</span><div class="stack"><div class="bubble">' + esc(m.text) + '</div>' + (m.blocks || []).map((b, i) => blockHTML(b, m, i)).join('') + '</div></div>';
   }
   function renderLog() {
     const log = document.getElementById('log'); const ch = PS.get().chat;
     if (!ch.length) {
-      log.innerHTML = '<div class="welcome"><span class="mk"><img src="assets/img/mark-white.png" alt="" style="width:30px"></span><h2>Rencanakan perjalanan Anda</h2><p class="muted">Ceritakan dengan bahasa sehari-hari: berapa hari, berapa orang, dan suasana yang diinginkan. Asisten menyusun jadwal berdasarkan cuaca, keramaian, dan hari raya adat. Kegiatan yang Anda tambahkan otomatis masuk ke kalender.</p>' +
+      log.innerHTML = '<div class="welcome"><span class="mk"><img src="assets/img/mark-white.png" alt="" style="width:30px"></span><h2>Rencanakan perjalanan kamu</h2><p class="muted">Ceritakan dengan bahasa sehari-hari: berapa hari, berapa orang, dan suasana yang diinginkan. Asisten menyusun jadwal berdasarkan cuaca, keramaian, dan hari raya adat. Kegiatan yang kamu tambahkan otomatis masuk ke kalender.</p>' +
         '<div class="sugg">' + SUGGEST.map((c) => '<button class="sg" data-q="' + esc(c[0]) + '"><b>' + esc(c[0]) + '</b><small>' + esc(c[1]) + '</small></button>').join('') + '</div></div>';
       log.querySelector('.sugg').addEventListener('click', (e) => { const b = e.target.closest('[data-q]'); if (b) send(b.dataset.q); });
       return;
@@ -105,14 +115,17 @@
     PS.pushChat({ role: 'me', text });
     const log = document.getElementById('log'); if (log.querySelector('.welcome')) log.innerHTML = '';
     log.insertAdjacentHTML('beforeend', msgHTML({ role: 'me', text }));
-    log.insertAdjacentHTML('beforeend', '<div class="msg ai" id="typ"><span class="mk"><img src="assets/img/mark-white.png" alt=""></span><div class="bubble"><span class="typing"><i></i><i></i><i></i></span></div></div>');
+    log.insertAdjacentHTML('beforeend', '<div class="msg ai" id="typ"><span class="who">Pathora</span><div class="bubble"><span class="typing"><i></i><i></i><i></i></span></div></div>');
     document.getElementById('chips').innerHTML = ''; scrollLog(); renderQuota();
-    await new Promise((r) => setTimeout(r, 650 + Math.min(900, text.length * 8)));
+    const wait = new Promise((r) => setTimeout(r, 650 + Math.min(900, text.length * 8)));
+    let hint = null;
+    if (window.PAPI && PAPI.enabled()) { const s0 = PS.get(); hint = await PAPI.parse(text, { start: s0.trip.start, end: s0.trip.end, members: s0.members.length, items: s0.items.map((i) => ({ act: i.actId, date: i.date })) }); }
+    await wait;
     let res;
-    try { res = AI.respond(text); } catch (err) { console.error(err); res = { text: 'Maaf, terjadi kendala saat menyusun jawaban. Silakan coba dengan kalimat lain.', blocks: [], chips: AI.chipsDefault }; }
+    try { res = AI.respond(text, hint); } catch (err) { console.error(err); res = { text: 'Maaf, terjadi kendala saat menyusun jawaban. Silakan coba dengan kalimat lain.', blocks: [], chips: AI.chipsDefault }; }
     const msg = PS.pushChat({ role: 'ai', text: res.text, blocks: res.blocks, chips: res.chips });
     const typ = document.getElementById('typ'); if (typ) typ.remove();
-    log.insertAdjacentHTML('beforeend', '<div class="msg ai" data-id="' + msg.uid + '"><span class="mk"><img src="assets/img/mark-white.png" alt=""></span><div class="stack"><div class="bubble"></div></div></div>');
+    log.insertAdjacentHTML('beforeend', '<div class="msg ai" data-id="' + msg.uid + '"><span class="who">Pathora</span><div class="stack"><div class="bubble"></div></div></div>');
     const el = log.lastElementChild, bub = el.querySelector('.bubble'), stack = el.querySelector('.stack');
     await new Promise((resolve) => {
       const words = res.text.split(/(\s+)/); let i = 0;
@@ -130,11 +143,7 @@
   function blockHTML(b, m, idx) {
     const ref = 'data-m="' + m.uid + '" data-i="' + idx + '"';
     if (b.type === 'plan') {
-      const p = b.plan; const all = p.items.every((it) => inTrip(it.actId, it.date));
-      return '<div class="pc"><div class="pc-h"><span><b>' + D.span(p.start, p.end) + '</b> · ' + p.people + ' orang</span><span>' + rp(p.total) + ' total</span></div>' +
-        p.days.map((d) => '<div class="pc-day"><h4><span>' + D.long(d.date) + '</span><span style="display:flex;gap:10px;align-items:center;font-weight:500" class="faint">' + (d.moon ? ic('moon', 14) + d.moon : '') + UI.wx(d.wx) + '</span></h4>' +
-          (d.items.length ? d.items.map((it) => { const a = byId[it.actId]; const has = inTrip(it.actId, it.date); return '<div class="pc-item">' + thumb(a) + '<div style="flex:1;min-width:0"><b>' + esc(a.short) + ' · ' + it.time.replace(':', '.') + '</b><small>' + esc(it.reason) + '</small><small style="font-weight:600;color:var(--ink-2)">' + rp(a.price) + ' per orang</small></div>' + (has ? '<span class="badge b-ok"><i></i>Ditambahkan</span>' : '<button class="btn btn-line btn-sm" data-act="add1" data-a="' + it.actId + '" data-d="' + it.date + '" data-t="' + it.time + '" data-p="' + p.people + '" ' + ref + '>' + ic('plus', 14) + ' Tambah</button>') + '</div>'; }).join('') : '<p class="faint" style="font-size:13px">Tidak ada kegiatan pada hari ini.</p>') + '</div>').join('') +
-        '<div class="pc-f"><span class="faint" style="font-size:12.5px">' + rp(p.perPerson) + ' per orang</span>' + (all ? '<span class="badge b-ok"><i></i>Semua sudah ditambahkan</span>' : '<button class="btn btn-primary btn-sm" data-act="addall" ' + ref + '>Tambahkan semua ke trip</button>') + '</div></div>';
+      return '<button type="button" class="seeplan" data-seeplan="1">Lihat rencana di panel</button>';
     }
     if (b.type === 'dates') {
       return '<div>' + b.options.map((o, i) => '<div class="opt"><div><b>' + D.span(o.start, o.end) + '</b><div class="faint" style="font-size:12.5px;margin-top:2px">' + (o.rainy ? o.rainy + ' hari berpotensi hujan' : 'Cuaca relatif cerah') + (group() ? ' · ' + (o.busy.length ? 'Bentrok dengan ' + esc(o.busy.join(', ')) : 'Semua anggota tersedia') : '') + (o.moonDays ? ' · bertepatan purnama atau tilem' : '') + '</div></div>' +
@@ -169,6 +178,7 @@
   }
   function onLogClick(e) {
     const g = e.target.closest('[data-go]'); if (g) { e.preventDefault(); return go(g.dataset.go); }
+    if (e.target.closest('[data-seeplan]')) { const sp = document.getElementById('sumpane'); if (sp) sp.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
     const btn = e.target.closest('[data-act]'); if (!btn) return;
     const act = btn.dataset.act; const b = findBlock(btn) || {};
     const s = PS.get();
@@ -182,7 +192,7 @@
     } else if (act === 'pickdate') {
       const o = b.options[+btn.dataset.k]; b.chosen = +btn.dataset.k;
       PS.update((st) => { st.trip.start = o.start; st.trip.end = o.end; });
-      PS.pushChat({ role: 'ai', text: 'Tanggal trip ditetapkan pada ' + D.span(o.start, o.end) + '. Apakah Anda ingin saya menyusun kegiatannya untuk tanggal ini', blocks: [], chips: ['Susun rencana alam dan budaya, hindari tempat ramai', 'Bagaimana prakiraan cuaca trip saya'] });
+      PS.pushChat({ role: 'ai', text: 'Tanggal trip ditetapkan pada ' + D.span(o.start, o.end) + '. Apakah kamu ingin saya menyusun kegiatannya untuk tanggal ini', blocks: [], chips: ['Susun rencana alam dan budaya, hindari tempat ramai', 'Bagaimana prakiraan cuaca trip saya'] });
       renderLog(); renderChips(); head();
     } else if (act === 'swap') {
       PS.removeItem(b.from); PS.addItem({ actId: b.actId, date: b.date, time: b.time }); b.done = true; PS.save(); renderLog(); head(); UI.toast('Kegiatan berhasil diganti');
@@ -202,23 +212,87 @@
     }
   }
 
-  /* ---------- ringkasan di kanan: muncul setelah ada kegiatan ---------- */
-  function renderSummary() {
-    const pane = document.getElementById('sumpane'), ws = document.getElementById('ws'); if (!pane) return;
-    const s = PS.get(); const items = PS.sortedItems().filter((i) => i.status !== 'ditolak');
-    if (!items.length) { pane.hidden = true; ws.classList.remove('has-sum'); return; }
-    const was = !pane.hidden; pane.hidden = false; ws.classList.add('has-sum');
+  /* ---------- panel kanan: usulan rencana atau ringkasan trip ---------- */
+  const STAT = { draft: ['Belum diajukan', ''], diajukan: ['Menunggu host', 'wait'], disetujui: ['Disetujui', 'ok'], lunas: ['Lunas', 'ok'], ditolak: ['Ditolak', 'bad'] };
+  const PROTO = '';
+  let sideForce = null, sidePlanUid = null;
+  function lastPlan() {
+    const ch = PS.get().chat;
+    for (let k = ch.length - 1; k >= 0; k--) {
+      const m = ch[k]; if (m.role !== 'ai' || !m.blocks) continue;
+      const i = m.blocks.findIndex((b) => b.type === 'plan');
+      if (i >= 0) return { m, i, b: m.blocks[i] };
+    }
+    return null;
+  }
+  function stepsHTML(active) {
+    const L = ['Susun rencana', 'Ajukan ke host', 'Host menyetujui', 'Bayar']; let out = '';
+    L.forEach((lab, k) => {
+      const n = k + 1, st = n < active ? 'done' : (n === active ? 'on' : '');
+      out += '<li class="' + st + '"' + (n === active ? ' aria-current="step"' : '') + '><span class="n">' + (n < active ? ic('check', 14) : n) + '</span><span class="l">' + lab + '</span></li>';
+      if (n < 4) out += '<li class="ln" aria-hidden="true"></li>';
+    });
+    return '<ol class="pstep" aria-label="Langkah">' + out + '</ol>';
+  }
+  const durTxt = (a) => a.dur.toString().replace('.', ',') + ' jam';
+  function planPane(lp) {
+    const p = lp.b.plan, ref = 'data-m="' + lp.m.uid + '" data-i="' + lp.i + '"';
+    const all = p.items.every((it) => inTrip(it.actId, it.date));
+    const hasItems = PS.get().items.some((i) => i.status !== 'ditolak');
+    const days = p.days.map((d, n) => '<section class="dayg" aria-label="Hari ' + (n + 1) + '"><div class="dayn">' + (n + 1) + '</div><div class="dayb"><div class="dayh"><span>' + D.long(d.date) + '</span><span class="dayw">' + (d.moon ? ic('moon', 14) + d.moon : '') + UI.wx(d.wx) + '</span></div>' +
+      (d.items.length ? d.items.map((it) => {
+        const a = byId[it.actId], has = inTrip(it.actId, it.date);
+        return '<div class="it"><div class="it-m"><h3>' + esc(a.short) + '</h3><small>' + ic('pin', 13) + esc(a.place) + '<span aria-hidden="true">·</span>' + ic('clock', 13) + it.time.replace(':', '.') + '<span aria-hidden="true">·</span>' + durTxt(a) + '</small><small class="why">' + esc(it.reason) + '</small></div>' +
+          '<b class="pr">' + rp(a.price) + '<em>per orang</em></b>' +
+          (has ? '<span class="added">' + ic('check', 14) + ' Ditambahkan</span>' : '<button type="button" class="addb" aria-label="Tambah ' + esc(a.short) + ' ke trip" data-act="add1" data-a="' + it.actId + '" data-d="' + it.date + '" data-t="' + it.time + '" data-p="' + p.people + '" ' + ref + '>' + ic('plus', 15) + ' Tambah</button>') + '</div>';
+      }).join('') : '<p class="none">Tidak ada kegiatan pada hari ini.</p>') + '</div></section>').join('');
+    return '<div class="sp">' + stepsHTML(1) +
+      '<div><div class="sp-eb">Rencana usulan</div><h2 class="sp-h">' + p.days.length + ' hari di bali.</h2><div class="sp-meta">' + p.people + ' orang · ' + D.span(p.start, p.end) + '</div></div>' +
+      '<div class="days">' + days + '</div>' +
+      '<div class="ptot"><span class="ptl">Perkiraan total</span><span class="tv"><b>' + rp(p.total) + '</b><small>untuk ' + p.people + ' orang · ' + rp(p.perPerson) + ' per orang</small></span></div>' +
+      '<div class="sp-act">' + (all ? '' : '<button type="button" class="pbtn" data-act="addall" ' + ref + '>Tambahkan semua ke trip</button>') + (hasItems ? '<button type="button" class="gbtn" data-view="sum">Lihat ringkasan trip</button>' : '') + '</div>' +
+      '<p class="help">Belum diajukan ke host. Kamu masih bisa mengubah rencana dulu.</p>' + PROTO + '</div>';
+  }
+  function sumPane(items, hasOpen) {
+    const s = PS.get();
     const dates = Array.from(new Set(items.map((i) => i.date)));
     const total = items.reduce((t, i) => t + PS.itemCost(i), 0);
     const drafts = items.filter((i) => i.status === 'draft').length;
-    pane.innerHTML = '<div class="pane-h"><div><h2>Ringkasan kegiatan</h2><small class="faint">' + items.length + ' kegiatan · ' + D.span(s.trip.start, s.trip.end) + '</small></div></div>' +
-      '<div class="pane-b"><div class="plist">' + dates.map((d) => '<div class="pday"><h3><span>' + D.long(d) + '</span><span style="font-weight:500;text-transform:none;letter-spacing:0">' + UI.wx(weatherFor(d)) + '</span></h3>' +
-        items.filter((i) => i.date === d).map((it) => { const a = byId[it.actId]; return '<div class="pit sm"><div class="top">' + thumb(a) + '<div style="flex:1;min-width:0"><b>' + esc(a.short) + '</b><small>' + it.time.replace(':', '.') + ' · ' + it.people + ' orang · ' + rp(PS.itemCost(it)) + '</small></div><button class="icon-btn" data-rm="' + it.uid + '" aria-label="Hapus ' + esc(a.short) + '">' + ic('trash', 16) + '</button></div><div>' + UI.statusBadge(it.status) + '</div></div>'; }).join('') + '</div>').join('') + '</div></div>' +
-      '<div class="sum-f"><div style="display:flex;justify-content:space-between;align-items:baseline"><span class="faint" style="font-size:13px">Estimasi total</span><b style="font-size:20px">' + rp(total) + '</b></div>' +
-      '<button class="btn btn-primary btn-block" data-open="kalender">' + ic('calendar', 16) + ' Buka kalender</button>' +
-      '<button class="btn btn-dark btn-block" data-open="bayar">' + ic('wallet', 16) + ' Rincian pembayaran</button>' +
-      (drafts ? '<button class="btn btn-line btn-block" data-sendall="1">Ajukan ' + drafts + ' draf ke host</button>' : '') + '</div>';
-    if (!was) pane.classList.add('in');
+    const sent = items.some((i) => i.status === 'diajukan'), ok = items.some((i) => i.status === 'disetujui' || i.status === 'lunas');
+    const active = ok ? 4 : (sent ? 3 : 2);
+    const grp = dates.map((d) => '<section class="dayg"><div class="dayb wide"><div class="dayh"><span>' + D.long(d) + '</span><span class="dayw">' + UI.wx(weatherFor(d)) + '</span></div>' +
+      items.filter((i) => i.date === d).map((it) => { const a = byId[it.actId], st = STAT[it.status] || [it.status, '']; return '<div class="it"><div class="it-m"><h3>' + esc(a.short) + '</h3><small>' + it.time.replace(':', '.') + '<span aria-hidden="true">·</span>' + it.people + ' orang<span aria-hidden="true">·</span>' + rp(PS.itemCost(it)) + '</small></div><span class="st ' + st[1] + '">' + st[0] + '</span><button type="button" class="rm" data-rm="' + it.uid + '" aria-label="Hapus ' + esc(a.short) + '">' + ic('trash', 16) + '</button></div>'; }).join('') + '</div></section>').join('');
+    const help = drafts ? 'Host mengonfirmasi dulu. Kamu baru membayar setelah disetujui.' : (ok ? 'Sudah disetujui host. Kamu bisa membayar sekarang.' : 'Menunggu konfirmasi host. Kamu belum perlu membayar.');
+    return '<div class="sp">' + stepsHTML(active) +
+      '<div><div class="sp-eb">Ringkasan trip</div><h2 class="sp-h">' + items.length + ' kegiatan di trip kamu.</h2><div class="sp-meta">' + D.span(s.trip.start, s.trip.end) + '</div></div>' +
+      '<div class="days">' + grp + '</div>' +
+      '<div class="ptot"><span class="ptl">Estimasi total</span><span class="tv"><b>' + rp(total) + '</b></span></div>' +
+      '<div class="sp-act">' + (drafts ? '<button type="button" class="pbtn" data-sendall="1">Ajukan ' + drafts + ' kegiatan ke host</button>' : (ok ? '<button type="button" class="pbtn" data-open="bayar">Rincian pembayaran</button>' : '')) +
+      '<button type="button" class="gbtn" data-open="kalender">' + ic('calendar', 16) + ' Buka kalender</button>' +
+      (drafts && ok ? '<button type="button" class="gbtn" data-open="bayar">' + ic('wallet', 16) + ' Rincian pembayaran</button>' : '') +
+      (hasOpen ? '<button type="button" class="gbtn" data-view="plan">Lihat usulan terbaru</button>' : '') + '</div>' +
+      '<p class="help">' + help + '</p>' + PROTO + '</div>';
+  }
+  function emptyPane() {
+    return '<div class="sp">' + stepsHTML(1) + '<div><div class="sp-eb">Rencana</div><h2 class="sp-h">mulai dari ceritamu.</h2><p class="sp-meta">Ceritakan berapa hari, berapa orang, dan suasana yang diinginkan. Rencana dari asisten akan muncul di sini.</p></div>' + PROTO + '</div>';
+  }
+  function renderSummary() {
+    const pane = document.getElementById('sumpane'); if (!pane) return;
+    const lp = lastPlan();
+    if (lp && lp.m.uid !== sidePlanUid) { sidePlanUid = lp.m.uid; sideForce = null; }
+    const items = PS.sortedItems().filter((i) => i.status !== 'ditolak');
+    const open = !!lp && !lp.b.plan.items.every((it) => inTrip(it.actId, it.date));
+    let v = sideForce || (open ? 'plan' : (items.length ? 'sum' : 'empty'));
+    if (v === 'plan' && !lp) v = items.length ? 'sum' : 'empty';
+    if (v === 'sum' && !items.length) v = lp ? 'plan' : 'empty';
+    const old = pane.querySelector('.sp'), top = old && pane.dataset.v === v ? old.scrollTop : 0;
+    pane.dataset.v = v;
+    pane.innerHTML = v === 'plan' ? planPane(lp) : (v === 'sum' ? sumPane(items, open) : emptyPane());
+    const nw = pane.querySelector('.sp'); if (nw && top) nw.scrollTop = top;
+  }
+  function onPaneClick(e) {
+    const v = e.target.closest('[data-view]'); if (v) { sideForce = v.dataset.view; renderSummary(); return; }
+    onLogClick(e); onSumClick(e);
   }
   function onSumClick(e) {
     const o = e.target.closest('[data-open]'); if (o) return go(o.dataset.open, o.dataset.open === 'bayar' ? 'pesanan' : undefined);
@@ -239,7 +313,7 @@
     else if (a === 'tolak') {
       PS.setStatus(u, 'ditolak');
       const alt = AI.alternativeFor(it);
-      PS.pushChat({ role: 'ai', text: host + ' belum dapat menerima ' + byId[it.actId].short + ' pada ' + D.long(it.date) + '. Anda tidak dikenai biaya apa pun. Berikut dua alternatif yang paling sesuai:', blocks: [{ type: 'alt', orig: it.actId, actId: alt.act && alt.act.id, date: it.date, shift: alt.shift }], chips: [] });
+      PS.pushChat({ role: 'ai', text: host + ' belum dapat menerima ' + byId[it.actId].short + ' pada ' + D.long(it.date) + '. Kamu tidak dikenai biaya apa pun. Berikut dua alternatif yang paling sesuai:', blocks: [{ type: 'alt', orig: it.actId, actId: alt.act && alt.act.id, date: it.date, shift: alt.shift }], chips: [] });
       UI.toast('Permintaan tidak dapat dipenuhi. Alternatif tersedia di Asisten AI.', '<a href="#" data-go="chat">Buka</a>');
     }
     else if (a === 'bayar') { if (!isTraveler()) return UI.needLogin('Pembayaran memerlukan akun.'); payModal([it]); }
@@ -260,19 +334,33 @@
     const s = PS.get();
     if (!cal.month) cal.month = s.trip.start.slice(0, 7) + '-01';
     if (!cal.sel) cal.sel = s.trip.start;
-    view.innerHTML = '<div class="cal-wrap"><section class="pane" style="overflow:visible"><div class="cal-h"><h2 id="calT"></h2><span style="display:flex;gap:6px"><button class="icon-btn" id="pm" aria-label="Bulan sebelumnya">' + ic('left', 18) + '</button><button class="btn btn-line btn-sm" id="tdy">Ke tanggal trip</button><button class="icon-btn" id="nm" aria-label="Bulan berikutnya">' + ic('right', 18) + '</button></span></div><div class="cal-g" id="calG"></div>' +
-      '<div class="legend"><span><i style="background:var(--olive)"></i>Disetujui atau lunas</span><span><i style="background:var(--bamboo)"></i>Menunggu host</span><span><i style="background:var(--mist);box-shadow:inset 0 0 0 1px var(--line-2)"></i>Draf</span><span><i style="background:rgba(46,27,19,.15)"></i>Acara pribadi</span><span>' + ic('moon', 12) + ' Purnama atau tilem</span></div></section>' +
-      '<aside class="pane" style="align-self:start"><div class="pane-h"><h2 id="dayT"></h2></div><div class="pane-b" id="dayB"></div></aside></div>';
+    view.innerHTML = '<div class="ws2 ws3 ws-cal"><nav class="rail" id="rail" aria-label="Tab trip"></nav><section class="pane calp" aria-label="Kalender trip"><div class="cal-h"><div><div class="sp-eb">Kalender</div><h2 id="calT"></h2><p class="cal-sub">Semua kegiatan di trip tampil di sini, termasuk yang belum diajukan ke host.</p></div><span class="cal-nav"><button class="icon-btn" id="pm" aria-label="Bulan sebelumnya">' + ic('left', 18) + '</button><button class="btn btn-line btn-sm" id="tdy">Ke tanggal trip</button><button class="icon-btn" id="nm" aria-label="Bulan berikutnya">' + ic('right', 18) + '</button></span></div><div class="cal-g" id="calG"></div>' +
+      '<div class="legend"><span><i class="lg-act"></i>Kegiatan trip</span><span><i class="lg-me"></i>Acara pribadi</span><button type="button" class="lg-help" data-moon="1">' + ic('moon', 13) + ' Purnama atau tilem <svg class="lg-i" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 2.5-3 4"/><path d="M12 17.5h.01"/></svg></button></div></section>' +
+      '<aside class="pane dayp" aria-label="Rincian hari"><div class="pane-h"><h2 id="dayT"></h2></div><div class="pane-b" id="dayB"></div></aside></div>';
+    document.getElementById('rail').addEventListener('click', (e) => { const b = e.target.closest('[data-t]'); if (b) go(b.dataset.t); });
+    renderRail();
+    view.onclick = (e) => { if (e.target.closest('[data-moon]')) moonModal(); };
     document.getElementById('pm').onclick = () => { cal.month = shiftMonth(cal.month, -1); renderCal(); };
     document.getElementById('nm').onclick = () => { cal.month = shiftMonth(cal.month, 1); renderCal(); };
     document.getElementById('tdy').onclick = () => { cal.month = PS.get().trip.start.slice(0, 7) + '-01'; cal.sel = PS.get().trip.start; renderCal(); };
     document.getElementById('calG').addEventListener('click', (e) => { const c = e.target.closest('[data-d]'); if (c) { cal.sel = c.dataset.d; renderCal(); } });
     document.getElementById('dayB').addEventListener('click', onDayClick);
     document.getElementById('dayB').addEventListener('submit', (e) => {
-      e.preventDefault(); const f = e.target; const t = f.title.value.trim(); if (!t) return;
+      e.preventDefault(); const f = e.target;
+      if (f.id === 'actF') { PS.addItem({ actId: f.act.value, date: cal.sel, time: f.time.value || '09:00', people: Math.max(1, +f.people.value || 1) }); UI.toast('Kegiatan ditambahkan ke ' + D.long(cal.sel), '<a href="#" data-go="chat">Ajukan di Asisten</a>'); return; }
+      const t = f.title.value.trim(); if (!t) return;
       PS.update((st) => st.events.push({ uid: uid(), date: cal.sel, time: f.time.value || '09:00', title: t, by: st.me })); UI.toast('Acara ditambahkan');
     });
     renderCal();
+  }
+  const TIMES = Array.from({ length: 48 }, (_, i) => { const v = String(Math.floor(i / 2)).padStart(2, '0') + ':' + (i % 2 ? '30' : '00'); return '<option' + (v === '09:00' ? ' selected' : '') + '>' + v + '</option>'; }).join('');
+  function moonModal() {
+    UI.modal('<div class="modal-h"><h3>Purnama dan Tilem</h3><button class="icon-btn" data-close aria-label="Tutup">' + ic('x', 18) + '</button></div><div class="modal-b mo">' +
+      '<p class="muted">Dua hari suci yang datang sekitar setiap 15 hari dalam kalender umat Hindu Bali. Di Bali, ini hari yang ramai dengan persembahyangan, bukan hari yang berbahaya.</p>' +
+      '<div class="mo-g"><div><b>Purnama</b><span>Bulan purnama. Hari bersyukur dan memohon berkat. Pura biasanya ramai oleh persembahyangan dan persembahan.</span></div><div><b>Tilem</b><span>Bulan mati (gelap). Suasana lebih tenang, untuk perenungan dan penyucian diri.</span></div></div>' +
+      '<h4>Pengaruhnya untuk trip kamu</h4><ul><li>Beberapa host menutup kegiatan di hari ini. Asisten sudah menghindari menjadwalkannya, dan tanggalnya ditandai ikon bulan di kalender.</li><li>Jalan menuju pura bisa lebih ramai. Beri waktu perjalanan lebih longgar.</li></ul>' +
+      '<h4>Sopan santun untuk pengunjung</h4><ul><li>Tidak ada larangan bepergian. Kamu tetap boleh berwisata.</li><li>Berpakaian sopan di pura: bahu dan lutut tertutup, pakai sarung dan selendang (sering disediakan di pura).</li><li>Jangan masuk area dalam pura kecuali untuk bersembahyang, dan jangan memanjat atau menyentuh benda suci.</li><li>Jangan menginjak persembahan (canang) di jalan atau di depan pura.</li><li>Perempuan yang sedang haid diminta tidak memasuki area pura.</li><li>Jangan mengganggu upacara. Tanyakan dulu sebelum memotret orang yang sedang bersembahyang.</li><li>Aturan tiap desa dan pura bisa berbeda. Ikuti arahan host atau pemangku setempat.</li></ul>' +
+      '<p class="faint" style="font-size:12.5px">Pastikan ke host sebelum berangkat.</p></div>');
   }
   function shiftMonth(m, n) { const d = D.parse(m); d.setMonth(d.getMonth() + n); return D.iso(d).slice(0, 7) + '-01'; }
   function renderCal() {
@@ -284,30 +372,52 @@
       const d = D.add(gridStart, i); const dt = D.parse(d); if (i >= 35 && dt.getMonth() !== first.getMonth()) break;
       const inT = d >= s.trip.start && d <= s.trip.end; const its = s.items.filter((x) => x.date === d).sort((a, b) => a.time.localeCompare(b.time)); const evs = s.events.filter((x) => x.date === d);
       const busy = group() ? s.members.filter((m) => m.busy.includes(d)) : []; const mn = moonFor(d), f = festivalFor(d);
-      const all = its.map((it) => '<div class="ev act s-' + it.status + '">' + it.time.slice(0, 5).replace(':', '.') + ' ' + esc(byId[it.actId].short) + '</div>').concat(evs.map((e) => '<div class="ev me">' + esc(e.title) + '</div>'));
+      const all = its.map((it) => '<div class="ev act">' + it.time.slice(0, 5).replace(':', '.') + ' ' + esc(byId[it.actId].short) + '</div>').concat(evs.map((e) => '<div class="ev me">' + esc(e.title) + '</div>'));
       h += '<button class="cell' + (dt.getMonth() !== first.getMonth() ? ' out' : '') + (d === cal.sel ? ' sel' : '') + (inT ? ' intrip' : '') + (d === D.today() ? ' today' : '') + '" data-d="' + d + '" aria-label="' + D.long(d) + '"><span class="dn"><span>' + dt.getDate() + '</span><span style="display:flex;gap:4px;align-items:center;color:var(--ink-3)">' + (mn ? ic('moon', 12) : '') + (inT ? ic(weatherFor(d).icon, 13) : '') + '</span></span>' +
-        all.slice(0, 2).join('') + (all.length > 2 ? '<div class="faint" style="font-size:11px">+' + (all.length - 2) + ' lagi</div>' : '') + (f ? '<div class="ev fest">Upacara</div>' : '') +
+        all.slice(0, 1).join('') + (all.length > 1 ? '<div class="faint" style="font-size:10.5px">+' + (all.length - 1) + ' lagi</div>' : '') + (f ? '<div class="ev fest">Upacara</div>' : '') +
         (busy.length ? '<span class="meta"><span style="color:#86320f;font-weight:600">' + busy.length + ' berhalangan</span></span>' : '') + '</button>';
     }
     document.getElementById('calG').innerHTML = h;
     renderDay();
+  }
+  /* kurva peluang hujan: 7 hari di sekitar tanggal yang dipilih */
+  function wxCurve(sel) {
+    const days = []; for (let i = -3; i <= 3; i++) days.push(D.add(sel, i));
+    const W = days.map((d) => weatherFor(d));
+    const w = 300, h = 92, px = 20, top = 14, bot = 70;
+    const xs = days.map((d, i) => px + i * (w - 2 * px) / 6);
+    const ys = W.map((x) => bot - (x.rain / 100) * (bot - top));
+    let line = 'M' + xs[0] + ' ' + ys[0];
+    for (let i = 1; i < xs.length; i++) { const cx = (xs[i - 1] + xs[i]) / 2; line += ' C' + cx + ' ' + ys[i - 1] + ' ' + cx + ' ' + ys[i] + ' ' + xs[i] + ' ' + ys[i]; }
+    const area = line + ' L' + xs[6] + ' ' + bot + ' L' + xs[0] + ' ' + bot + ' Z';
+    const pts = xs.map((x, i) => { const on = days[i] === sel;
+      return '<circle cx="' + x + '" cy="' + ys[i] + '" r="' + (on ? 5 : 3) + '" fill="' + (on ? '#FCE6B7' : 'rgba(244,241,226,.7)') + '"/>' + (on ? '<circle cx="' + x + '" cy="' + ys[i] + '" r="9" fill="none" stroke="rgba(252,230,183,.4)"/>' : '') +
+        '<text x="' + x + '" y="' + (ys[i] - 11) + '" text-anchor="middle" font-size="10" fill="' + (on ? '#FCE6B7' : 'rgba(244,241,226,.72)') + '">' + W[i].rain + '%</text>' +
+        '<text x="' + x + '" y="88" text-anchor="middle" font-size="10.5" fill="' + (on ? '#F4F1E2' : 'rgba(244,241,226,.6)') + '" font-weight="' + (on ? 600 : 400) + '">' + D.parse(days[i]).getDate() + '</text>'; }).join('');
+    return '<div class="wxc"><div class="wxc-h"><b>Peluang hujan</b></div><svg viewBox="0 0 ' + w + ' ' + h + '" width="100%" role="img" aria-label="Kurva peluang hujan 7 hari sekitar tanggal terpilih"><defs><linearGradient id="wxg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FCE6B7" stop-opacity=".28"/><stop offset="1" stop-color="#FCE6B7" stop-opacity="0"/></linearGradient></defs><path d="' + area + '" fill="url(#wxg)"/><path d="' + line + '" fill="none" stroke="#FCE6B7" stroke-width="2" stroke-linecap="round"/>' + pts + '</svg></div>';
   }
   function renderDay() {
     const s = PS.get(); const d = cal.sel; const w = weatherFor(d); const mn = moonFor(d), f = festivalFor(d);
     document.getElementById('dayT').textContent = D.long(d);
     const its = s.items.filter((x) => x.date === d).sort((a, b) => a.time.localeCompare(b.time)); const evs = s.events.filter((x) => x.date === d).sort((a, b) => a.time.localeCompare(b.time));
     const me = PS.me(); const meBusy = me.busy.includes(d);
-    document.getElementById('dayB').innerHTML = '<div class="agenda-d">' +
-      '<div style="display:flex;gap:12px;flex-wrap:wrap;font-size:13px;color:var(--ink-2)">' + UI.wx(w) + '<span>Peluang hujan ' + w.rain + '%</span>' + (mn ? '<span style="display:inline-flex;gap:5px;align-items:center">' + ic('moon', 14) + 'Hari ' + mn + '</span>' : '') + '</div>' +
+    document.getElementById('dayB').innerHTML = '<div class="agenda-d"><div class="ag-scroll">' +
+      '<div style="display:flex;gap:12px;flex-wrap:wrap;font-size:13px;color:var(--ink-2)">' + UI.wx(w) + '<span>Peluang hujan ' + w.rain + '%</span>' + (mn ? '<button type="button" class="lg-help" data-moon="1">' + ic('moon', 14) + 'Hari ' + mn + ' <svg class="lg-i" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 2.5-3 4"/><path d="M12 17.5h.01"/></svg></button>' : '') + '</div>' +
+      wxCurve(d) +
       (f ? '<div class="badge b-mid">' + esc(f) + '</div>' : '') +
-      its.map((it) => { const a = byId[it.actId]; return '<div class="ag"><time>' + it.time.replace(':', '.') + '</time><div style="flex:1;min-width:0"><b>' + esc(a.short) + '</b><small class="faint" style="display:block">' + esc(a.place) + ' · ' + it.people + ' orang</small><div style="margin-top:6px">' + UI.statusBadge(it.status) + '</div></div></div>'; }).join('') +
+      its.map((it) => { const a = byId[it.actId]; return '<div class="ag"><time>' + it.time.replace(':', '.') + '</time><div style="flex:1;min-width:0"><b>' + esc(a.short) + '</b><small class="faint" style="display:block">' + esc(a.place) + ' · ' + it.people + ' orang</small></div><button class="icon-btn" data-delit="' + it.uid + '" aria-label="Hapus kegiatan">' + ic('trash', 16) + '</button></div>'; }).join('') +
       evs.map((e) => '<div class="ag"><time>' + e.time.replace(':', '.') + '</time><div style="flex:1"><b>' + esc(e.title) + '</b><small class="faint" style="display:block">Acara pribadi</small></div><button class="icon-btn" data-del="' + e.uid + '" aria-label="Hapus acara">' + ic('trash', 16) + '</button></div>').join('') +
       (!its.length && !evs.length ? '<p class="faint" style="font-size:14px">Belum ada agenda pada hari ini.</p>' : '') +
       (group() ? '<div style="border-top:1px solid var(--line);padding-top:14px;display:grid;gap:10px"><b style="font-size:13px">Ketersediaan anggota</b>' + s.members.map((m) => '<div class="busy-row">' + UI.avatar(m, 'av-sm') + '<span style="flex:1">' + esc(m.name) + '</span><span class="' + (m.busy.includes(d) ? 'neg' : 'faint') + '" style="font-size:12.5px">' + (m.busy.includes(d) ? 'Berhalangan' : 'Tersedia') + '</span></div>').join('') + '<button class="btn btn-line btn-sm" data-busy="1">' + (meBusy ? 'Saya tersedia pada hari ini' : 'Tandai saya berhalangan') + '</button></div>' : '') +
-      '<form style="border-top:1px solid var(--line);padding-top:14px;display:grid;gap:10px" id="evF"><b style="font-size:13px">Tambah acara pribadi</b><input class="input" name="title" placeholder="Contoh: check-in hotel" required><div style="display:flex;gap:8px"><input class="input" type="time" name="time" value="09:00" style="max-width:130px"><button class="btn btn-dark" style="flex:1">Tambah</button></div></form>' +
-      '<button class="btn btn-primary btn-block" data-ask="1">' + ic('sparkles', 16) + ' Minta AI mencarikan tanggal terbaik</button></div>';
+      '</div><div class="ag-add"><div class="seg" role="tablist" aria-label="Jenis tambahan"><button type="button" role="tab" data-mode="act" class="' + (cal.mode === 'act' ? 'on' : '') + '">Tambah kegiatan</button><button type="button" role="tab" data-mode="ev" class="' + (cal.mode === 'ev' ? 'on' : '') + '">Acara pribadi</button></div>' +
+      (cal.mode === 'ev'
+        ? '<form id="evF"><input class="input" name="title" placeholder="Contoh: check-in hotel" aria-label="Nama acara" required><div class="frow"><label class="fld">Jam<select class="select" name="time" aria-label="Jam">' + TIMES + '</select></label><button class="btn btn-dark fbtn">Tambah acara</button></div></form>'
+        : '<form id="actF"><select class="select" name="act" aria-label="Kegiatan">' + A.map((x) => '<option value="' + x.id + '">' + esc(x.short) + '</option>').join('') + '</select><div class="frow"><label class="fld">Jam<select class="select" name="time" aria-label="Jam">' + TIMES + '</select></label><label class="fld">Orang<input class="input" type="number" name="people" min="1" max="30" value="' + Math.max(1, s.members.length) + '"></label><button class="btn btn-primary fbtn">Tambah</button></div></form>') +
+      '</div></div>';
   }
   function onDayClick(e) {
+    const md = e.target.closest('[data-mode]'); if (md) { cal.mode = md.dataset.mode; renderDay(); return; }
+    const di = e.target.closest('[data-delit]'); if (di) { PS.removeItem(di.dataset.delit); UI.toast('Kegiatan dihapus dari trip'); return; }
     const del = e.target.closest('[data-del]'); if (del) { PS.update((st) => { st.events = st.events.filter((x) => x.uid !== del.dataset.del); }); return; }
     if (e.target.closest('[data-busy]')) { PS.update((st) => { const m = st.members.find((x) => x.id === st.me); const i = m.busy.indexOf(cal.sel); if (i >= 0) m.busy.splice(i, 1); else m.busy.push(cal.sel); }); return; }
     if (e.target.closest('[data-ask]')) { go('chat'); setTimeout(() => send('Cari tanggal terbaik'), 200); }
@@ -317,25 +427,58 @@
      PEMBAYARAN: Pesanan dan Patungan
      ===================================================================== */
   function buildPay() {
-    const items = PS.get().items;
-    view.innerHTML = '<div style="padding:24px 0 8px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><div class="tabs" id="subtabs"><button data-s="pesanan" class="' + (sub === 'pesanan' ? 'on' : '') + '">Pesanan kegiatan</button><button data-s="patungan" class="' + (sub === 'patungan' ? 'on' : '') + '">' + (group() ? 'Patungan' : 'Rincian biaya') + '</button></div><button class="btn btn-line btn-sm" data-go="chat">' + ic('sparkles', 15) + ' Kembali ke asisten</button></div><div id="payBody"></div>';
+    const split = sub === 'patungan';
+    view.innerHTML = '<div class="ws2 ws3 ws-pay' + (split ? ' ws-split' : '') + '"><nav class="rail" id="rail" aria-label="Tab trip"></nav><section class="pane payp" aria-label="Pembayaran"><div class="pay-top"><div class="subtabs" id="subtabs" role="tablist"><button role="tab" data-s="pesanan" class="' + (sub === 'pesanan' ? 'on' : '') + '">Pesanan kegiatan</button><button role="tab" data-s="patungan" class="' + (split ? 'on' : '') + '">' + (group() ? 'Patungan' : 'Rincian biaya') + '</button></div></div><div id="payBody"></div></section>' + (split ? '' : '<aside class="pane payside" id="paySide" aria-label="Ringkasan pembayaran"></aside>') + '</div>';
+    document.getElementById('rail').addEventListener('click', (e) => { const b = e.target.closest('[data-t]'); if (b) go(b.dataset.t); });
+    renderRail();
     document.getElementById('subtabs').onclick = (e) => { const b = e.target.closest('[data-s]'); if (b) { sub = b.dataset.s; buildPay(); } };
-    if (sub === 'patungan') buildSplit(document.getElementById('payBody')); else buildOrders(document.getElementById('payBody'), items);
+    if (split) buildSplit(document.getElementById('payBody')); else buildOrders(document.getElementById('payBody'));
   }
-  function buildOrders(box, _items) {
-    const items = PS.sortedItems();
-    if (!items.length) { box.innerHTML = '<div class="empty" style="padding:70px 0"><h2>Belum ada pesanan</h2><p style="margin:10px 0 20px">Kegiatan yang Anda tambahkan dan ajukan ke host akan tampil di sini beserta statusnya.</p><a class="btn btn-dark" href="trip.html?tab=chat">Susun dengan asisten AI</a> <button class="btn btn-line" id="seed3">Muat contoh trip kelompok</button></div>'; document.getElementById('seed3').onclick = () => { PS.seedDemo(); head(); }; return; }
-    const payable = items.filter((i) => i.status === 'disetujui'); const drafts = items.filter((i) => i.status === 'draft');
-    box.innerHTML = '<div class="orders" style="padding-top:12px;max-width:none"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><p class="muted" style="font-size:14px;max-width:560px">Alurnya: ajukan ke host, tunggu persetujuan, lalu bayar. Tidak ada tagihan sebelum host menyetujui.</p><span style="display:flex;gap:8px">' + (drafts.length ? '<button class="btn btn-primary btn-sm" id="sendAll">Ajukan ' + drafts.length + ' draf</button>' : '') + (payable.length > 1 ? '<button class="btn btn-gold btn-sm" id="payAll">Bayar semua yang disetujui (' + rp(payable.reduce((t, i) => t + PS.itemCost(i), 0)) + ')</button>' : '') + '</span></div>' +
+  const OSTAT = { draft: 'Belum diajukan', diajukan: 'Menunggu host', disetujui: 'Siap dibayar', ditolak: 'Ditolak host', lunas: 'Lunas' };
+  function payMsg(items, drafts) {
+    const n = (st) => items.filter((i) => i.status === st).length;
+    const w = n('diajukan'), ok = n('disetujui'), no = n('ditolak');
+    const parts = [];
+    if (ok) parts.push(ok + ' kegiatan sudah disetujui host dan siap dibayar.');
+    if (w) parts.push(w + ' kegiatan menunggu jawaban host. Kamu belum dikenai biaya.');
+    if (no) parts.push(no + ' kegiatan ditolak host. Kamu tidak dikenai biaya, dan bisa mencari penggantinya.');
+    if (!parts.length) parts.push('Semua pesanan sudah lunas.');
+    if (drafts) parts.push(drafts + ' kegiatan lain belum diajukan ke host, jadi belum muncul di sini.');
+    return parts.join(' ');
+  }
+  function buildOrders(box) {
+    const all = PS.sortedItems();
+    const drafts = all.filter((i) => i.status === 'draft').length;
+    const items = all.filter((i) => i.status !== 'draft');
+    const payable = items.filter((i) => i.status === 'disetujui');
+    const side = document.getElementById('paySide');
+    const total = payable.reduce((t, i) => t + PS.itemCost(i), 0);
+    const waiting = items.some((i) => i.status === 'diajukan');
+    side.innerHTML = '<div class="sp"><div class="sp-eb">Ringkasan pembayaran</div>' +
+      '<div class="ps-row"><span>' + payable.length + ' kegiatan disetujui</span><span>' + rp(total) + '</span></div>' +
+      '<div class="ptot"><span class="ptl">Total dibayar sekarang</span><span class="tv"><b>' + rp(total) + '</b></span></div>' +
+      (payable.length ? '<button type="button" class="pbtn" id="payAll">Bayar ' + rp(total) + '</button><p class="help">Pilih cara bayar di langkah berikutnya.</p>'
+        : '<p class="help">' + (waiting ? 'Menunggu persetujuan host. Tombol bayar akan aktif setelah ada kegiatan yang disetujui.' : 'Belum ada kegiatan yang perlu dibayar.') + '</p>') +
+      '</div>';
+    side.onclick = (e) => { if (e.target.closest('#payAll')) { if (!isTraveler()) return UI.needLogin('Pembayaran memerlukan akun.'); payModal(payable); } };
+    if (!items.length) {
+      box.innerHTML = '<div class="sp"><div><div class="sp-eb">Pesanan</div><h1 class="sp-h">belum ada yang perlu dibayar.</h1><p class="sp-meta">Pembayaran dibuka setelah host menyetujui kegiatanmu. Alurnya:</p></div>' +
+        '<ol class="how"><li><b>Susun rencana di Asisten.</b><span>Kegiatan yang kamu tambahkan langsung masuk ke Kalender.</span></li><li><b>Ajukan ke host.</b><span>Satu tombol di Asisten. Kamu belum dikenai biaya.</span></li><li><b>Bayar di sini.</b><span>Setelah host menyetujui, pesananmu muncul di halaman ini.</span></li></ol>' +
+        (drafts ? '<p class="sp-meta">Kamu punya ' + drafts + ' kegiatan yang belum diajukan.</p>' : '') +
+        '<div class="sp-act"><a class="pbtn" href="trip.html?tab=chat" data-go="chat">' + (drafts ? 'Ajukan di Asisten' : 'Susun dengan Asisten') + '</a>' + (all.length ? '' : '<button class="gbtn" id="seed3">Muat contoh trip kelompok</button>') + '</div></div>';
+      const sd = document.getElementById('seed3'); if (sd) sd.onclick = () => { PS.seedDemo(); head(); };
+      return;
+    }
+    box.innerHTML = '<div class="sp"><div><div class="sp-eb">Pesanan</div><h1 class="sp-h">' + items.length + ' pesanan, ' + payable.length + ' siap dibayar.</h1><p class="sp-meta">' + payMsg(items, drafts) + '</p>' + (drafts ? '<div class="sp-act" style="margin-top:14px"><a class="gbtn" href="trip.html?tab=chat" data-go="chat">Ajukan sisanya di Asisten</a></div>' : '') + '</div><div class="ords">' +
       items.map((it) => { const a = byId[it.actId]; const stamped = PS.get().passport[it.actId];
-        return '<div class="order"><span class="th">' + PA.photo(a) + '</span><div class="i"><h3>' + esc(a.name) + '</h3><p>' + D.long(it.date) + ' · ' + it.time.replace(':', '.') + ' · ' + it.people + ' orang</p><p>Host: ' + esc(a.host.name) + '</p><div style="margin-top:8px">' + UI.statusBadge(it.status) + '</div></div><div class="r"><b style="font-size:18px">' + rp(PS.itemCost(it)) + '</b><span style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">' +
-          (it.status === 'draft' ? '<button class="btn btn-primary btn-sm" data-pa="ajukan" data-u="' + it.uid + '">Ajukan ke host</button>' : it.status === 'diajukan' ? '<button class="btn btn-line btn-sm" data-pa="setuju" data-u="' + it.uid + '">Simulasi: host setuju</button><button class="btn btn-danger btn-sm" data-pa="tolak" data-u="' + it.uid + '">Simulasi: host tolak</button>' : it.status === 'disetujui' ? '<button class="btn btn-gold btn-sm" data-pa="bayar" data-u="' + it.uid + '">Bayar sekarang</button>' : it.status === 'ditolak' ? '<button class="btn btn-line btn-sm" data-pa="alt" data-u="' + it.uid + '">Cari pengganti</button>' : '<button class="btn btn-line btn-sm" data-rc="' + it.uid + '">Bukti pesanan</button>' + (stamped ? '<a class="btn btn-ghost btn-sm" href="paspor.html">Stempel tersimpan</a>' : '<button class="btn btn-dark btn-sm" data-pa="stamp" data-u="' + it.uid + '">Kegiatan selesai</button>')) +
-          '<button class="icon-btn" data-pa="hapus" data-u="' + it.uid + '" aria-label="Hapus">' + ic('trash', 16) + '</button></span></div></div>'; }).join('') + '</div>';
+        const act = it.status === 'diajukan' ? '<span class="ord-hint">Host sedang meninjau</span><button type="button" class="ord-lnk" data-pa="setuju" data-u="' + it.uid + '">Simulasi: host setuju</button><button type="button" class="ord-lnk bad" data-pa="tolak" data-u="' + it.uid + '">Simulasi: host tolak</button>'
+          : it.status === 'disetujui' ? '<button type="button" class="addb" data-pa="bayar" data-u="' + it.uid + '">Bayar</button>'
+          : it.status === 'ditolak' ? '<button type="button" class="ord-lnk" data-pa="alt" data-u="' + it.uid + '">Cari pengganti</button>'
+          : '<button type="button" class="ord-lnk" data-rc="' + it.uid + '">Bukti pesanan</button>' + (stamped ? '<a class="ord-lnk" href="paspor.html">Stempel tersimpan</a>' : '<button type="button" class="ord-lnk" data-pa="stamp" data-u="' + it.uid + '">Kegiatan selesai</button>');
+        return '<div class="ord"><div class="ord-m"><h3>' + esc(a.name) + '</h3><p>' + D.long(it.date) + ' · ' + it.time.replace(':', '.') + ' · ' + it.people + ' orang</p></div><b class="ord-p">' + rp(PS.itemCost(it)) + '</b><span class="st ' + (it.status === 'diajukan' ? 'wait' : it.status === 'disetujui' || it.status === 'lunas' ? 'ok' : 'bad') + '">' + OSTAT[it.status] + '</span><span class="ord-a">' + act + '</span></div>'; }).join('') + '</div></div>';
     box.onclick = (e) => {
       const b = e.target.closest('[data-pa]'); if (b) return itemAction(b.dataset.pa, b.dataset.u);
       const r = e.target.closest('[data-rc]'); if (r) return receipt(PS.get().items.find((i) => i.uid === r.dataset.rc));
-      if (e.target.closest('#sendAll')) sendDrafts();
-      if (e.target.closest('#payAll')) { if (!isTraveler()) return UI.needLogin('Pembayaran memerlukan akun.'); payModal(payable); }
     };
   }
   function buildSplit(box) {
@@ -344,7 +487,7 @@
     const pct = all ? Math.round(done / all * 100) : (st.total ? 100 : 0);
     box.innerHTML = '<div class="split" style="padding-top:12px"><div><div class="kpis"><div class="kpi"><small>Total biaya trip</small><b>' + rp(st.total) + '</b></div>' + (g ? '<div class="kpi"><small>Rata-rata per orang</small><b>' + rp(per) + '</b></div><div class="kpi"><small>Pelunasan antar anggota</small><b>' + pct + '%</b><div class="bar" style="margin-top:10px"><i style="width:' + pct + '%"></i></div></div>' : '<div class="kpi"><small>Jumlah kegiatan</small><b>' + s.items.filter((i) => i.status !== 'ditolak').length + '</b></div><div class="kpi"><small>Sudah dibayar</small><b>' + rp(s.items.filter((i) => i.status === 'lunas').reduce((t, i) => t + PS.itemCost(i), 0)) + '</b></div>') + '</div>' +
       '<section class="pane"><div class="pane-h"><h2>Daftar biaya</h2><button class="btn btn-dark btn-sm" id="addEx">' + ic('plus', 15) + ' Tambah biaya</button></div><div class="pane-b" style="padding-block:6px">' +
-      (st.ex.length ? st.ex.map((e) => { const p = PS.member(e.paidBy); return '<div class="ex"><span class="ico">' + ic(e.auto ? 'ticket' : 'receipt', 20) + '</span><div class="t"><b>' + esc(e.title) + '</b><small>' + esc(e.sub) + (g ? ' · dibayar ' + esc(p ? p.name.split(' ')[0] : '-') + ' · dibagi ' + e.split.length + ' orang' : '') + '</small></div><div style="text-align:right"><b>' + rp(e.amount) + '</b>' + (e.auto ? '<div class="faint" style="font-size:11.5px">dari kegiatan</div>' : '<button class="btn btn-ghost btn-sm" data-rm="' + e.uid + '" style="padding:2px 6px;font-size:12px">Hapus</button>') + '</div></div>'; }).join('') : '<div class="empty"><h3 style="font-size:18px">Belum ada biaya</h3><p style="margin:8px 0 16px">Kegiatan yang ditambahkan ke trip otomatis tercatat di sini. Anda juga dapat menambahkan biaya lain seperti transportasi atau makan.</p></div>') + '</div></section></div>' +
+      (st.ex.length ? st.ex.map((e) => { const p = PS.member(e.paidBy); return '<div class="ex"><span class="ico">' + ic(e.auto ? 'ticket' : 'receipt', 20) + '</span><div class="t"><b>' + esc(e.title) + '</b><small>' + esc(e.sub) + (g ? ' · dibayar ' + esc(p ? p.name.split(' ')[0] : '-') + ' · dibagi ' + e.split.length + ' orang' : '') + '</small></div><div style="text-align:right"><b>' + rp(e.amount) + '</b>' + (e.auto ? '<div class="faint" style="font-size:11.5px">dari kegiatan</div>' : '<button class="btn btn-ghost btn-sm" data-rm="' + e.uid + '" style="padding:2px 6px;font-size:12px">Hapus</button>') + '</div></div>'; }).join('') : '<div class="empty"><h3 style="font-size:18px">Belum ada biaya</h3><p style="margin:8px 0 16px">Kegiatan yang ditambahkan ke trip otomatis tercatat di sini. Kamu juga dapat menambahkan biaya lain seperti transportasi atau makan.</p></div>') + '</div></section></div>' +
       '<aside style="display:grid;gap:24px;align-content:start">' + (g ? '<section class="pane"><div class="pane-h"><h2>Siapa membayar siapa</h2></div><div class="pane-b">' +
       (st.tx.length ? st.tx.map((t) => { const f = PS.member(t.from), to = PS.member(t.to); return '<div class="tx' + (s.settled[t.key] ? ' done' : '') + '">' + UI.avatar(f, 'av-sm') + '<div style="flex:1;min-width:0;font-size:13.5px"><b>' + esc(f.name.split(' ')[0]) + '</b> kepada <b>' + esc(to.name.split(' ')[0]) + '</b><div class="amt" style="font-weight:800;font-size:16px">' + rp(t.amount) + '</div></div><label class="switch" title="Tandai lunas"><input type="checkbox" data-st="' + t.key + '"' + (s.settled[t.key] ? ' checked' : '') + '><span></span></label></div>'; }).join('') : '<p class="muted" style="font-size:14px">' + (st.total ? 'Seluruh anggota sudah impas.' : 'Belum ada yang perlu dibayar.') + '</p>') +
       '<p class="faint" style="font-size:12px;margin-top:12px">Jumlah transfer dihitung seminimal mungkin. Pathora hanya mencatat, tidak memindahkan uang antar anggota.</p></div></section>' +
@@ -384,7 +527,6 @@
   function payModal(list) {
     const total = list.reduce((t, i) => t + PS.itemCost(i), 0);
     UI.modal('<div class="modal-h"><h3>Pembayaran</h3><button class="icon-btn" data-close aria-label="Tutup">' + ic('x', 18) + '</button></div><div class="modal-b" style="display:grid;gap:16px">' +
-      '<div class="sim-note">' + ic('info', 16) + '<span>Ini simulasi. Tidak ada dana yang dipindahkan dan tidak ada data kartu yang disimpan.</span></div>' +
       '<div class="sum" style="border:0;padding:0">' + list.map((i) => '<div><span>' + esc(byId[i.actId].short) + ' · ' + D.med(i.date) + '</span><span>' + rp(PS.itemCost(i)) + '</span></div>').join('') + '<div class="tot"><span>Total</span><span>' + rp(total) + '</span></div></div>' +
       (group() ? '<p class="faint" style="font-size:12.5px">Dibayar oleh bendahara (' + esc(PS.member(PS.get().trip.treasurer).name.split(' ')[0]) + '), lalu dibagi lewat halaman Patungan.</p>' : '') +
       '<div><label class="pay-opt"><input type="radio" name="pm" checked>' + ic('qr', 20) + '<span><b>QRIS</b><small class="faint" style="display:block">Pindai dari aplikasi bank atau dompet digital</small></span></label>' +
@@ -396,7 +538,7 @@
         btn.disabled = true; btn.textContent = 'Memproses…';
         setTimeout(() => {
           PS.update((st) => { list.forEach((l) => { const it = st.items.find((x) => x.uid === l.uid); if (it) { it.status = 'lunas'; st.payouts.push({ uid: uid(), actId: it.actId, amount: PS.itemCost(it), date: D.today() }); } }); });
-          close(); UI.toast('Pembayaran berhasil (simulasi)');
+          close(); UI.toast('Pembayaran berhasil');
         }, 1100);
       };
     });
@@ -409,9 +551,8 @@
   /* ---------- dialog: langganan di dalam aplikasi ---------- */
   function plusModal() {
     UI.modal('<div class="modal-h"><h3>' + (left() <= 0 ? 'Pertanyaan gratis hari ini telah habis' : 'Pathora Plus') + '</h3><button class="icon-btn" data-close aria-label="Tutup">' + ic('x', 18) + '</button></div><div class="modal-b" style="display:grid;gap:16px">' +
-      '<p class="muted">Paket gratis mencakup ' + FREE_Q + ' pertanyaan per hari. Kuota diperbarui besok, atau Anda dapat melanjutkan sekarang dengan Pathora Plus.</p>' +
-      '<div class="card" style="padding:18px;display:grid;gap:10px"><b style="font-size:18px">Pathora Plus <span class="faint" style="font-weight:500;font-size:14px">Rp49.000 per bulan, gratis 7 hari pertama</span></b><ul class="checklist"><li>' + ic('check', 18) + 'Pertanyaan tanpa batas ke asisten AI</li><li>' + ic('check', 18) + 'Trip dan anggota tanpa batas</li><li>' + ic('check', 18) + 'Prakiraan keramaian untuk tanggal pilihan Anda</li></ul></div>' +
-      '<div class="sim-note">' + ic('info', 16) + '<span>Simulasi. Tidak ada pembayaran yang diproses, dan Plus hanya aktif di browser ini.</span></div>' +
+      '<p class="muted">Paket gratis mencakup ' + FREE_Q + ' pertanyaan per hari. Kuota diperbarui besok, atau kamu dapat melanjutkan sekarang dengan Pathora Plus.</p>' +
+      '<div class="card" style="padding:18px;display:grid;gap:10px"><b style="font-size:18px">Pathora Plus <span class="faint" style="font-weight:500;font-size:14px">Rp49.000 per bulan, gratis 7 hari pertama</span></b><ul class="checklist"><li>' + ic('check', 18) + 'Pertanyaan tanpa batas ke asisten AI</li><li>' + ic('check', 18) + 'Trip dan anggota tanpa batas</li><li>' + ic('check', 18) + 'Prakiraan keramaian untuk tanggal pilihan kamu</li></ul></div>' +
       '<button class="btn btn-primary btn-lg btn-block" id="goPlus">Mulai uji coba 7 hari</button><button class="btn btn-ghost btn-block" data-close>Nanti saja</button></div>', (ov, close) => {
       ov.querySelector('#goPlus').onclick = () => { if (!isTraveler()) { close(); return UI.needLogin('Berlangganan Pathora Plus memerlukan akun.'); } PAUTH.update({ plan: 'plus' }); close(); renderQuota(); UI.toast('Pathora Plus aktif', '<a href="akun.html">Kelola</a>'); };
     });
@@ -432,13 +573,15 @@
     if (b < a) { UI.toast('Tanggal pulang harus sama atau setelah tanggal tiba'); head(); return; }
     PS.update((st) => { st.trip.start = a; st.trip.end = b; }); cal.month = null; cal.sel = null; UI.toast('Tanggal di Bali diperbarui');
   }
+  document.querySelectorAll('.dt').forEach((l) => l.addEventListener('click', (e) => { const i = l.querySelector('input'); if (e.target !== i) { try { i.showPicker(); } catch (x) { i.focus(); } } }));
   document.getElementById('d1').addEventListener('change', () => { const a = document.getElementById('d1').value, b = document.getElementById('d2'); if (a && b.value && b.value < a) b.value = a; setDates(); });
   document.getElementById('d2').addEventListener('change', setDates);
 
   /* ---------- router tab ---------- */
   function build() {
     view.onclick = null;
-    document.body.classList.toggle('fit', tab === 'chat' && window.innerWidth > 1060);
+    document.body.classList.toggle('fit', window.innerWidth > 1060);
+    document.body.classList.add('chat-mode'); document.body.classList.toggle('tab-chat', tab === 'chat');
     if (tab === 'chat') buildChat(); else if (tab === 'kalender') buildCal(); else buildPay();
     window.scrollTo(0, 0);
   }
