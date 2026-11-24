@@ -318,6 +318,16 @@
 
     'Peta ilustrasi, posisi perkiraan': 'Illustrated map, approximate positions', 'LAUT BALI': 'BALI SEA',
 
+    'Membuat garam di Amed dan bermalam di bukit dekat pantai.': 'Make salt in Amed and spend a night on a hill near the beach.',
+    'Trekking ke air terjun, hutan, dan bukit Karangasem.': 'Trek to waterfalls, forests, and hills in Karangasem.',
+    'Olahan salak dan arak tradisional dari desa.': 'Snake fruit treats and traditional arak from the village.',
+    'Lontar, tenun, Cakepung, dan wisata spiritual.': 'Lontar, weaving, Cakepung, and spiritual visits.',
+    'Berjalan melewati sawah menuju puncak Bukit Jongkok.': 'Walk through rice fields to the top of Bukit Jongkok.',
+    'Dari belajar membaca lontar sampai trekking ke air terjun. Setiap kegiatan dijalankan warga yang menjaga tempatnya, difokuskan di Bali Timur dan Bali Utara.': 'From learning to read lontar to trekking to a waterfall. Every activity is run by locals who look after their place, focused on East Bali.',
+    'Tidak ada kegiatan yang cocok. Coba kata lain, misalnya trekking, tenun, atau air terjun.': 'No activities match. Try another word, such as trekking, weaving, or waterfall.',
+    'Upacara desa': 'Village ceremony',
+    'Sidemen': 'Sidemen', 'Manggis': 'Manggis', 'Karangasem': 'Karangasem', 'Bebandem': 'Bebandem', 'Selat': 'Selat', 'Amed': 'Amed', 'Kubu': 'Kubu',
+
     /* ---------- notifikasi dan lain-lain ---------- */
     'Pathora Plus aktif.': 'Pathora Plus is active.', 'Tamu baru dikenai biaya setelah kamu menyetujui permintaan.': 'Guests are only charged after you approve a request.'
   });

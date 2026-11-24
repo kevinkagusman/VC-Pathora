@@ -8,7 +8,7 @@ Proyek Kelompok 2: Felix, Kevin, Rebecca, dan Vania.
 
 ## Fitur
 
-- **Jelajahi**: katalog 14 kegiatan dengan pencarian ketik beserta saran langsung, filter kategori dan wilayah, serta pengurutan.
+- **Jelajahi**: katalog 26 kegiatan: 12 dari sheet riset tim (Karangasem, Bali Timur) di urutan atas, 14 kegiatan contoh pengisi di bawahnya. Fokus wilayah: Bali Timur, dengan pencarian ketik beserta saran langsung, filter kategori dan wilayah, serta pengurutan.
 - **Detail kegiatan**: cerita, urutan acara, etika, barang bawaan, kalender ketersediaan, label keramaian, dan perkiraan cuaca.
 - **Trip saya**: kalender, asisten AI, anggota dan kode undangan, pembagian biaya, dan penyelesaian utang.
 - **Paspor Alam**: stempel untuk setiap kegiatan yang selesai.

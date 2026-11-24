@@ -48,7 +48,7 @@
 
 <section class="hm-scene" id="kegiatan">
   <div class="hm-w">
-    <div class="head rv"><div><h2>Mau menjelajah apa di Bali</h2></div><p>Dari merangkai sesaji sampai melukat di pura air suci. Setiap kegiatan dijalankan warga yang menjaga tempatnya, tersebar di lima daerah Bali.</p></div>
+    <div class="head rv"><div><h2>Mau menjelajah apa di Bali</h2></div><p>Dari belajar membaca lontar sampai trekking ke air terjun. Setiap kegiatan dijalankan warga yang menjaga tempatnya, difokuskan di Bali Timur.</p></div>
     <div class="hm-cards" id="cards"></div>
   </div>
   <div class="hm-mist" aria-hidden="true"></div>
@@ -185,13 +185,13 @@
 
   /* panel kategori: dihitung dari data kegiatan, tiap panel membuka Jelajahi yang sudah terfilter */
   const CATS = [
-    ['laut', 'Laut dan pesisir', 'Lepas tukik, tanam mangrove, dan tanam karang.', 'karang.jpg'],
-    ['hutan', 'Hutan dan air terjun', 'Pengamat burung, air terjun tersembunyi, dan kopi di kebun.', 'waterfall.jpg'],
-    ['kuliner', 'Kuliner', 'Masak bumbu Bali dan kopi Kintamani.', 'masak.jpg', '34% 50%'],
-    ['budaya', 'Budaya', 'Canang, melukat, tari topeng, tenun, gerabah, dan banyak lagi.', 'melukat.jpg'],
-    ['sawah', 'Sawah', 'Jalan pagi di subak dan bebek di sawah.', 'subak.jpg']
+    ['laut', 'Laut dan pesisir', 'Membuat garam di Amed dan bermalam di bukit dekat pantai.', 'karang.jpg'],
+    ['hutan', 'Hutan dan air terjun', 'Trekking ke air terjun, hutan, dan bukit Karangasem.', 'waterfall.jpg'],
+    ['kuliner', 'Kuliner', 'Olahan salak dan arak tradisional dari desa.', 'masak.jpg', '34% 50%'],
+    ['budaya', 'Budaya', 'Lontar, tenun, Cakepung, dan wisata spiritual.', 'melukat.jpg'],
+    ['sawah', 'Sawah', 'Berjalan melewati sawah menuju puncak Bukit Jongkok.', 'subak.jpg']
   ];
-  const REG = ['Utara', 'Barat', 'Timur', 'Selatan', 'Tengah'];
+  const REG = Array.from(new Set(A.map(function(a){ return a.region; })));
   $('cards').innerHTML = CATS.map(function(c){
     const list = A.filter(function(a){ return a.cats.indexOf(c[0]) > -1; });
     const from = Math.min.apply(null, list.map(function(a){ return a.price; }));
@@ -230,7 +230,7 @@
 
 
   const chk = function(t){ return '<li>' + ic('check', 16) + '<span>' + t + '</span></li>'; };
-  $('seals').innerHTML = ['tukik', 'subak', 'canang', 'tenun', 'kopi'].map(function(i){ return '<div class="seal">' + PSTAMP.svg(byId[i], null, false, { light: true }) + '</div>'; }).join('');
+  $('seals').innerHTML = ['lontar', 'camping', 'garam', 'sangkan', 'saptatirtha'].map(function(i){ return '<div class="seal">' + PSTAMP.svg(byId[i], null, false, { light: true }) + '</div>'; }).join('');
   $('pf').innerHTML = ['5 pertanyaan ke asisten AI per hari', 'Kalender dan pengajuan ke host', 'Pembagian biaya dan Paspor Alam'].map(chk).join('');
   $('pp').innerHTML = ['Pertanyaan tanpa batas ke asisten AI', 'Trip dan anggota tanpa batas', 'Prakiraan keramaian untuk tanggal pilihan'].map(chk).join('');
 })();
