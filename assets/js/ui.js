@@ -194,5 +194,17 @@
     '@media(max-width:860px){.nav-login{display:none}.menu-pop{right:16px}}';
   document.head.appendChild(css);
 
+  /* pindah halaman lebih cepat: muat halaman tujuan di latar belakang saat kursor/jari mendekati tautan */
+  (function () {
+    const done = {};
+    const pre = function (e) {
+      const a = e.target.closest && e.target.closest('a[href]'); if (!a) return;
+      const u = a.getAttribute('href'); if (!u || /^(#|https?:|mailto:|tel:)/.test(u) || done[u]) return;
+      done[u] = 1; const l = document.createElement('link'); l.rel = 'prefetch'; l.href = u; document.head.appendChild(l);
+    };
+    document.addEventListener('mouseover', pre, { passive: true });
+    document.addEventListener('touchstart', pre, { passive: true });
+  })();
+
   g.UI = UI;
 })(window);
