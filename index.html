@@ -16,6 +16,7 @@
 <link rel="stylesheet" href="assets/css/home.css">
 </head>
 <body class="jel hm chat-mode">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><filter id="ink" x="-6%" y="-6%" width="112%" height="112%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="1.5" result="d"/><feTurbulence type="fractalNoise" baseFrequency=".06 .8" numOctaves="2" seed="8" result="m"/><feColorMatrix in="m" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.4 1.85" result="mk"/><feComposite in="d" in2="mk" operator="in"/></filter></defs></svg>
 <script>document.documentElement.classList.add('js')</script>
 <div id="nav"></div>
 
@@ -134,6 +135,7 @@
 <script src="assets/js/store.js"></script>
 <script src="assets/js/art.js"></script>
 <script src="assets/js/ui.js"></script>
+<script src="assets/js/stamp.js"></script>
 <script>
 (function(){
   const { A, byId, rp } = PD, { ic } = PA, esc = UI.esc;
@@ -226,9 +228,9 @@
     els.forEach(function(e){ io.observe(e); });
   })();
 
-  $('seals').innerHTML = ['tukik', 'subak', 'canang', 'tenun', 'kopi'].map(function(i){ return '<div class="seal"><div>' + PA.scene(byId[i].art) + '</div></div>'; }).join('');
 
   const chk = function(t){ return '<li>' + ic('check', 16) + '<span>' + t + '</span></li>'; };
+  $('seals').innerHTML = ['tukik', 'subak', 'canang', 'tenun', 'kopi'].map(function(i){ return '<div class="seal">' + PSTAMP.svg(byId[i], null, false, { light: true }) + '</div>'; }).join('');
   $('pf').innerHTML = ['5 pertanyaan ke asisten AI per hari', 'Kalender dan pengajuan ke host', 'Pembagian biaya dan Paspor Alam'].map(chk).join('');
   $('pp').innerHTML = ['Pertanyaan tanpa batas ke asisten AI', 'Trip dan anggota tanpa batas', 'Prakiraan keramaian untuk tanggal pilihan'].map(chk).join('');
 })();

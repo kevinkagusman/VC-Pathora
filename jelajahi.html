@@ -138,14 +138,19 @@
   }
   function drawMap(list){
     const m = $('map');
-    const pins = list.map(function(a){
-      const p = px([a.lng, a.lat]), c = CATC[a.cats[0]] || '#D9B46A';
-      return '<g class="pg' + (sel === a.id ? ' on' : '') + '" data-pin="' + a.id + '" tabindex="0" role="button" aria-label="' + UI.esc(a.short) + ', ' + UI.esc(a.place) + '"><circle class="ring" cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="19"/><circle class="pin" cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="12" fill="' + c + '" stroke="#14100c" stroke-width="3"/></g>';
+    const pts = list.map(function(a){ const p = px([a.lng, a.lat]); return { a: a, x: p[0], y: p[1] }; });
+    for (let it = 0; it < 6; it++) for (let i = 0; i < pts.length; i++) for (let j = i + 1; j < pts.length; j++) {
+      const dx = pts[j].x - pts[i].x, dy = pts[j].y - pts[i].y, d = Math.sqrt(dx * dx + dy * dy) || .01, min = 19;
+      if (d < min) { const k = (min - d) / 2 / d; pts[i].x -= dx * k; pts[i].y -= dy * k; pts[j].x += dx * k; pts[j].y += dy * k; }
+    }
+    const pins = pts.map(function(o){
+      const a = o.a, c = CATC[a.cats[0]] || '#D9B46A';
+      return '<g class="pg' + (sel === a.id ? ' on' : '') + '" data-pin="' + a.id + '" tabindex="0" role="button" aria-label="' + UI.esc(a.short) + ', ' + UI.esc(a.place) + '"><circle class="ring" cx="' + o.x.toFixed(1) + '" cy="' + o.y.toFixed(1) + '" r="14"/><circle class="pin" cx="' + o.x.toFixed(1) + '" cy="' + o.y.toFixed(1) + '" r="8.5" fill="' + c + '" stroke="#14100c" stroke-width="2.5"/></g>';
     }).join('');
     const used = Array.from(new Set(list.map(function(a){ return a.cats[0]; })));
     const a = sel ? PD.byId[sel] : null, inTrip = a && PS.get().items.some(function(i){ return i.actId === a.id && i.status !== 'ditolak'; });
-    m.innerHTML = '<svg viewBox="140 0 720 ' + VH + '" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Peta ilustrasi Bali dengan titik kegiatan"><path d="' + smooth(OUT) + '" fill="#2f3d2c" stroke="#4a5d43" stroke-width="2"/><path d="' + smooth(NUSA) + '" fill="#2f3d2c" stroke="#4a5d43" stroke-width="2"/>' +
-      '<path d="M300 250C420 215 560 235 700 205" stroke="#3b4c37" stroke-width="20" fill="none" stroke-linecap="round" opacity=".7"/>' +
+    m.classList.toggle('sel', !!a);
+    m.innerHTML = '<svg viewBox="140 0 720 ' + VH + '" preserveAspectRatio="xMidYMin meet" role="img" aria-label="Peta ilustrasi Bali dengan titik kegiatan"><image href="assets/img/bali-map.png" x="166.4" y="-11.4" width="688.6" height="480.6" preserveAspectRatio="none"/>' +
       '<text x="' + (VW / 2) + '" y="' + (VH - 14) + '" fill="#6f9aa0" font-size="12" text-anchor="middle" letter-spacing="4">LAUT BALI</text>' + pins + '</svg>' +
       '<span class="mnote">Peta ilustrasi, posisi perkiraan</span>' +
       '<div class="mleg">' + used.map(function(k){ return '<span><i style="background:' + CATC[k] + '"></i>' + CAT[k] + '</span>'; }).join('') + '</div>' +

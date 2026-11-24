@@ -140,5 +140,5 @@ body.chat-mode .modal .mo{display:flex;flex-direction:column;gap:14px}
   .jel-panel{padding:18px 16px;max-width:none}.fr{grid-template-columns:1fr;gap:6px}.fr>b{padding-top:0}
   .jel-grid{grid-template-columns:1fr}
   body.jel .ai-cta{flex-direction:column;align-items:flex-start;padding:22px 20px}body.jel .ai-cta .btn{align-self:flex-end}
-  .jel-map{height:340px}.mleg{display:none}.mnote{display:none}
+  .jel-map{height:270px}.jel-map.sel{height:410px}.mleg{display:none}.mnote{display:none}
 }
