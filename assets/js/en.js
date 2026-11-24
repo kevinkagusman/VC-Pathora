@@ -101,6 +101,7 @@
     /* ---------- akun ---------- */
     'Akun dan langganan': 'Account and plan', 'Akun dan langganan | Pathora': 'Account and plan | Pathora',
     'Kelola profil dan paket kamu.': 'Manage your profile and plan.', 'Ganti avatar': 'Change avatar', 'Pilih avatar': 'Choose avatar',
+    'Jalak bali': 'Bali myna', 'Kembang sepatu': 'Hibiscus', 'Penari': 'Dancer', 'Anak berudeng': 'Boy in udeng', 'Pura': 'Temple', 'Gunung': 'Mountain', 'Penyu': 'Sea turtle', 'Daun monstera': 'Monstera leaf', 'Kamera': 'Camera', 'Kelapa muda': 'Young coconut',
     'Nama tampilan': 'Display name', 'Inisial nama': 'Initials', 'Matahari': 'Sun', 'Ombak': 'Wave', 'Kamboja': 'Frangipani',
     'Kembang sepatu': 'Hibiscus', 'Penyu': 'Turtle', 'Jalak bali': 'Bali starling', 'Gunung': 'Mountain', 'Daun': 'Leaf', 'Meru': 'Meru',
     'Profil disimpan': 'Profile saved', 'Nama tidak boleh kosong': 'Name cannot be empty',
