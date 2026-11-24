@@ -217,8 +217,20 @@
     return { text: parts.join('\n\n'), blocks: plan.items.length ? [{ type: 'plan', plan }] : [], chips: plan.items.length ? ['Cari alternatif yang lebih hemat', 'Tambahkan kuliner lokal', 'Cari tanggal terbaik', 'Bagaimana jika hujan'] : ['Cari tanggal terbaik', 'Tampilkan semua kegiatan'] };
   }
 
-  function respond(raw) {
-    const s = S.get(); const ctx = parse(raw); const t = ctx.t.trim();
+  /* hint dari backend (Gemini): hanya mengisi/menimpa isi ctx, penilaian jadwal tetap di sini */
+  function applyHint(ctx, h) {
+    if (!h) return ctx;
+    if (h.days) ctx.days = Math.min(h.days, 5);
+    if (h.people) ctx.people = h.people;
+    if (h.start) ctx.dates = { start: h.start, end: h.end || h.start, single: !h.end || h.end === h.start };
+    if (h.budgetPP) ctx.money = { v: h.budgetPP, perPerson: true };
+    if (h.cats) h.cats.forEach((c) => ctx.cats.add(c));
+    ['kids', 'calm', 'cheap', 'slow'].forEach((k) => { if (typeof h[k] === 'boolean') ctx[k] = h[k]; });
+    return ctx;
+  }
+
+  function respond(raw, hint) {
+    const s = S.get(); const ctx = applyHint(parse(raw), hint); const t = ctx.t.trim();
     const group = s.members.length > 1;
 
     if (/^(mulai ulang|reset|hapus semua|bersihkan)/.test(t)) return { text: 'Untuk mengosongkan trip dan riwayat obrolan, gunakan menu opsi trip, lalu pilih Mulai ulang. Saya tidak menghapus data tanpa konfirmasi dari kamu.', blocks: [], chips: chipsDefault };
@@ -302,7 +314,7 @@
     if (/kalender|agenda|jadwal saya/.test(t)) return { text: 'Seluruh kegiatan, acara pribadi, hari raya' + (group ? ', dan hari sibuk anggota' : '') + ' tersedia di halaman Kalender.', blocks: [{ type: 'go', tab: 'kalender', label: 'Buka kalender' }], chips: [] };
     if (/tampilkan semua|lihat semua|daftar kegiatan|semua kegiatan/.test(t)) return { text: 'Berikut kegiatan di katalog, diurutkan dari yang paling lengang pada tanggal trip kamu.', blocks: [{ type: 'acts', ids: A.slice().sort((a, b) => crowdFor(a, s.trip.start) - crowdFor(b, s.trip.start) || a.price - b.price).slice(0, 6).map((a) => a.id) }, { type: 'go', href: 'jelajahi.html', label: 'Buka halaman Jelajahi' }], chips: [] };
 
-    const signal = ctx.days || ctx.dates || ctx.cats.size || ctx.people || /trip|rencana|liburan|susun|atur|bikin|plan|jalan|itinerary|bali/.test(t) || t.length > 24;
+    const signal = !!hint || ctx.days || ctx.dates || ctx.cats.size || ctx.people || /trip|rencana|liburan|susun|atur|bikin|plan|jalan|itinerary|bali/.test(t) || t.length > 24;
     if (signal) return respondPlan(ctx);
     return { text: 'Saya belum menangkap maksud pesan tersebut. Silakan ceritakan rencana kamu: berapa hari, berapa orang, dan suasana yang diinginkan. Atau pilih salah satu contoh di bawah.', blocks: [], chips: chipsDefault };
   }

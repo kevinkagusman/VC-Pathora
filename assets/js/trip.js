@@ -117,9 +117,12 @@
     log.insertAdjacentHTML('beforeend', msgHTML({ role: 'me', text }));
     log.insertAdjacentHTML('beforeend', '<div class="msg ai" id="typ"><span class="who">Pathora</span><div class="bubble"><span class="typing"><i></i><i></i><i></i></span></div></div>');
     document.getElementById('chips').innerHTML = ''; scrollLog(); renderQuota();
-    await new Promise((r) => setTimeout(r, 650 + Math.min(900, text.length * 8)));
+    const wait = new Promise((r) => setTimeout(r, 650 + Math.min(900, text.length * 8)));
+    let hint = null;
+    if (window.PAPI && PAPI.enabled()) { const s0 = PS.get(); hint = await PAPI.parse(text, { start: s0.trip.start, end: s0.trip.end, members: s0.members.length, items: s0.items.map((i) => ({ act: i.actId, date: i.date })) }); }
+    await wait;
     let res;
-    try { res = AI.respond(text); } catch (err) { console.error(err); res = { text: 'Maaf, terjadi kendala saat menyusun jawaban. Silakan coba dengan kalimat lain.', blocks: [], chips: AI.chipsDefault }; }
+    try { res = AI.respond(text, hint); } catch (err) { console.error(err); res = { text: 'Maaf, terjadi kendala saat menyusun jawaban. Silakan coba dengan kalimat lain.', blocks: [], chips: AI.chipsDefault }; }
     const msg = PS.pushChat({ role: 'ai', text: res.text, blocks: res.blocks, chips: res.chips });
     const typ = document.getElementById('typ'); if (typ) typ.remove();
     log.insertAdjacentHTML('beforeend', '<div class="msg ai" data-id="' + msg.uid + '"><span class="who">Pathora</span><div class="stack"><div class="bubble"></div></div></div>');
