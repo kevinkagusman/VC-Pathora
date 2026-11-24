@@ -252,3 +252,28 @@ body.chat-mode .modal .badge{background:rgba(244,241,226,.14);color:var(--g-text
 /* tombol di dalam modal: ramping, tidak lebih mencolok dari judul */
 body.chat-mode .modal .btn-lg,body.chat-mode .modal .btn-block{min-height:38px;padding:0 18px;font-size:13px;font-weight:600;border-radius:99px}
 body.chat-mode .modal .btn-line{box-shadow:inset 0 0 0 1px rgba(244,241,226,.28);color:var(--g-text)}
+
+/* HP: bar trip dirapikan jadi satu baris, rel tab lebih ramping */
+@media (max-width:560px){
+  body.chat-mode .tripbar .wrap{padding:12px 0 8px;gap:8px;flex-wrap:nowrap;align-items:flex-end}
+  body.chat-mode .tb-main{flex:1;min-width:0;flex-wrap:wrap;gap:8px 0}
+  body.chat-mode .tb-tag{flex:1 1 100%;margin:0;font-size:19px}
+  body.chat-mode .tb-dates{width:100%;flex-wrap:nowrap;justify-content:space-between;gap:6px;padding:3px 10px;min-height:38px}
+  body.chat-mode .tb-l,body.chat-mode .dt svg,body.chat-mode .dt>span{display:none}
+  body.chat-mode .tb-sep{display:inline-flex}
+  body.chat-mode .dt{gap:0;min-width:0}
+  body.chat-mode .dt input{width:86px;font-size:12.5px;padding:4px 0}
+  body.chat-mode .cal-h{flex-wrap:wrap;gap:8px 10px}
+  body.chat-mode .cal-h>div:first-child{flex:1 1 100%;min-width:0}
+  body.chat-mode .cal-h h2{font-size:22px}
+  body.chat-mode .cal-sub{font-size:12.5px;line-height:1.55;margin-top:2px}
+  body.chat-mode .cal-nav{margin-left:auto}
+  body.chat-mode .tb-n{font-size:11px;padding:2px 9px;white-space:nowrap}
+  body.chat-mode .tb-side{flex:none}
+  body.chat-mode #tMembers{display:none!important}
+  body.chat-mode #invite{width:38px;min-height:38px;padding:0;display:inline-grid;place-items:center}
+  body.chat-mode #invite .inv-t{display:none}
+  body.chat-mode .ws3 .legend{flex-wrap:wrap;white-space:normal;gap:6px 14px;padding:10px 16px 14px}
+  .rail{padding:4px;border-radius:20px}
+  .rail button{height:50px;border-radius:16px;font-size:11px}
+}

@@ -28,7 +28,8 @@
     d2.min = s.trip.start;
     document.getElementById('tDays').textContent = (D.diff(s.trip.start, s.trip.end) + 1) + ' hari';
     document.getElementById('tMembers').innerHTML = group() ? UI.avatars(s.members.map((m) => m.id), 'av-sm') + '<span>' + s.members.length + ' orang</span>' : '<span class="badge">Perjalanan pribadi</span>';
-    document.getElementById('invite').innerHTML = ic('users', 15) + (group() ? ' Undang' : ' Ajak teman');
+    document.getElementById('invite').innerHTML = ic('users', 15) + '<span class="inv-t">' + (group() ? ' Undang' : ' Ajak teman') + '</span>';
+    document.getElementById('invite').setAttribute('aria-label', group() ? 'Undang anggota' : 'Ajak teman');
     const pend = s.items.filter((i) => i.status === 'disetujui').length;
     if (document.getElementById('rail')) renderRail();
     document.getElementById('tabs').innerHTML = TABS.map((t) => '<button role="tab" class="' + (t[0] === tab ? 'on' : '') + '" data-t="' + t[0] + '">' + ic(t[2], 16) + t[1] + (t[0] === 'bayar' && pend ? ' <span class="badge b-ok" style="padding:0 7px">' + pend + '</span>' : '') + '</button>').join('');
@@ -376,6 +377,22 @@
     document.getElementById('calG').innerHTML = h;
     renderDay();
   }
+  /* kurva peluang hujan: 7 hari di sekitar tanggal yang dipilih */
+  function wxCurve(sel) {
+    const days = []; for (let i = -3; i <= 3; i++) days.push(D.add(sel, i));
+    const W = days.map((d) => weatherFor(d));
+    const w = 300, h = 92, px = 20, top = 14, bot = 70;
+    const xs = days.map((d, i) => px + i * (w - 2 * px) / 6);
+    const ys = W.map((x) => bot - (x.rain / 100) * (bot - top));
+    let line = 'M' + xs[0] + ' ' + ys[0];
+    for (let i = 1; i < xs.length; i++) { const cx = (xs[i - 1] + xs[i]) / 2; line += ' C' + cx + ' ' + ys[i - 1] + ' ' + cx + ' ' + ys[i] + ' ' + xs[i] + ' ' + ys[i]; }
+    const area = line + ' L' + xs[6] + ' ' + bot + ' L' + xs[0] + ' ' + bot + ' Z';
+    const pts = xs.map((x, i) => { const on = days[i] === sel;
+      return '<circle cx="' + x + '" cy="' + ys[i] + '" r="' + (on ? 5 : 3) + '" fill="' + (on ? '#FCE6B7' : 'rgba(244,241,226,.7)') + '"/>' + (on ? '<circle cx="' + x + '" cy="' + ys[i] + '" r="9" fill="none" stroke="rgba(252,230,183,.4)"/>' : '') +
+        '<text x="' + x + '" y="' + (ys[i] - 11) + '" text-anchor="middle" font-size="10" fill="' + (on ? '#FCE6B7' : 'rgba(244,241,226,.72)') + '">' + W[i].rain + '%</text>' +
+        '<text x="' + x + '" y="88" text-anchor="middle" font-size="10.5" fill="' + (on ? '#F4F1E2' : 'rgba(244,241,226,.6)') + '" font-weight="' + (on ? 600 : 400) + '">' + D.parse(days[i]).getDate() + '</text>'; }).join('');
+    return '<div class="wxc"><div class="wxc-h"><b>Peluang hujan</b><span>7 hari sekitar tanggal ini</span></div><svg viewBox="0 0 ' + w + ' ' + h + '" width="100%" role="img" aria-label="Kurva peluang hujan 7 hari sekitar tanggal terpilih"><defs><linearGradient id="wxg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FCE6B7" stop-opacity=".28"/><stop offset="1" stop-color="#FCE6B7" stop-opacity="0"/></linearGradient></defs><path d="' + area + '" fill="url(#wxg)"/><path d="' + line + '" fill="none" stroke="#FCE6B7" stroke-width="2" stroke-linecap="round"/>' + pts + '</svg></div>';
+  }
   function renderDay() {
     const s = PS.get(); const d = cal.sel; const w = weatherFor(d); const mn = moonFor(d), f = festivalFor(d);
     document.getElementById('dayT').textContent = D.long(d);
@@ -383,6 +400,7 @@
     const me = PS.me(); const meBusy = me.busy.includes(d);
     document.getElementById('dayB').innerHTML = '<div class="agenda-d"><div class="ag-scroll">' +
       '<div style="display:flex;gap:12px;flex-wrap:wrap;font-size:13px;color:var(--ink-2)">' + UI.wx(w) + '<span>Peluang hujan ' + w.rain + '%</span>' + (mn ? '<button type="button" class="lg-help" data-moon="1">' + ic('moon', 14) + 'Hari ' + mn + ' <svg class="lg-i" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 2.5-3 4"/><path d="M12 17.5h.01"/></svg></button>' : '') + '</div>' +
+      wxCurve(d) +
       (f ? '<div class="badge b-mid">' + esc(f) + '</div>' : '') +
       its.map((it) => { const a = byId[it.actId]; return '<div class="ag"><time>' + it.time.replace(':', '.') + '</time><div style="flex:1;min-width:0"><b>' + esc(a.short) + '</b><small class="faint" style="display:block">' + esc(a.place) + ' · ' + it.people + ' orang</small></div><button class="icon-btn" data-delit="' + it.uid + '" aria-label="Hapus kegiatan">' + ic('trash', 16) + '</button></div>'; }).join('') +
       evs.map((e) => '<div class="ag"><time>' + e.time.replace(':', '.') + '</time><div style="flex:1"><b>' + esc(e.title) + '</b><small class="faint" style="display:block">Acara pribadi</small></div><button class="icon-btn" data-del="' + e.uid + '" aria-label="Hapus acara">' + ic('trash', 16) + '</button></div>').join('') +
