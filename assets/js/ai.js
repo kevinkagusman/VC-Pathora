@@ -312,7 +312,7 @@
     if (m && findAct(m[1])) { const a = findAct(m[1]); return { text: a.story + ' Host: ' + a.host.name + '.', blocks: [{ type: 'acts', ids: [a.id], detail: true }], chips: ['Tambahkan ' + a.short.toLowerCase()] }; }
 
     if (/kalender|agenda|jadwal saya/.test(t)) return { text: 'Seluruh kegiatan, acara pribadi, hari raya' + (group ? ', dan hari sibuk anggota' : '') + ' tersedia di halaman Kalender.', blocks: [{ type: 'go', tab: 'kalender', label: 'Buka kalender' }], chips: [] };
-    if (/tampilkan semua|lihat semua|daftar kegiatan|semua kegiatan/.test(t)) return { text: 'Berikut kegiatan di katalog, diurutkan dari yang paling lengang pada tanggal trip kamu.', blocks: [{ type: 'acts', ids: A.slice().sort((a, b) => crowdFor(a, s.trip.start) - crowdFor(b, s.trip.start) || a.price - b.price).slice(0, 6).map((a) => a.id) }, { type: 'go', href: 'jelajahi.html', label: 'Buka halaman Jelajahi' }], chips: [] };
+    if (/tampilkan semua|lihat semua|daftar kegiatan|semua kegiatan/.test(t)) return { text: 'Berikut kegiatan di katalog, diurutkan dari yang paling lengang pada tanggal trip kamu.', blocks: [{ type: 'acts', ids: A.slice().sort((a, b) => crowdFor(a, s.trip.start) - crowdFor(b, s.trip.start) || a.price - b.price).slice(0, 6).map((a) => a.id) }, { type: 'go', href: 'jelajahi', label: 'Buka halaman Jelajahi' }], chips: [] };
 
     const signal = !!hint || ctx.days || ctx.dates || ctx.cats.size || ctx.people || /trip|rencana|liburan|susun|atur|bikin|plan|jalan|itinerary|bali/.test(t) || t.length > 24;
     if (signal) return respondPlan(ctx);

@@ -27,8 +27,8 @@
 <script>
 (function(){
   const { ic } = PA, esc = UI.esc;
-  if (!PAUTH.current()) { location.replace('masuk.html?next=akun.html'); return; }
-  if (PAUTH.current().role === 'host') { location.replace('host.html'); return; }
+  if (!PAUTH.current()) { location.replace('masuk?next=akun'); return; }
+  if (PAUTH.current().role === 'host') { location.replace('host'); return; }
   const root = document.getElementById('root');
   let open = false, pick = null;   /* pick: avatar yang sedang dipilih sebelum disimpan */
   function face(id){ return UI.avatarSVG(id) || esc(PS.me().ini); }

@@ -1,4 +1,4 @@
-/* Pathora: stempel Paspor Alam untuk dipakai di halaman lain (salinan gaya dari paspor.html) */
+/* Pathora: stempel Paspor Alam untuk dipakai di halaman lain (salinan gaya dari paspor) */
 (function (g) {
   'use strict';
   const esc = (g.UI && g.UI.esc) || function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };

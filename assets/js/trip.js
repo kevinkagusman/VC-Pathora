@@ -150,7 +150,7 @@
         (b.chosen === i ? '<span class="badge b-ok"><i></i>Dipilih</span>' : '<button class="btn btn-line btn-sm" data-act="pickdate" data-k="' + i + '" ' + ref + '>Pilih tanggal</button>') + '</div>').join('') + '</div>';
     }
     if (b.type === 'acts') {
-      return '<div>' + b.ids.map((id) => { const a = byId[id]; return '<a class="opt" href="kegiatan.html?id=' + id + '" style="margin-top:8px"><span style="display:flex;gap:12px;align-items:center">' + thumb(a) + '<span><b>' + esc(a.short) + '</b><small class="faint" style="display:block">' + esc(a.place) + ' · ' + a.dur.toString().replace('.', ',') + ' jam</small></span></span><span style="font-weight:700">' + rp(a.price) + '</span></a>'; }).join('') + '</div>';
+      return '<div>' + b.ids.map((id) => { const a = byId[id]; return '<a class="opt" href="kegiatan?id=' + id + '" style="margin-top:8px"><span style="display:flex;gap:12px;align-items:center">' + thumb(a) + '<span><b>' + esc(a.short) + '</b><small class="faint" style="display:block">' + esc(a.place) + ' · ' + a.dur.toString().replace('.', ',') + ' jam</small></span></span><span style="font-weight:700">' + rp(a.price) + '</span></a>'; }).join('') + '</div>';
     }
     if (b.type === 'go') {
       return b.href ? '<a class="btn btn-line btn-sm" style="align-self:flex-start" href="' + b.href + '">' + esc(b.label) + '</a>' : '<button class="btn btn-line btn-sm" style="align-self:flex-start" data-act="tab" data-k="' + b.tab + '">' + esc(b.label) + '</button>';
@@ -323,7 +323,7 @@
       PS.pushChat({ role: 'ai', text: 'Alternatif untuk ' + byId[it.actId].short + ':', blocks: [{ type: 'alt', orig: it.actId, actId: alt.act && alt.act.id, date: it.date, shift: alt.shift }], chips: [] });
       go('chat');
     }
-    else if (a === 'stamp') { PS.stamp(it.actId, it.date); UI.toast('Stempel ' + byId[it.actId].short + ' masuk ke Paspor Alam', '<a href="paspor.html">Lihat paspor</a>'); }
+    else if (a === 'stamp') { PS.stamp(it.actId, it.date); UI.toast('Stempel ' + byId[it.actId].short + ' masuk ke Paspor Alam', '<a href="paspor">Lihat paspor</a>'); }
   }
   document.addEventListener('click', (e) => { const g = e.target.closest('[data-go]'); if (g && !e.target.closest('#log')) { e.preventDefault(); go(g.dataset.go); } });
 
@@ -465,16 +465,16 @@
       box.innerHTML = '<div class="sp"><div><div class="sp-eb">Pesanan</div><h1 class="sp-h">belum ada yang perlu dibayar.</h1><p class="sp-meta">Pembayaran dibuka setelah host menyetujui kegiatanmu. Alurnya:</p></div>' +
         '<ol class="how"><li><b>Susun rencana di Asisten.</b><span>Kegiatan yang kamu tambahkan langsung masuk ke Kalender.</span></li><li><b>Ajukan ke host.</b><span>Satu tombol di Asisten. Kamu belum dikenai biaya.</span></li><li><b>Bayar di sini.</b><span>Setelah host menyetujui, pesananmu muncul di halaman ini.</span></li></ol>' +
         (drafts ? '<p class="sp-meta">Kamu punya ' + drafts + ' kegiatan yang belum diajukan.</p>' : '') +
-        '<div class="sp-act"><a class="pbtn" href="trip.html?tab=chat" data-go="chat">' + (drafts ? 'Ajukan di Asisten' : 'Susun dengan Asisten') + '</a>' + (all.length ? '' : '<button class="gbtn" id="seed3">Muat contoh trip kelompok</button>') + '</div></div>';
+        '<div class="sp-act"><a class="pbtn" href="trip?tab=chat" data-go="chat">' + (drafts ? 'Ajukan di Asisten' : 'Susun dengan Asisten') + '</a>' + (all.length ? '' : '<button class="gbtn" id="seed3">Muat contoh trip kelompok</button>') + '</div></div>';
       const sd = document.getElementById('seed3'); if (sd) sd.onclick = () => { PS.seedDemo(); head(); };
       return;
     }
-    box.innerHTML = '<div class="sp"><div><div class="sp-eb">Pesanan</div><h1 class="sp-h">' + items.length + ' pesanan, ' + payable.length + ' siap dibayar.</h1><p class="sp-meta">' + payMsg(items, drafts) + '</p>' + (drafts ? '<div class="sp-act" style="margin-top:14px"><a class="gbtn" href="trip.html?tab=chat" data-go="chat">Ajukan sisanya di Asisten</a></div>' : '') + '</div><div class="ords">' +
+    box.innerHTML = '<div class="sp"><div><div class="sp-eb">Pesanan</div><h1 class="sp-h">' + items.length + ' pesanan, ' + payable.length + ' siap dibayar.</h1><p class="sp-meta">' + payMsg(items, drafts) + '</p>' + (drafts ? '<div class="sp-act" style="margin-top:14px"><a class="gbtn" href="trip?tab=chat" data-go="chat">Ajukan sisanya di Asisten</a></div>' : '') + '</div><div class="ords">' +
       items.map((it) => { const a = byId[it.actId]; const stamped = PS.get().passport[it.actId];
         const act = it.status === 'diajukan' ? '<span class="ord-hint">Host sedang meninjau</span><button type="button" class="ord-lnk" data-pa="setuju" data-u="' + it.uid + '">Simulasi: host setuju</button><button type="button" class="ord-lnk bad" data-pa="tolak" data-u="' + it.uid + '">Simulasi: host tolak</button>'
           : it.status === 'disetujui' ? '<button type="button" class="addb" data-pa="bayar" data-u="' + it.uid + '">Bayar</button>'
           : it.status === 'ditolak' ? '<button type="button" class="ord-lnk" data-pa="alt" data-u="' + it.uid + '">Cari pengganti</button>'
-          : '<button type="button" class="ord-lnk" data-rc="' + it.uid + '">Bukti pesanan</button>' + (stamped ? '<a class="ord-lnk" href="paspor.html">Stempel tersimpan</a>' : '<button type="button" class="ord-lnk" data-pa="stamp" data-u="' + it.uid + '">Kegiatan selesai</button>');
+          : '<button type="button" class="ord-lnk" data-rc="' + it.uid + '">Bukti pesanan</button>' + (stamped ? '<a class="ord-lnk" href="paspor">Stempel tersimpan</a>' : '<button type="button" class="ord-lnk" data-pa="stamp" data-u="' + it.uid + '">Kegiatan selesai</button>');
         return '<div class="ord"><div class="ord-m"><h3>' + esc(a.name) + '</h3><p>' + D.long(it.date) + ' · ' + it.time.replace(':', '.') + ' · ' + it.people + ' orang</p></div><b class="ord-p">' + rp(PS.itemCost(it)) + '</b><span class="st ' + (it.status === 'diajukan' ? 'wait' : it.status === 'disetujui' || it.status === 'lunas' ? 'ok' : 'bad') + '">' + OSTAT[it.status] + '</span><span class="ord-a">' + act + '</span></div>'; }).join('') + '</div></div>';
     box.onclick = (e) => {
       const b = e.target.closest('[data-pa]'); if (b) return itemAction(b.dataset.pa, b.dataset.u);
@@ -554,7 +554,7 @@
       '<p class="muted">Paket gratis mencakup ' + FREE_Q + ' pertanyaan per hari. Kuota diperbarui besok, atau kamu dapat melanjutkan sekarang dengan Pathora Plus.</p>' +
       '<div class="card" style="padding:18px;display:grid;gap:10px"><b style="font-size:18px">Pathora Plus <span class="faint" style="font-weight:500;font-size:14px">Rp49.000 per bulan, gratis 7 hari pertama</span></b><ul class="checklist"><li>' + ic('check', 18) + 'Pertanyaan tanpa batas ke asisten AI</li><li>' + ic('check', 18) + 'Trip dan anggota tanpa batas</li><li>' + ic('check', 18) + 'Prakiraan keramaian untuk tanggal pilihan kamu</li></ul></div>' +
       '<button class="btn btn-primary btn-lg btn-block" id="goPlus">Mulai uji coba 7 hari</button><button class="btn btn-ghost btn-block" data-close>Nanti saja</button></div>', (ov, close) => {
-      ov.querySelector('#goPlus').onclick = () => { if (!isTraveler()) { close(); return UI.needLogin('Berlangganan Pathora Plus memerlukan akun.'); } PAUTH.update({ plan: 'plus' }); close(); renderQuota(); UI.toast('Pathora Plus aktif', '<a href="akun.html">Kelola</a>'); };
+      ov.querySelector('#goPlus').onclick = () => { if (!isTraveler()) { close(); return UI.needLogin('Berlangganan Pathora Plus memerlukan akun.'); } PAUTH.update({ plan: 'plus' }); close(); renderQuota(); UI.toast('Pathora Plus aktif', '<a href="akun">Kelola</a>'); };
     });
   }
   function inviteModal() {
