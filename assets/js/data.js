@@ -1,5 +1,5 @@
 /* Pathora — katalog kegiatan + data demo (cuaca, keramaian, hari raya).
-   Semua angka di sini CONTOH untuk prototype, bukan data sungguhan. */
+   Semua angka di sini CONTOH untuk prototype, bukan data sungguhan. Katalog berasal dari sheet riset Karangasem. */
 (function (g) {
   'use strict';
 
@@ -43,9 +43,192 @@
   const uid = () => Math.random().toString(36).slice(2, 9);
 
   /* ---------- katalog ---------- */
+  /* Katalog contoh: 12 kegiatan dari sheet riset (Karangasem, Bali Timur). Nilai yang kosong di sheet (harga, durasi,
+     kuota, jam mulai) diisi angka CONTOH. Nama pengelola mengikuti sheet dan belum dikonfirmasi. */
   const A = [
     {
-      id: 'tukik', name: 'Kelas tukik: pembibitan penyu', short: 'Kelas tukik', art: 'turtle',
+      id: 'arak', name: 'Belajar proses pembuatan arak tradisional', short: 'Arak tradisional', art: 'cooking',
+      cats: ['budaya', 'kuliner'], region: 'Sidemen', place: 'Tri Eka Buana, Sidemen', lat: -8.47, lng: 115.445,
+      dur: 3, times: ['09:00'], price: 150000, cap: 10, kid: false, outdoor: true, indoorOk: false,
+      crowd: 0.25, moon: true,
+      kw: ['arak', 'tradisional', 'sidemen', 'tri eka buana', 'gembleng', 'air terjun', 'karangasem', 'budaya', 'minuman', 'kuliner'],
+      host: { name: 'Kelompok usaha arak Oemah Arak', ini: 'OA', lang: 'Indonesia, Bali' },
+      story: 'Di Tri Eka Buana, Sidemen, arak dibuat dengan cara yang diwariskan dari keluarga ke keluarga. Pembuatnya menunjukkan bahan, penyulingan, dan alasan tiap tahap dikerjakan seperti itu. Setelah belajar, kamu bisa berjalan ke Air Terjun Gembleng yang jaraknya sekitar sepuluh sampai lima belas menit dari desa.',
+      hl: ['Melihat proses pembuatan arak dari bahan sampai sulingan', 'Mendengar cerita dan aturan adat di balik arak', 'Berjalan ke Air Terjun Gembleng setelah belajar'],
+      fit: 'Cocok untuk orang dewasa yang penasaran dengan tradisi minuman Bali. Khusus usia 21 tahun ke atas.',
+      steps: [[0, 'Kumpul dan perkenalan dengan pembuat arak'], [45, 'Melihat bahan dan penyulingan'], [90, 'Mencicipi dengan takaran kecil'], [135, 'Jalan ke Air Terjun Gembleng']],
+      ethics: ['Khusus usia 21 tahun ke atas', 'Jangan menyetir setelah mencicipi arak', 'Ada pura dan sesajen di area air terjun, jaga sikap'],
+      bring: ['Alas kaki anti-selip', 'Baju ganti atau baju renang', 'Uang tunai pecahan kecil untuk donasi'],
+      meet: 'Air Terjun Gembleng, Desa Tri Eka Buana', contrib: 'Sebagian hasil masuk ke kas kelompok. Informasi dari host.'
+    },
+    {
+      id: 'camping', name: 'Camping semalam di Bukit Asah', short: 'Camping Bukit Asah', art: 'terrace',
+      cats: ['hutan', 'laut'], region: 'Karangasem', place: 'Bukit Asah, Bugbug', lat: -8.496, lng: 115.575,
+      dur: 15, times: ['15:00'], price: 38000, cap: 16, kid: true, outdoor: true, indoorOk: false,
+      crowd: 0.5, moon: false,
+      kw: ['camping', 'berkemah', 'tenda', 'bukit asah', 'bugbug', 'karangasem', 'alam', 'menginap', 'pantai', 'virgin beach'],
+      host: { name: 'BP2DAB / Taman Harmoni Bali', ini: 'TH', lang: 'Indonesia, Bali' },
+      story: 'Bukit Asah di Bugbug dikelola anak muda desa lewat Taman Harmoni Bali. Tenda, matras, dan dapur umum sudah disiapkan, jadi kamu tinggal datang, menikmati sore di bukit, lalu tidur dengan suara laut. Pantai Virgin Beach hanya sekitar lima menit dari lokasi.',
+      hl: ['Menginap di tenda yang sudah disiapkan pengelola', 'Melihat matahari terbenam dan terbit dari bukit', 'Mampir ke Virgin Beach yang dekat dari lokasi'],
+      fit: 'Cocok untuk keluarga, rombongan teman, pasangan, dan pemula camping.',
+      steps: [[0, 'Tiba dan memilih tenda'], [90, 'Sore di bukit'], [240, 'Makan malam dan ngobrol di api unggun'], [720, 'Pagi di bukit dan sarapan']],
+      ethics: ['Jaga kebersihan dan bawa pulang sampah', 'Hormati desa adat', 'Jangan dekat bibir tebing saat gelap'],
+      bring: ['Jaket atau baju hangat', 'Power bank', 'Senter kepala', 'Alas kaki nyaman'],
+      meet: 'Bukit Asah, Desa Bugbug', contrib: 'Sebagian hasil masuk ke pengelolaan desa wisata. Informasi dari host.'
+    },
+    {
+      id: 'garam', name: 'Wisata edukasi garam tradisional Amed', short: 'Garam tradisional Amed', art: 'coral',
+      cats: ['laut', 'kuliner'], region: 'Amed', place: 'Purwakerthi, Amed', lat: -8.345, lng: 115.655,
+      dur: 2, times: ['08:00', '15:00'], price: 85000, cap: 12, kid: true, outdoor: true, indoorOk: false,
+      crowd: 0.3, moon: false,
+      kw: ['garam', 'amed', 'petani', 'pantai', 'edukasi', 'karangasem', 'kuliner', 'laut', 'purwakerthi'],
+      host: { name: 'Kelompok petani garam Amed', ini: 'KG', lang: 'Indonesia, Bali' },
+      story: 'Di pantai Amed, garam masih dibuat petani dengan menjemur air laut di ladang kecil. Kamu belajar dari mereka mengapa garam Amed punya sertifikat indikasi geografis, lalu ikut membuat garam di sebelah Amed Salt Center. Garam hanya diproduksi saat musim kemarau.',
+      hl: ['Melihat petani menjemur air laut jadi garam', 'Ikut membuat garam bersama petani', 'Belajar tentang garam Amed di Amed Salt Center'],
+      fit: 'Cocok untuk keluarga, pelajar, dan pencinta kuliner yang suka wisata edukasi.',
+      steps: [[0, 'Sambutan di Amed Salt Center'], [30, 'Berjalan ke ladang garam'], [60, 'Ikut membuat garam'], [90, 'Melihat produk dan mencicipi']],
+      ethics: ['Minta izin sebelum memotret petani', 'Jangan menginjak petak garam yang sedang dikeringkan'],
+      bring: ['Topi dan tabir surya', 'Air minum', 'Alas kaki yang boleh basah'],
+      meet: 'Amed Salt Center, Desa Purwakerthi', contrib: 'Sebagian hasil masuk ke kas petani garam. Informasi dari host.'
+    },
+    {
+      id: 'yehlabuh', name: 'Trekking ke Air Terjun Yeh Labuh', short: 'Air terjun Yeh Labuh', art: 'waterfall',
+      cats: ['hutan'], region: 'Manggis', place: 'Selumbung, Manggis', lat: -8.497, lng: 115.525,
+      dur: 2.5, times: ['07:30'], price: 75000, cap: 10, kid: false, outdoor: true, indoorOk: false,
+      crowd: 0.2, moon: false,
+      kw: ['air terjun', 'yeh labuh', 'trekking', 'selumbung', 'manggis', 'karangasem', 'hutan', 'sungai', 'alam', 'jalan kaki'],
+      host: { name: 'Pokdarwis Desa Selumbung', ini: 'PS', lang: 'Indonesia, Bali' },
+      story: 'Pokdarwis Selumbung membuat jalur trekking dan jembatan baru menuju Air Terjun Yeh Labuh. Jalurnya curam dan berbatu, kamu menyeberangi sungai, dan di ujungnya ada air terjun yang jarang didatangi. Pulanglah sebelum gelap karena jalur tidak berlampu.',
+      hl: ['Menyusuri jalur baru yang dibuat warga', 'Menyeberangi sungai dan berjalan di antara pepohonan', 'Sampai di air terjun yang tenang'],
+      fit: 'Cocok untuk remaja dan dewasa yang cukup bugar. Kurang cocok untuk lansia dan anak kecil.',
+      steps: [[0, 'Kumpul dan pengantar jalur'], [40, 'Berjalan menuju sungai'], [75, 'Menyeberang dan naik ke air terjun'], [110, 'Istirahat dan turun bersama']],
+      ethics: ['Berjalan berkelompok dan ikuti pemandu', 'Bawa pulang sampahmu', 'Pulang sebelum gelap'],
+      bring: ['Sepatu trekking anti-selip', 'Bekal makan dan minum', 'Baju ganti'],
+      meet: 'Air Terjun Yeh Labuh, Desa Selumbung', contrib: 'Sebagian hasil dipakai untuk merawat jalur dan jembatan. Informasi dari host.'
+    },
+    {
+      id: 'menenun', name: 'Belajar menenun dan memanen madu bersama warga', short: 'Menenun dan madu', art: 'weave',
+      cats: ['budaya', 'kerajinan'], region: 'Manggis', place: 'Selumbung, Manggis', lat: -8.49, lng: 115.532,
+      dur: 3, times: ['09:00'], price: 175000, cap: 8, kid: true, outdoor: false, indoorOk: true,
+      crowd: 0.2, moon: true,
+      kw: ['tenun', 'menenun', 'madu', 'selumbung', 'manggis', 'karangasem', 'kerajinan', 'desa', 'budaya', 'lebah'],
+      host: { name: 'Pokdarwis Desa Selumbung', ini: 'PS', lang: 'Indonesia, Bali' },
+      story: 'Di Selumbung, tenun dan madu sama-sama dikerjakan warga di rumah mereka. Kamu belajar menenun beberapa baris di alat tenun, lalu ikut memanen madu bersama warga dengan perlengkapan pelindung. Tanyakan dulu soal sengatan lebah sebelum ikut.',
+      hl: ['Mencoba menenun beberapa baris', 'Ikut memanen madu bersama warga', 'Mengobrol di rumah perajin'],
+      fit: 'Cocok untuk keluarga, pelajar, dan rombongan sekolah.',
+      steps: [[0, 'Menyapa perajin'], [45, 'Belajar menenun'], [90, 'Memanen madu dengan perlengkapan pelindung'], [135, 'Mencicipi madu dan ngobrol']],
+      ethics: ['Minta izin sebelum memotret orang dan karya', 'Ikuti arahan saat dekat sarang lebah'],
+      bring: ['Pakaian tertutup yang nyaman', 'Uang tunai bila ingin membeli madu atau kain'],
+      meet: 'Rumah warga perajin, Desa Selumbung', contrib: 'Sebagian hasil masuk ke warga perajin. Informasi dari host.'
+    },
+    {
+      id: 'cakepung', name: 'Menonton pertunjukan Cakepung', short: 'Pertunjukan Cakepung', art: 'canang',
+      cats: ['budaya'], region: 'Bebandem', place: 'Budakeling, Bebandem', lat: -8.452, lng: 115.565,
+      dur: 2, times: ['19:00'], price: 120000, cap: 20, kid: true, outdoor: false, indoorOk: true,
+      crowd: 0.2, moon: true, festival: true,
+      kw: ['cakepung', 'pertunjukan', 'seni', 'sanggar', 'budakeling', 'bebandem', 'karangasem', 'budaya', 'gamelan', 'musik'],
+      host: { name: 'Sanggar Seni Citta Wistara', ini: 'SC', lang: 'Indonesia, Bali' },
+      story: 'Cakepung adalah seni vokal khas Karangasem yang diiringi rebab, suling, dan gamelan. Sanggar di Budakeling pernah mementaskannya di Pesta Kesenian Bali. Kamu menonton dari dekat, lalu mengobrol dengan para penampil tentang syair dan ceritanya.',
+      hl: ['Menonton Cakepung langsung dari penampilnya', 'Mendengar rebab, suling, dan gamelan dari dekat', 'Mengobrol dengan para penampil'],
+      fit: 'Cocok untuk semua umur dan penikmat seni pertunjukan.',
+      steps: [[0, 'Sambutan dan pengantar singkat'], [40, 'Pertunjukan Cakepung'], [80, 'Ngobrol bersama penampil']],
+      ethics: ['Berpakaian sopan', 'Pakai kain dan selendang bila pentas di area pura', 'Minta izin sebelum merekam'],
+      bring: ['Pakaian sopan', 'Kain dan selendang bila punya'],
+      meet: 'Desa Budakeling, Bebandem', contrib: 'Honor penampil dan perawatan alat musik sanggar. Informasi dari host.'
+    },
+    {
+      id: 'lontar', name: 'Belajar membaca dan menulis lontar', short: 'Belajar lontar', art: 'weave',
+      cats: ['budaya', 'kerajinan'], region: 'Karangasem', place: 'Dukuh Penaban, Karangasem', lat: -8.44, lng: 115.61,
+      dur: 3, times: ['09:00', '13:30'], price: 60000, cap: 15, kid: true, outdoor: false, indoorOk: true,
+      crowd: 0.25, moon: false,
+      kw: ['lontar', 'menulis', 'membaca', 'museum', 'dukuh penaban', 'karangasem', 'budaya', 'aksara', 'kerajinan'],
+      host: { name: 'Pokdarwis Desa Wisata Dukuh Penaban', ini: 'PD', lang: 'Indonesia, Bali' },
+      story: 'Museum Pustaka Lontar di Dukuh Penaban adalah museum lontar pertama yang dibangun desa adat. Pemandu mengajarimu membaca aksara Bali di daun lontar, lalu kamu menulis namamu dengan pengrupak. Semua alat dan daun lontar disediakan.',
+      hl: ['Belajar membaca lontar bersama pemandu', 'Menulis di daun lontar dengan pengrupak', 'Mengunjungi museum yang dibangun desa adat'],
+      fit: 'Cocok untuk semua umur, pelajar, peneliti, dan rombongan.',
+      steps: [[0, 'Sambutan dan keliling museum'], [45, 'Belajar membaca lontar'], [90, 'Menulis di daun lontar'], [135, 'Membawa pulang hasil tulisanmu']],
+      ethics: ['Ikuti arahan pemandu saat memegang lontar', 'Hati-hati memakai pisau pengrupak'],
+      bring: ['Tidak perlu alat khusus', 'Uang tunai untuk donasi museum'],
+      meet: 'Museum Pustaka Lontar, Dukuh Penaban', contrib: 'Donasi dan hasil kegiatan dipakai merawat koleksi lontar. Informasi dari host.'
+    },
+    {
+      id: 'jongkok', name: 'Trekking sawah ke puncak Bukit Jongkok', short: 'Bukit Jongkok', art: 'terrace',
+      cats: ['sawah', 'hutan'], region: 'Karangasem', place: 'Dukuh Penaban, Karangasem', lat: -8.436, lng: 115.604,
+      dur: 3.5, times: ['06:30'], price: 200000, cap: 10, kid: false, outdoor: true, indoorOk: false,
+      crowd: 0.2, moon: false,
+      kw: ['trekking', 'sawah', 'bukit jongkok', 'dukuh penaban', 'karangasem', 'jalan kaki', 'gunung agung', 'pemandangan', 'alam'],
+      host: { name: 'Pokdarwis Desa Wisata Dukuh Penaban', ini: 'PD', lang: 'Indonesia, Bali' },
+      story: 'Jalurnya melewati sawah menuju puncak Bukit Jongkok, dengan pemandangan pesisir dan Gunung Agung. Ada pilihan jarak dekat dan jarak panjang. Kamu bisa menutup hari dengan makan lawar don jepun di desa.',
+      hl: ['Berjalan melewati sawah menuju puncak bukit', 'Pemandangan pesisir dan Gunung Agung', 'Pilihan jarak dekat atau panjang'],
+      fit: 'Cocok untuk remaja dan dewasa yang suka berjalan kaki.',
+      steps: [[0, 'Kumpul dan pengantar jalur'], [50, 'Berjalan melewati sawah'], [105, 'Sampai di puncak dan istirahat'], [160, 'Turun dan makan bersama']],
+      ethics: ['Hormati sawah dan pura yang dilewati', 'Bawa pulang sampahmu'],
+      bring: ['Sepatu jalan', 'Topi', 'Air minum'],
+      meet: 'Area Museum Pustaka Lontar, Dukuh Penaban', contrib: 'Sebagian hasil masuk ke kas desa wisata. Informasi dari host.'
+    },
+    {
+      id: 'sangkan', name: 'Trekking dan swing di Sangkan Gunung', short: 'Trekking Sangkan Gunung', art: 'mangrove',
+      cats: ['hutan'], region: 'Sidemen', place: 'Sangkan Gunung, Sidemen', lat: -8.458, lng: 115.475,
+      dur: 2, times: ['08:00', '15:30'], price: 100000, cap: 12, kid: true, outdoor: true, indoorOk: false,
+      crowd: 0.35, moon: false,
+      kw: ['trekking', 'swing', 'sangkan gunung', 'sidemen', 'karangasem', 'hutan', 'keluarga', 'spot foto', 'alam'],
+      host: { name: 'Pengelola Desa Wisata Sangkan Gunung', ini: 'SG', lang: 'Indonesia, Bali' },
+      story: 'Desa Wisata Sangkan Gunung punya tiga jalur trekking: pendek sekitar 30 menit, menengah 40 menit, dan panjang sekitar satu jam. Cocok untuk pemula. Ada juga ayunan dan spot foto, jadi tanyakan standar pengamannya sebelum mencoba.',
+      hl: ['Tiga jalur trekking untuk semua tingkat', 'Ayunan dan spot foto di tengah alam', 'Kuliner dan fasilitas desa wisata'],
+      fit: 'Cocok untuk keluarga dan pemula.',
+      steps: [[0, 'Kumpul di Br. Dinas Luah'], [30, 'Pilih jalur dan mulai trekking'], [60, 'Mencoba ayunan dan foto'], [90, 'Makan atau minum di warung desa']],
+      ethics: ['Tanyakan standar pengaman sebelum memakai ayunan', 'Bawa pulang sampahmu'],
+      bring: ['Sepatu nyaman', 'Air minum', 'Topi'],
+      meet: 'Br. Dinas Luah, Desa Sangkan Gunung', contrib: 'Sebagian hasil masuk ke pengelola desa wisata. Informasi dari host.'
+    },
+    {
+      id: 'salak', name: 'Belajar olahan salak bersama Kelompok Wanita Tani', short: 'Olahan salak', art: 'coffee',
+      cats: ['kuliner'], region: 'Selat', place: 'Duda Timur, Selat', lat: -8.435, lng: 115.465,
+      dur: 2.5, times: ['09:00'], price: 90000, cap: 12, kid: true, outdoor: false, indoorOk: true,
+      crowd: 0.2, moon: false,
+      kw: ['salak', 'olahan', 'dodol', 'manisan', 'kuliner', 'duda timur', 'selat', 'karangasem', 'wanita tani', 'pasar'],
+      host: { name: 'Pokdarwis Desa Duda Timur', ini: 'PT', lang: 'Indonesia, Bali' },
+      story: 'Salak adalah buah khas Karangasem. Di Duda Timur, Kelompok Wanita Tani mengolahnya jadi dodol, manisan, pia, dan nastar di rumah produksi mereka. Kamu ikut mencoba mengolah, lalu bisa mampir ke Pasar Tradisional Pesangkan.',
+      hl: ['Melihat salak diolah jadi dodol dan manisan', 'Ikut mencoba membuat olahan salak', 'Mampir ke pasar tradisional terdekat'],
+      fit: 'Cocok untuk keluarga, pelajar, dan pecinta kuliner.',
+      steps: [[0, 'Sambutan di rumah produksi'], [40, 'Melihat dan mencoba mengolah salak'], [75, 'Mencicipi hasilnya'], [110, 'Mampir ke Pasar Pesangkan']],
+      ethics: ['Cuci tangan sebelum ikut mengolah', 'Minta izin sebelum memotret anggota kelompok'],
+      bring: ['Celemek bila punya', 'Uang tunai untuk membeli oleh-oleh'],
+      meet: 'Desa Duda Timur, Kecamatan Selat', contrib: 'Sebagian hasil masuk ke kas Kelompok Wanita Tani. Informasi dari host.'
+    },
+    {
+      id: 'muntigunung', name: 'Trekking Muntigunung dipandu warga dan kunjungan workshop', short: 'Trekking Muntigunung', art: 'bird',
+      cats: ['hutan'], region: 'Kubu', place: 'Muntigunung, Kubu', lat: -8.285, lng: 115.575,
+      dur: 10.5, times: ['06:00'], price: 1450000, cap: 4, kid: false, outdoor: true, indoorOk: false,
+      crowd: 0.15, moon: false,
+      kw: ['trekking', 'muntigunung', 'kubu', 'karangasem', 'dipandu warga', 'workshop', 'hutan', 'sehari', 'alam'],
+      host: { name: 'Muntigunung Community Development Program', ini: 'MC', lang: 'Indonesia, Bali, English' },
+      story: 'Trekking sekitar tiga jam dipandu warga Muntigunung, kebanyakan menurun, lalu kunjungan ke workshop komunitas. Paket sehari penuh sudah termasuk sarapan, makan siang, minuman, camilan, dan transport. Jalurnya curam dan licin, jadi butuh fisik cukup bugar.',
+      hl: ['Trekking sekitar tiga jam bersama pemandu warga', 'Kunjungan ke workshop komunitas', 'Sarapan, makan siang, dan transport sudah termasuk'],
+      fit: 'Untuk peserta yang cukup bugar. Minimal usia 8 sampai 10 tahun menurut operator.',
+      steps: [[0, 'Dijemput di hotel atau villa'], [40, 'Sarapan dan pengantar jalur'], [90, 'Trekking bersama pemandu warga'], [360, 'Makan siang dan kunjungan workshop']],
+      ethics: ['Ikuti pemandu di jalur curam', 'Bawa pulang sampahmu'],
+      bring: ['Sepatu olahraga atau hiking', 'Sweater tipis', 'Topi dan tabir surya', 'Baju renang dan handuk'],
+      meet: 'Dijemput di hotel atau villa', contrib: 'Sebagian hasil masuk ke program pengembangan komunitas. Informasi dari host.'
+    },
+    {
+      id: 'saptatirtha', name: 'Wisata spiritual ke Pura Bukit dan mata air Sapta Tirtha', short: 'Pura Bukit dan Sapta Tirtha', art: 'waterfall',
+      cats: ['budaya'], region: 'Karangasem', place: 'Desa Bukit, Karangasem', lat: -8.42, lng: 115.6,
+      dur: 3, times: ['07:00'], price: 100000, cap: 10, kid: true, outdoor: true, indoorOk: false,
+      crowd: 0.15, moon: true, festival: true,
+      kw: ['spiritual', 'pura bukit', 'sapta tirtha', 'mata air', 'desa bukit', 'karangasem', 'pura', 'budaya', 'suci', 'melukat'],
+      host: { name: 'Pokdarwis Desa Bukit', ini: 'PB', lang: 'Indonesia, Bali' },
+      story: 'Desa Bukit mengembangkan wisata spiritual dengan Pura Bukit, beberapa pura lain, dan mata air Sapta Tirtha. Karena ini tempat suci, kamu berpakaian adat dan mengikuti arahan pemandu serta Bendesa Adat soal aturan masuk.',
+      hl: ['Mengunjungi Pura Bukit bersama pemandu desa', 'Melihat mata air Sapta Tirtha', 'Belajar aturan adat saat memasuki pura'],
+      fit: 'Cocok untuk wisatawan yang berminat pada budaya dan spiritualitas.',
+      steps: [[0, 'Kumpul dan penjelasan aturan adat'], [45, 'Berjalan ke Pura Bukit'], [90, 'Ke mata air Sapta Tirtha'], [135, 'Ngobrol dan minum teh bersama']],
+      ethics: ['Pakai kain dan selendang', 'Perempuan yang sedang haid tidak masuk pura', 'Ikuti arahan pemandu, jangan masuk area yang tertutup'],
+      bring: ['Kain dan selendang bila punya', 'Pakaian sopan'],
+      meet: 'Pura Bukit, Desa Bukit', contrib: 'Sebagian hasil masuk ke kas desa adat. Informasi dari host.'
+    },
+    /* ---- Kegiatan contoh karangan tim (demo: true), hanya pengisi katalog. Bukan data riset. ---- */
+    {
+      id: 'tukik', demo: true, name: 'Kelas tukik: pembibitan penyu', short: 'Kelas tukik', art: 'turtle',
       cats: ['laut', 'satwa'], region: 'Selatan', place: 'Serangan, Denpasar', lat: -8.7295, lng: 115.225,
       dur: 2.5, times: ['08:30', '15:30'], price: 175000, cap: 12, kid: true, outdoor: true, indoorOk: false,
       crowd: 0.15, moon: false,
@@ -60,7 +243,7 @@
       meet: 'Pusat pembibitan penyu, Serangan', contrib: 'Sebagian hasil kegiatan dipakai untuk pakan dan perawatan tukik. Informasi dari host.'
     },
     {
-      id: 'mangrove', name: 'Menanam mangrove dan susur hutan bakau', short: 'Menanam mangrove', art: 'mangrove',
+      id: 'mangrove', demo: true, name: 'Menanam mangrove dan susur hutan bakau', short: 'Menanam mangrove', art: 'mangrove',
       cats: ['laut', 'hutan'], region: 'Selatan', place: 'Tahura Ngurah Rai, Denpasar', lat: -8.7747, lng: 115.2036,
       dur: 3, times: ['07:30'], price: 150000, cap: 14, kid: true, outdoor: true, indoorOk: false,
       crowd: 0.4, moon: false,
@@ -75,7 +258,7 @@
       meet: 'Gerbang Tahura Ngurah Rai, jalur timur', contrib: 'Biaya bibit dan perawatan ditanggung dari tiket. Informasi dari host.'
     },
     {
-      id: 'subak', name: 'Jalan pagi di sawah bertingkat dan belajar subak', short: 'Jalan pagi di subak', art: 'terrace',
+      id: 'subak', demo: true, name: 'Jalan pagi di sawah bertingkat dan belajar subak', short: 'Jalan pagi di subak', art: 'terrace',
       cats: ['sawah', 'budaya'], region: 'Tengah', place: 'Jatiluwih, Tabanan', lat: -8.3688, lng: 115.1294,
       dur: 3, times: ['07:00'], price: 220000, cap: 12, kid: true, outdoor: true, indoorOk: false,
       crowd: 0.45, moon: true,
@@ -90,7 +273,7 @@
       meet: 'Warung Pekaseh, Jatiluwih', contrib: 'Sebagian dipakai untuk perawatan saluran subak. Informasi dari host.'
     },
     {
-      id: 'burung', name: 'Pengamatan burung pagi di Bali Barat', short: 'Pengamat burung', art: 'bird',
+      id: 'burung', demo: true, name: 'Pengamatan burung pagi di Bali Barat', short: 'Pengamat burung', art: 'bird',
       cats: ['satwa', 'hutan'], region: 'Barat', place: 'Sumberklampok, Buleleng', lat: -8.17, lng: 114.53,
       dur: 4, times: ['05:30'], price: 350000, cap: 8, kid: false, outdoor: true, indoorOk: false,
       crowd: 0.05, moon: false,
@@ -105,7 +288,7 @@
       meet: 'Pos jaga Sumberklampok', contrib: 'Honor pemandu dan patroli hutan desa. Informasi dari host.'
     },
     {
-      id: 'airterjun', name: 'Trekking pagi ke air terjun tersembunyi', short: 'Air terjun tersembunyi', art: 'waterfall',
+      id: 'airterjun', demo: true, name: 'Trekking pagi ke air terjun tersembunyi', short: 'Air terjun tersembunyi', art: 'waterfall',
       cats: ['hutan', 'air'], region: 'Utara', place: 'Munduk, Buleleng', lat: -8.272, lng: 115.083,
       dur: 4, times: ['07:30'], price: 260000, cap: 10, kid: false, outdoor: true, indoorOk: false,
       crowd: 0.35, moon: false,
@@ -120,7 +303,7 @@
       meet: 'Balai desa Munduk', contrib: 'Dana kas pemuda desa untuk perawatan jalur. Informasi dari host.'
     },
     {
-      id: 'canang', name: 'Membuat canang dan belajar upakara', short: 'Membuat canang', art: 'canang',
+      id: 'canang', demo: true, name: 'Membuat canang dan belajar upakara', short: 'Membuat canang', art: 'canang',
       cats: ['budaya'], region: 'Tengah', place: 'Ubud, Gianyar', lat: -8.5069, lng: 115.2625,
       dur: 2, times: ['14:00', '09:30'], price: 200000, cap: 10, kid: true, outdoor: false, indoorOk: true,
       crowd: 0.5, moon: true,
@@ -135,7 +318,7 @@
       meet: 'Griya Bunga, Jalan Hanoman, Ubud', contrib: 'Honor pembuat sesaji dan kas banjar. Informasi dari host.'
     },
     {
-      id: 'tenun', name: 'Mengenal tenun gringsing di Tenganan', short: 'Tenun gringsing', art: 'weave',
+      id: 'tenun', demo: true, name: 'Mengenal tenun gringsing di Tenganan', short: 'Tenun gringsing', art: 'weave',
       cats: ['budaya', 'kerajinan'], region: 'Timur', place: 'Tenganan, Karangasem', lat: -8.497, lng: 115.565,
       dur: 2, times: ['09:00', '14:00'], price: 230000, cap: 8, kid: true, outdoor: false, indoorOk: true,
       crowd: 0.2, moon: true, festival: true,
@@ -150,7 +333,7 @@
       meet: 'Gerbang desa Tenganan', contrib: 'Sebagian hasil masuk ke kas kelompok penenun. Informasi dari host.'
     },
     {
-      id: 'masak', name: 'Masak bumbu Bali bersama petani', short: 'Masak bumbu Bali', art: 'cooking',
+      id: 'masak', demo: true, name: 'Masak bumbu Bali bersama petani', short: 'Masak bumbu Bali', art: 'cooking',
       cats: ['kuliner', 'budaya'], region: 'Tengah', place: 'Pejeng, Gianyar', lat: -8.51, lng: 115.29,
       dur: 3, times: ['10:00'], price: 190000, cap: 10, kid: true, outdoor: false, indoorOk: true,
       crowd: 0.35, moon: false,
@@ -165,7 +348,7 @@
       meet: 'Kebun Bumbu Pejeng', contrib: 'Bahan dibeli dari petani sekitar. Informasi dari host.'
     },
     {
-      id: 'bebek', name: 'Melepas bebek di sawah bersama petani', short: 'Bebek di sawah', art: 'duck',
+      id: 'bebek', demo: true, name: 'Melepas bebek di sawah bersama petani', short: 'Bebek di sawah', art: 'duck',
       cats: ['sawah', 'satwa'], region: 'Tengah', place: 'Penebel, Tabanan', lat: -8.43, lng: 115.12,
       dur: 2, times: ['15:30'], price: 95000, cap: 14, kid: true, outdoor: true, indoorOk: false,
       crowd: 0.1, moon: false,
@@ -180,7 +363,7 @@
       meet: 'Pondok tani Penebel', contrib: 'Seluruh biaya untuk kelompok tani. Informasi dari host.'
     },
     {
-      id: 'kopi', name: 'Petik dan sangrai kopi di kebun Kintamani', short: 'Kopi Kintamani', art: 'coffee',
+      id: 'kopi', demo: true, name: 'Petik dan sangrai kopi di kebun Kintamani', short: 'Kopi Kintamani', art: 'coffee',
       cats: ['kuliner', 'hutan'], region: 'Timur', place: 'Kintamani, Bangli', lat: -8.25, lng: 115.35,
       dur: 3, times: ['08:30'], price: 160000, cap: 12, kid: true, outdoor: true, indoorOk: false,
       crowd: 0.3, moon: false,
@@ -195,7 +378,7 @@
       meet: 'Pondok Subak Abian', contrib: 'Sebagian dipakai untuk pembibitan kopi anak muda desa. Informasi dari host.'
     },
     {
-      id: 'gerabah', name: 'Membuat gerabah di desa Pejaten', short: 'Membuat gerabah', art: 'pottery',
+      id: 'gerabah', demo: true, name: 'Membuat gerabah di desa Pejaten', short: 'Membuat gerabah', art: 'pottery',
       cats: ['kerajinan', 'budaya'], region: 'Tengah', place: 'Pejaten, Tabanan', lat: -8.595, lng: 115.125,
       dur: 2.5, times: ['10:00', '14:00'], price: 210000, cap: 8, kid: true, outdoor: false, indoorOk: true,
       crowd: 0.15, moon: false,
@@ -210,7 +393,7 @@
       meet: 'Bengkel gerabah Pejaten', contrib: 'Honor pengrajin dan bahan tanah liat. Informasi dari host.'
     },
     {
-      id: 'karang', name: 'Menanam karang bersama nelayan Pemuteran', short: 'Menanam karang', art: 'coral',
+      id: 'karang', demo: true, name: 'Menanam karang bersama nelayan Pemuteran', short: 'Menanam karang', art: 'coral',
       cats: ['laut'], region: 'Barat', place: 'Pemuteran, Buleleng', lat: -8.15, lng: 114.66,
       dur: 3.5, times: ['08:00'], price: 285000, cap: 8, kid: false, outdoor: true, indoorOk: false,
       crowd: 0.25, moon: false,
@@ -225,7 +408,7 @@
       meet: 'Pantai Pemuteran, pos nelayan', contrib: 'Biaya bibit dan perawatan rangka karang. Informasi dari host.'
     },
     {
-      id: 'melukat', name: 'Melukat di pura air suci Tampaksiring', short: 'Melukat di pura air', art: 'waterfall',
+      id: 'melukat', demo: true, name: 'Melukat di pura air suci Tampaksiring', short: 'Melukat di pura air', art: 'waterfall',
       cats: ['budaya', 'air'], region: 'Tengah', place: 'Tampaksiring, Gianyar', lat: -8.4153, lng: 115.3153,
       dur: 2.5, times: ['07:00'], price: 190000, cap: 8, kid: false, outdoor: true, indoorOk: false,
       crowd: 0.4, moon: true,
@@ -240,7 +423,7 @@
       meet: 'Parkiran desa, Manukaya, Tampaksiring', contrib: 'Dana kebersihan pura dan kas banjar. Informasi dari host.'
     },
     {
-      id: 'topeng', name: 'Belajar tari topeng bersama sanggar desa', short: 'Tari topeng', art: 'weave',
+      id: 'topeng', demo: true, name: 'Belajar tari topeng bersama sanggar desa', short: 'Tari topeng', art: 'weave',
       cats: ['budaya', 'kerajinan'], region: 'Tengah', place: 'Mas, Gianyar', lat: -8.5736, lng: 115.2494,
       dur: 2.5, times: ['16:00'], price: 230000, cap: 10, kid: true, outdoor: false, indoorOk: true,
       crowd: 0.2, moon: true,
@@ -260,7 +443,7 @@
   /* ---------- kondisi tanggal (demo, deterministik) ---------- */
   const PURNAMA = ['2026-10-26', '2026-11-24', '2026-12-24', '2027-01-22'];
   const TILEM = ['2026-11-09', '2026-12-09', '2027-01-08'];
-  const FESTIVAL = { '2026-11-21': 'Upacara desa Tenganan (contoh)' };
+  const FESTIVAL = { '2026-11-21': 'Upacara desa' };
 
   function moonFor(iso) { return PURNAMA.includes(iso) ? 'purnama' : TILEM.includes(iso) ? 'tilem' : null; }
   function festivalFor(iso) { return FESTIVAL[iso] || null; }

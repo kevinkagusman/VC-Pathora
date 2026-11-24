@@ -10,13 +10,13 @@
   const MONTHS = { jan: 0, januari: 0, feb: 1, februari: 1, mar: 2, maret: 2, apr: 3, april: 3, mei: 4, jun: 5, juni: 5, jul: 6, juli: 6, agu: 7, agt: 7, agustus: 7, sep: 8, sept: 8, september: 8, okt: 9, oktober: 9, nov: 10, november: 10, des: 11, desember: 11 };
   const MON_RE = Object.keys(MONTHS).sort((a, b) => b.length - a.length).join('|');
   const INTEREST = {
-    laut: ['laut', 'pantai', 'snorkel', 'penyu', 'mangrove', 'karang', 'nelayan'],
+    laut: ['laut', 'pantai', 'snorkel', 'penyu', 'mangrove', 'karang', 'nelayan', 'garam', 'amed'],
     satwa: ['satwa', 'hewan', 'burung', 'penyu', 'bebek', 'binatang'],
     sawah: ['sawah', 'subak', 'padi', 'petani'],
-    hutan: ['hutan', 'trekking', 'air terjun', 'jalan kaki', 'hiking', 'kebun'],
-    budaya: ['budaya', 'adat', 'tradisi', 'upacara', 'canang', 'tenun', 'desa'],
-    kuliner: ['kuliner', 'makan', 'masak', 'kopi', 'bumbu'],
-    kerajinan: ['kerajinan', 'tenun', 'gerabah', 'kriya', 'membuat', 'keramik']
+    hutan: ['hutan', 'trekking', 'air terjun', 'jalan kaki', 'hiking', 'kebun', 'camping', 'berkemah', 'bukit'],
+    budaya: ['budaya', 'adat', 'tradisi', 'upacara', 'canang', 'tenun', 'desa', 'lontar', 'spiritual', 'pura', 'cakepung'],
+    kuliner: ['kuliner', 'makan', 'masak', 'kopi', 'bumbu', 'salak', 'arak'],
+    kerajinan: ['kerajinan', 'tenun', 'gerabah', 'kriya', 'membuat', 'keramik', 'lontar']
   };
 
   /* ---------- parser ---------- */

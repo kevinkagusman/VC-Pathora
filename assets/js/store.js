@@ -23,9 +23,9 @@
       chat: [],       /* {uid, role, text, blocks, chips, ts} */
       hostClosed: {}, /* actId: [iso] */
       reqs: [
-        { uid: 'r1', name: 'Rina A.', actId: 'tukik', date: '2026-11-12', people: 2, status: 'baru' },
-        { uid: 'r2', name: 'Bayu S.', actId: 'tukik', date: '2026-11-13', people: 4, status: 'baru' },
-        { uid: 'r3', name: 'Mei Lin', actId: 'tukik', date: '2026-11-14', people: 6, status: 'baru' }
+        { uid: 'r1', name: 'Rina A.', actId: 'yehlabuh', date: '2026-11-12', people: 2, status: 'baru' },
+        { uid: 'r2', name: 'Bayu S.', actId: 'yehlabuh', date: '2026-11-13', people: 4, status: 'baru' },
+        { uid: 'r3', name: 'Mei Lin', actId: 'yehlabuh', date: '2026-11-14', people: 6, status: 'baru' }
       ],
       payouts: [],
       passport: {},   /* actId: {date, code} */
@@ -73,7 +73,7 @@
     demo(role) {
       const email = role === 'host' ? 'host@demo.pathora' : 'traveler@demo.pathora';
       const all = rd(KEYA, {});
-      if (!all[email]) all[email] = role === 'host' ? { email, name: 'Wayan Sudarta', role: 'host', community: 'Komunitas Pesisir Serangan', place: 'Serangan, Denpasar', phone: '', plan: 'gratis', since: D.today() } : { email, name: 'Maya Putri', role: 'traveler', community: '', place: '', phone: '', plan: 'gratis', since: D.today() };
+      if (!all[email]) all[email] = role === 'host' ? { email, name: 'Wayan Sudarta', role: 'host', community: 'Pokdarwis Desa Selumbung', place: 'Selumbung, Manggis', phone: '', plan: 'gratis', since: D.today() } : { email, name: 'Maya Putri', role: 'traveler', community: '', place: '', phone: '', plan: 'gratis', since: D.today() };
       wr(KEYA, all); wr(KEYS, email); mem = null; load(); syncName(); save(); return { ok: all[email] };
     },
     logout() { try { localStorage.removeItem(KEYS); } catch (e) { /* abaikan */ } mem = null; },
@@ -152,7 +152,7 @@
       s.members = [s.members[0]].concat(JSON.parse(JSON.stringify(DEMO_MEMBERS.filter((m) => m.id !== 'maya'))));
       s.trip.name = 'Trip Bali bersama';
       const a = (id, date, time, status) => ({ uid: uid(), actId: id, date, time, people: 4, status, by: 'me' });
-      s.items = [a('tukik', '2026-11-12', '15:30', 'disetujui'), a('subak', '2026-11-13', '07:00', 'diajukan'), a('tenun', '2026-11-14', '09:00', 'draft')];
+      s.items = [a('lontar', '2026-11-12', '09:00', 'disetujui'), a('jongkok', '2026-11-13', '06:30', 'diajukan'), a('menenun', '2026-11-14', '09:00', 'draft')];
       s.items[1].by = 'sari';
       s.events = [
         { uid: uid(), date: '2026-11-11', time: '19:00', title: 'Persiapan keberangkatan', by: 'me' },

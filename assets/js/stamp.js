@@ -3,7 +3,7 @@
   'use strict';
   const esc = (g.UI && g.UI.esc) || function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
   const light = function (hex) { const n = parseInt(hex.slice(1), 16), m = function (v) { return Math.round(v + (244 - v) * 0.68); }; return 'rgb(' + m(n >> 16) + ',' + m((n >> 8) & 255) + ',' + m(n & 255) + ')'; };
-  const INK = { laut:'#2C6E86', air:'#2C6E86', hutan:'#3B6B3C', sawah:'#4F7A2F', budaya:'#9A3B26', kuliner:'#B0601C', satwa:'#6A4A86', kerajinan:'#8A5A2B' };
+    const INK = { laut:'#2C6E86', air:'#2C6E86', hutan:'#3B6B3C', sawah:'#4F7A2F', budaya:'#9A3B26', kuliner:'#B0601C', satwa:'#6A4A86', kerajinan:'#8A5A2B' };
   const SHAPE = { laut:'circle', air:'circle', satwa:'circle', hutan:'oct', sawah:'oct', budaya:'rect', kerajinan:'rect', kuliner:'rect' };
   const GLY = {
     laut:'<path d="M2 14c2.5-3 4.5-3 7 0s4.5 3 7 0 4-3 6 0"/><path d="M2 19c2.5-3 4.5-3 7 0s4.5 3 7 0 4-3 6 0"/><circle cx="17" cy="7" r="2.5"/>',
@@ -30,6 +30,15 @@
     melukat:'<path d="M12 3c3.500 4.500 5 7 5 9.500a5 5 0 0 1-10 0C7 10 8.500 7.500 12 3z"/><path d="M4 20c3-2 5-2 8 0s5 2 8 0"/>',
     topeng:'<path d="M5 6c4-2 10-2 14 0 0 8-2 13-7 15-5-2-7-7-7-15z"/><path d="M8.500 10.500c1-1 2-1 3 0M12.500 10.500c1-1 2-1 3 0M9.500 16c1.500 1.200 3.500 1.200 5 0"/>'
   };
+  GA.arak = '<path d="M8 4h8M9 4v3c-3 2-4 5-4 8a5 5 0 0 0 5 5h4a5 5 0 0 0 5-5c0-3-1-6-4-8V4"/><path d="M7 13h10"/>';
+  GA.camping = '<path d="M3 20L12 5l9 15zM12 5v15M9 20l3-6 3 6"/>';
+  GA.garam = '<path d="M12 3l5 6-5 6-5-6z"/><path d="M7 9h10M12 15v5M4 20h16"/>';
+  GA.yehlabuh = GA.airterjun; GA.menenun = GA.tenun; GA.saptatirtha = GA.melukat;
+  GA.cakepung = '<path d="M9 18V6l10-2v12"/><circle cx="7" cy="18" r="2.5"/><circle cx="17" cy="16" r="2.5"/>';
+  GA.lontar = '<path d="M5 4h10l4 4v12H5z"/><path d="M15 4v4h4M8 12h8M8 16h6"/>';
+  GA.jongkok = '<path d="M3 20l6-10 4 6 3-4 5 8z"/><path d="M3 20h18"/>';
+  GA.sangkan = '<path d="M5 3h14M8 3l-2 14M16 3l2 14M5 17h14"/>';
+  GA.salak = '<path d="M12 6c4 0 7 3 7 7s-3 7-7 7-7-3-7-7 3-7 7-7z"/><path d="M12 6c0-2 1-3 3-3M9 11l2 2M13 10l2 2M9 15l2 2"/>';
   const MON = ['JAN','FEB','MAR','APR','MEI','JUN','JUL','AGU','SEP','OKT','NOV','DES'];
   function dshort(d){ const p = d.split('-'); return p[2] + ' ' + MON[+p[1] - 1] + ' ' + p[0]; }
   function hash(str){ let h = 0; for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) >>> 0; return h; }
@@ -59,7 +68,5 @@
     const body = '<g transform="rotate(' + rot + ' 60 60)"' + (locked ? ' class="gh" stroke-dasharray="3 3"' : ' filter="url(#ink)"') + '>' + inner + '</g>';
     return '<svg viewBox="0 0 120 120" role="img" aria-label="' + (locked ? 'Stempel ' + esc(a.short) + ', belum didapat' : 'Stempel ' + esc(a.short) + (st ? ', ' + esc(dshort(st.date)) : '')) + '">' + body + '</svg>';
   }
-
-  
   g.PSTAMP = { svg: stampSVG };
 })(window);
