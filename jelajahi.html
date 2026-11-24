@@ -183,7 +183,7 @@
   $('lgBtn').addEventListener('click', function(){
     UI.modal('<div class="modal-h"><h3>Arti label keramaian</h3><button class="icon-btn" data-close aria-label="Tutup">' + ic('x', 18) + '</button></div><div class="modal-b mo"><p class="muted">Perkiraan jumlah pengunjung lain di lokasi pada tanggal trip kamu. Untuk membantu memilih kegiatan yang tenang.</p><div class="mo-l">' +
       [[0, 'Sedikit pengunjung lain. Cocok kalau kamu ingin suasana tenang.'], [1, 'Ada pengunjung lain, tapi tidak padat.'], [2, 'Cenderung padat, terutama di akhir pekan dan hari raya.']].map(function(x){ return '<div>' + UI.crowd(x[0]) + '<span class="t">' + x[1] + '</span></div>'; }).join('') +
-      '</div><p class="faint" style="font-size:12.5px">Angka masih data contoh untuk prototype.</p></div>');
+      '</div></div>');
   });
 
   /* ---------- pencarian ---------- */

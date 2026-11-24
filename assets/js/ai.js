@@ -286,13 +286,13 @@
       const wet = days.filter((x) => x.w.rain >= 55);
       const outd = s.items.filter((i) => byId[i.actId].outdoor && wet.some((x) => x.d === i.date));
       const tail = wet.length ? (outd.length ? 'Pada hari yang berpotensi hujan terdapat kegiatan luar ruangan (' + fmtList(outd.map((i) => byId[i.actId].short)) + '). Saya dapat menggantinya dengan kegiatan dalam ruangan.' : 'Hari yang berpotensi hujan aman karena kegiatannya di dalam ruangan atau belum terisi.') : 'Tidak ada hari dengan risiko hujan tinggi.';
-      return { text: 'Prakiraan cuaca (data contoh) untuk trip kamu:\n' + lines + '\n\n' + tail, blocks: outd.length ? [{ type: 'rainfix', ids: outd.map((i) => i.uid) }] : [], chips: ['Cari tanggal terbaik', 'Cari alternatif yang lebih hemat'] };
+      return { text: 'Prakiraan cuaca untuk trip kamu:\n' + lines + '\n\n' + tail, blocks: outd.length ? [{ type: 'rainfix', ids: outd.map((i) => i.uid) }] : [], chips: ['Cari tanggal terbaik', 'Cari alternatif yang lebih hemat'] };
     }
 
     if (/(upacara|purnama|tilem|hari raya|nyepi|galungan|adat|libur)/.test(t)) {
       const days = S.days(); const near = []; for (let i = -3; i <= days.length + 3; i++) { const d = D.add(s.trip.start, i); const mn = moonFor(d), f = festivalFor(d); if (mn || f) near.push({ d, label: f || ('hari ' + mn) }); }
       const nyepi = /nyepi/.test(t) ? ' Nyepi adalah hari raya hening: seluruh aktivitas di pulau berhenti, termasuk operasional bandara. Hindari menjadwalkan perjalanan pada hari tersebut.' : '';
-      const txt = near.length ? 'Di sekitar tanggal trip terdapat: ' + fmtList(near.map((x) => D.long(x.d) + ' (' + x.label + ')')) + '. Sebagian host menutup kegiatan pada hari seperti ini, dan hal itu sudah saya pertimbangkan dalam penyusunan jadwal. Bagi tamu yang ingin menyaksikan upacara, kenakan pakaian adat dan mintalah izin kepada pemandu terlebih dahulu.' : 'Tidak ada upacara besar yang tercatat di sekitar tanggal trip (data contoh).';
+      const txt = near.length ? 'Di sekitar tanggal trip terdapat: ' + fmtList(near.map((x) => D.long(x.d) + ' (' + x.label + ')')) + '. Sebagian host menutup kegiatan pada hari seperti ini, dan hal itu sudah saya pertimbangkan dalam penyusunan jadwal. Bagi tamu yang ingin menyaksikan upacara, kenakan pakaian adat dan mintalah izin kepada pemandu terlebih dahulu.' : 'Tidak ada upacara besar yang tercatat di sekitar tanggal trip.';
       return { text: txt + nyepi, blocks: [{ type: 'go', tab: 'kalender', label: 'Lihat di kalender' }], chips: [] };
     }
 

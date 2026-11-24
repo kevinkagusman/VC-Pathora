@@ -211,7 +211,7 @@
 
   /* ---------- panel kanan: usulan rencana atau ringkasan trip ---------- */
   const STAT = { draft: ['Belum diajukan', ''], diajukan: ['Menunggu host', 'wait'], disetujui: ['Disetujui', 'ok'], lunas: ['Lunas', 'ok'], ditolak: ['Ditolak', 'bad'] };
-  const PROTO = '<p class="proto">Versi prototype: harga dan ketersediaan masih contoh dan akan dikonfirmasi host.</p>';
+  const PROTO = '';
   let sideForce = null, sidePlanUid = null;
   function lastPlan() {
     const ch = PS.get().chat;
@@ -355,9 +355,9 @@
     UI.modal('<div class="modal-h"><h3>Purnama dan Tilem</h3><button class="icon-btn" data-close aria-label="Tutup">' + ic('x', 18) + '</button></div><div class="modal-b mo">' +
       '<p class="muted">Dua hari suci yang datang sekitar setiap 15 hari dalam kalender umat Hindu Bali. Di Bali, ini hari yang ramai dengan persembahyangan, bukan hari yang berbahaya.</p>' +
       '<div class="mo-g"><div><b>Purnama</b><span>Bulan purnama. Hari bersyukur dan memohon berkat. Pura biasanya ramai oleh persembahyangan dan persembahan.</span></div><div><b>Tilem</b><span>Bulan mati (gelap). Suasana lebih tenang, untuk perenungan dan penyucian diri.</span></div></div>' +
-      '<h4>Pengaruhnya untuk trip kamu</h4><ul><li>Beberapa host menutup kegiatan di hari ini. Asisten sudah menghindari menjadwalkannya, dan di prototype ini tanggalnya ditandai ikon bulan.</li><li>Jalan menuju pura bisa lebih ramai. Beri waktu perjalanan lebih longgar.</li></ul>' +
+      '<h4>Pengaruhnya untuk trip kamu</h4><ul><li>Beberapa host menutup kegiatan di hari ini. Asisten sudah menghindari menjadwalkannya, dan tanggalnya ditandai ikon bulan di kalender.</li><li>Jalan menuju pura bisa lebih ramai. Beri waktu perjalanan lebih longgar.</li></ul>' +
       '<h4>Sopan santun untuk pengunjung</h4><ul><li>Tidak ada larangan bepergian. Kamu tetap boleh berwisata.</li><li>Berpakaian sopan di pura: bahu dan lutut tertutup, pakai sarung dan selendang (sering disediakan di pura).</li><li>Jangan masuk area dalam pura kecuali untuk bersembahyang, dan jangan memanjat atau menyentuh benda suci.</li><li>Jangan menginjak persembahan (canang) di jalan atau di depan pura.</li><li>Perempuan yang sedang haid diminta tidak memasuki area pura.</li><li>Jangan mengganggu upacara. Tanyakan dulu sebelum memotret orang yang sedang bersembahyang.</li><li>Aturan tiap desa dan pura bisa berbeda. Ikuti arahan host atau pemangku setempat.</li></ul>' +
-      '<p class="faint" style="font-size:12.5px">Tanggal purnama dan tilem di prototype ini berupa data contoh. Pastikan ke host sebelum berangkat.</p></div>');
+      '<p class="faint" style="font-size:12.5px">Pastikan ke host sebelum berangkat.</p></div>');
   }
   function shiftMonth(m, n) { const d = D.parse(m); d.setMonth(d.getMonth() + n); return D.iso(d).slice(0, 7) + '-01'; }
   function renderCal() {
@@ -456,7 +456,7 @@
       '<div class="ptot"><span class="ptl">Total dibayar sekarang</span><span class="tv"><b>' + rp(total) + '</b></span></div>' +
       (payable.length ? '<button type="button" class="pbtn" id="payAll">Bayar ' + rp(total) + '</button><p class="help">Pilih cara bayar di langkah berikutnya.</p>'
         : '<p class="help">' + (waiting ? 'Menunggu persetujuan host. Tombol bayar akan aktif setelah ada kegiatan yang disetujui.' : 'Belum ada kegiatan yang perlu dibayar.') + '</p>') +
-      '<p class="proto">Versi prototype: pembayaran hanya simulasi, tidak ada uang yang dipindahkan.</p></div>';
+      '</div>';
     side.onclick = (e) => { if (e.target.closest('#payAll')) { if (!isTraveler()) return UI.needLogin('Pembayaran memerlukan akun.'); payModal(payable); } };
     if (!items.length) {
       box.innerHTML = '<div class="sp"><div><div class="sp-eb">Pesanan</div><h1 class="sp-h">belum ada yang perlu dibayar.</h1><p class="sp-meta">Pembayaran dibuka setelah host menyetujui kegiatanmu. Alurnya:</p></div>' +
@@ -524,7 +524,6 @@
   function payModal(list) {
     const total = list.reduce((t, i) => t + PS.itemCost(i), 0);
     UI.modal('<div class="modal-h"><h3>Pembayaran</h3><button class="icon-btn" data-close aria-label="Tutup">' + ic('x', 18) + '</button></div><div class="modal-b" style="display:grid;gap:16px">' +
-      '<div class="sim-note">' + ic('info', 16) + '<span>Ini simulasi. Tidak ada dana yang dipindahkan dan tidak ada data kartu yang disimpan.</span></div>' +
       '<div class="sum" style="border:0;padding:0">' + list.map((i) => '<div><span>' + esc(byId[i.actId].short) + ' · ' + D.med(i.date) + '</span><span>' + rp(PS.itemCost(i)) + '</span></div>').join('') + '<div class="tot"><span>Total</span><span>' + rp(total) + '</span></div></div>' +
       (group() ? '<p class="faint" style="font-size:12.5px">Dibayar oleh bendahara (' + esc(PS.member(PS.get().trip.treasurer).name.split(' ')[0]) + '), lalu dibagi lewat halaman Patungan.</p>' : '') +
       '<div><label class="pay-opt"><input type="radio" name="pm" checked>' + ic('qr', 20) + '<span><b>QRIS</b><small class="faint" style="display:block">Pindai dari aplikasi bank atau dompet digital</small></span></label>' +
@@ -536,7 +535,7 @@
         btn.disabled = true; btn.textContent = 'Memproses…';
         setTimeout(() => {
           PS.update((st) => { list.forEach((l) => { const it = st.items.find((x) => x.uid === l.uid); if (it) { it.status = 'lunas'; st.payouts.push({ uid: uid(), actId: it.actId, amount: PS.itemCost(it), date: D.today() }); } }); });
-          close(); UI.toast('Pembayaran berhasil (simulasi)');
+          close(); UI.toast('Pembayaran berhasil');
         }, 1100);
       };
     });
@@ -551,7 +550,6 @@
     UI.modal('<div class="modal-h"><h3>' + (left() <= 0 ? 'Pertanyaan gratis hari ini telah habis' : 'Pathora Plus') + '</h3><button class="icon-btn" data-close aria-label="Tutup">' + ic('x', 18) + '</button></div><div class="modal-b" style="display:grid;gap:16px">' +
       '<p class="muted">Paket gratis mencakup ' + FREE_Q + ' pertanyaan per hari. Kuota diperbarui besok, atau kamu dapat melanjutkan sekarang dengan Pathora Plus.</p>' +
       '<div class="card" style="padding:18px;display:grid;gap:10px"><b style="font-size:18px">Pathora Plus <span class="faint" style="font-weight:500;font-size:14px">Rp49.000 per bulan, gratis 7 hari pertama</span></b><ul class="checklist"><li>' + ic('check', 18) + 'Pertanyaan tanpa batas ke asisten AI</li><li>' + ic('check', 18) + 'Trip dan anggota tanpa batas</li><li>' + ic('check', 18) + 'Prakiraan keramaian untuk tanggal pilihan kamu</li></ul></div>' +
-      '<div class="sim-note">' + ic('info', 16) + '<span>Simulasi. Tidak ada pembayaran yang diproses, dan Plus hanya aktif di browser ini.</span></div>' +
       '<button class="btn btn-primary btn-lg btn-block" id="goPlus">Mulai uji coba 7 hari</button><button class="btn btn-ghost btn-block" data-close>Nanti saja</button></div>', (ov, close) => {
       ov.querySelector('#goPlus').onclick = () => { if (!isTraveler()) { close(); return UI.needLogin('Berlangganan Pathora Plus memerlukan akun.'); } PAUTH.update({ plan: 'plus' }); close(); renderQuota(); UI.toast('Pathora Plus aktif', '<a href="akun.html">Kelola</a>'); };
     });

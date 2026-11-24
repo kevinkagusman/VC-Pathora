@@ -95,7 +95,7 @@
         '<div><h4>Traveler</h4><a href="jelajahi.html">Jelajahi kegiatan</a><a href="trip.html">Asisten perjalanan</a><a href="paspor.html">Paspor Alam</a><a href="masuk.html?mode=daftar">Buat akun</a></div>' +
         '<div><h4>Host lokal</h4><a href="masuk.html?role=host&mode=daftar">Daftar sebagai host</a></div>' +
         '<div><h4>Pathora</h4><a href="index.html#cara">Cara kerja</a><a href="index.html#prinsip">Prinsip kami</a><a href="index.html#faq">Pertanyaan umum</a></div></div>' +
-        '<p class="fine">Prototipe Kelompok 2. Nama host, harga, cuaca, dan angka lainnya adalah data contoh. Pembayaran hanya simulasi.</p></div></footer>';
+        '</div></footer>';
     },
 
     toast(msg, linkHtml) {
