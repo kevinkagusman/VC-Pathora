@@ -6,38 +6,27 @@
 <title>Paspor Alam — Pathora</title>
 <link rel="icon" href="assets/img/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Questrial&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/style.css">
 <link rel="stylesheet" href="assets/css/pages.css">
 <link rel="stylesheet" href="assets/css/header.css">
-<style>
-.cover{background:var(--jungle);color:var(--cream);border-radius:var(--r-xl);padding:40px;display:grid;grid-template-columns:1fr auto;gap:30px;align-items:center;position:relative;overflow:hidden}
-.cover::before{content:'';position:absolute;right:-80px;top:-80px;width:340px;height:340px;border-radius:50%;border:2px solid rgba(240,207,138,.25)}
-.cover::after{content:'';position:absolute;right:-30px;top:-30px;width:240px;height:240px;border-radius:50%;border:2px solid rgba(240,207,138,.18)}
-.cover h1{font-size:clamp(30px,4vw,46px);margin:10px 0 8px}
-.cover .meta{display:flex;gap:30px;flex-wrap:wrap;margin-top:24px;position:relative;z-index:1}
-.cover .meta b{display:block;font-size:30px;color:var(--gold);letter-spacing:-.02em}
-.cover .meta small{color:rgba(244,241,226,.75);font-size:12.5px}
-.ring{width:140px;height:140px;position:relative;z-index:1}
-.stamps{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:20px;padding:28px 0 70px}
-.stamp{background:var(--paper);border:1px solid var(--line);border-radius:var(--r-lg);padding:22px 18px 18px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
-.seal{width:132px;height:132px;border-radius:50%;position:relative;padding:7px;background:conic-gradient(from 0deg,var(--bamboo),var(--gold),var(--bamboo));transform:rotate(-5deg)}
-.seal>div{width:100%;height:100%;border-radius:50%;overflow:hidden;position:relative;box-shadow:inset 0 0 0 3px var(--paper)}
-.seal .art{position:absolute;inset:0}
-.stamp.lock .seal{background:repeating-conic-gradient(var(--line-2) 0 8deg,transparent 8deg 16deg);filter:grayscale(1);opacity:.55}
-.stamp.lock .seal>div{box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 100px rgba(244,241,226,.6)}
-.stamp h3{font-size:15.5px;line-height:1.25}
-.stamp small{color:var(--ink-3);font-size:12.5px}
-.code{font-variant-numeric:tabular-nums;font-size:11.5px;letter-spacing:.1em;color:var(--bamboo);font-weight:700}
-.prog{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:26px 0 0}
-.prog .kpi b{font-size:22px}
-@media(max-width:860px){.cover{grid-template-columns:1fr;padding:28px}.ring{display:none}}
-</style>
+<link rel="stylesheet" href="assets/css/chat.css">
+<link rel="stylesheet" href="assets/css/jelajahi.css">
+<link rel="stylesheet" href="assets/css/paspor.css">
 </head>
-<body class="mesh">
+<body class="jel pp chat-mode">
 <div id="nav"></div>
-<main class="wrap" id="root" style="padding-top:34px"></main>
+<div class="jel-bg" aria-hidden="true"></div>
+<main class="pp-main">
+  <header class="pp-head"><h1 id="hTitle">Jejak perjalanan kamu di Bali.</h1><p>Setiap kegiatan yang kamu selesaikan bersama host lokal mendapat satu stempel. Stempel diberikan setelah kegiatan lunas dan dikonfirmasi di lokasi.</p></header>
+  <div class="pp-stage" id="stage"></div>
+  <div class="pp-nav" id="nav2" hidden></div>
+  <div class="pp-demo" id="demo" hidden></div>
+</main>
 <div id="footer"></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <filter id="ink" x="-6%" y="-6%" width="112%" height="112%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="1.5" result="d"/><feTurbulence type="fractalNoise" baseFrequency=".06 .8" numOctaves="2" seed="8" result="m"/><feColorMatrix in="m" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.4 1.85" result="mk"/><feComposite in="d" in2="mk" operator="in"/></filter>
+</defs></svg>
 <script src="assets/js/data.js"></script>
 <script src="assets/js/store.js"></script>
 <script src="assets/js/art.js"></script>
@@ -45,22 +34,134 @@
 <script>
 (function(){
   const { A, D } = PD, { ic } = PA, esc = UI.esc;
-  UI.mountNav('paspor', 'dark'); UI.mountFooter();
-  const root = document.getElementById('root');
+  UI.mountNav('paspor', true); UI.mountFooter();
   const REG = ['Selatan','Tengah','Barat','Utara','Timur'];
-  function render(){
+  const stage = document.getElementById('stage'), nav2 = document.getElementById('nav2'), demo = document.getElementById('demo');
+  const mq = window.matchMedia('(max-width:860px)');
+  let opened = false, pg = 0;
+  try { opened = sessionStorage.getItem('pp_open') === '1'; } catch (e) {}
+
+  /* ---------- gaya stempel per kategori: warna tinta, bentuk, lambang ---------- */
+  const INK = { laut:'#2C6E86', air:'#2C6E86', hutan:'#3B6B3C', sawah:'#4F7A2F', budaya:'#9A3B26', kuliner:'#B0601C', satwa:'#6A4A86', kerajinan:'#8A5A2B' };
+  const SHAPE = { laut:'circle', air:'circle', satwa:'circle', hutan:'oct', sawah:'oct', budaya:'rect', kerajinan:'rect', kuliner:'rect' };
+  const GLY = {
+    laut:'<path d="M2 14c2.5-3 4.5-3 7 0s4.5 3 7 0 4-3 6 0"/><path d="M2 19c2.5-3 4.5-3 7 0s4.5 3 7 0 4-3 6 0"/><circle cx="17" cy="7" r="2.5"/>',
+    air:'<path d="M12 3c4 5 6 8 6 11a6 6 0 0 1-12 0c0-3 2-6 6-11z"/><path d="M9.5 15a2.8 2.8 0 0 0 2.5 2.4"/>',
+    hutan:'<path d="M12 3l6 8h-3.5l4 6H5.5l4-6H6z"/><path d="M12 17v4"/>',
+    sawah:'<path d="M3 19h18M5 15h14M8 11h8M10.5 7h3"/>',
+    budaya:'<path d="M4 20V9l3-3 3 3v11M14 20V9l3-3 3 3v11M3 20h8M13 20h8"/>',
+    kuliner:'<path d="M4 11h16a8 8 0 0 1-16 0z"/><path d="M9 3.5c-1 1.5 1 2 0 4M13 3.5c-1 1.5 1 2 0 4"/>',
+    satwa:'<circle cx="6.5" cy="10" r="1.7"/><circle cx="10.5" cy="6.5" r="1.7"/><circle cx="15.5" cy="6.5" r="1.7"/><circle cx="19" cy="10" r="1.7"/><path d="M12.8 11.5c-3.2 0-5.6 2.8-5.6 5 0 2 2.4 2.4 5.6 1.4 3.2 1 5.6.6 5.6-1.4 0-2.2-2.4-5-5.6-5z"/>',
+    kerajinan:'<path d="M8 4h8M9 4c0 2-3 3-3 8 0 4 2.5 8 6 8s6-4 6-8c0-5-3-6-3-8"/>'
+  };
+  const GA = {
+    tukik:'<ellipse cx="12" cy="13" rx="6.2" ry="4.6"/><circle cx="19.2" cy="12" r="1.8"/><path d="M7 16.5l-2 3M16.5 16.5l2 3M7 9.5L5 6.5M16.5 9.5l2-3M5.8 13H3M9 11.5l3 3M12 10.5l3 3"/>',
+    mangrove:'<path d="M12 4v7M12 4c-3 0-5 2-5 4.5M12 4c3 0 5 2 5 4.5M12 11l-4.5 8M12 11v8M12 11l4.5 8M3 21h18"/>',
+    burung:'<path d="M3 16c4 0 6.5-2 7.5-5.5l3 3c2-2 4.5-2.4 7-1.2-1 3.4-4.2 6.2-8.2 6.2-3.2 0-6-.8-9.3-2.5z"/><path d="M15.5 8.5L17 6M13.5 10.5l1.5-2"/>',
+    airterjun:'<path d="M5 3h14M8 3v7M12 3v11M16 3v8M4 20c3-3 5-3 8 0s5 3 8 0"/>',
+    canang:'<circle cx="12" cy="12" r="1.8"/><path d="M12 3c2 2.2 2 4.5 0 7.2-2-2.7-2-5 0-7.2zM12 13.8c2 2.7 2 5 0 7.2-2-2.200-2-4.500 0-7.200zM3 12c2.2-2 4.500-2 7.200 0-2.700 2-5 2-7.200 0zM13.800 12c2.700-2 5-2 7.200 0-2.200 2-4.500 2-7.200 0z"/>',
+    tenun:'<path d="M5 5h14v14H5zM5 9.700h14M5 14.300h14M9.700 5v14M14.300 5v14"/><path d="M5 5l14 14" stroke-dasharray="1.500 2.200"/>',
+    masak:'<path d="M5 11h14v5a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4zM3 11h18M9 4c-1 1.500 1 2 0 4M13 4c-1 1.500 1 2 0 4"/>',
+    bebek:'<path d="M4.500 15c0 3 3 5 7.500 5s7.500-2 7.500-5c-3 1-5.500 0-6.500-3 0-2 1-4-1-5.200-2-1-4.500 0-4.500 2.200 0 2 2 3 0 5-1 1-2 1-3 1z"/><path d="M16.800 7l3.200.9-3.200 1"/>',
+    kopi:'<ellipse cx="12" cy="12" rx="5.800" ry="8" transform="rotate(30 12 12)"/><path d="M8.500 5.500c4.500 3 1.500 7.500 6.500 13"/>',
+    gerabah:'<path d="M8 4h8M9 4c0 2-3 3-3 8 0 4 2.500 8 6 8s6-4 6-8c0-5-3-6-3-8"/><path d="M7 11h10M7.600 15h8.800"/>',
+    karang:'<path d="M12 21v-8M12 13c-3 0-5-2-5-6M12 13c3 0 5-2 5-6M12 16c-2 0-4-1-4-3M12 16c2 0 4-1 4-3M4 21h16"/>',
+    melukat:'<path d="M12 3c3.500 4.500 5 7 5 9.500a5 5 0 0 1-10 0C7 10 8.500 7.500 12 3z"/><path d="M4 20c3-2 5-2 8 0s5 2 8 0"/>',
+    topeng:'<path d="M5 6c4-2 10-2 14 0 0 8-2 13-7 15-5-2-7-7-7-15z"/><path d="M8.500 10.500c1-1 2-1 3 0M12.500 10.500c1-1 2-1 3 0M9.500 16c1.500 1.200 3.500 1.200 5 0"/>'
+  };
+  const MON = ['JAN','FEB','MAR','APR','MEI','JUN','JUL','AGU','SEP','OKT','NOV','DES'];
+  function dshort(d){ const p = d.split('-'); return p[2] + ' ' + MON[+p[1] - 1] + ' ' + p[0]; }
+  function hash(str){ let h = 0; for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) >>> 0; return h; }
+  function clip(t, n){ t = t.toUpperCase(); return t.length > n ? t.slice(0, n - 1) + '.' : t; }
+
+  function stampSVG(a, st, locked){
+    const cat = a.cats[0], ink = locked ? 'currentColor' : INK[cat], sh = SHAPE[cat], rot = (hash(a.id) % 13) - 6;
+    const uid = 's' + a.id, glyph = '<g transform="translate(44 40) scale(1.5)" fill="none" stroke="' + ink + '" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' + (GA[a.id] || GLY[cat]) + '</g>';
+    const t = function(x, y, size, txt, ls){ return '<text x="' + x + '" y="' + y + '" text-anchor="middle" font-family="Montserrat,system-ui,sans-serif" font-weight="600" font-size="' + size + '" letter-spacing="' + ls + '" fill="' + ink + '">' + esc(txt) + '</text>'; };
+    let inner = '';
+    if (sh === 'circle') {
+      inner = '<circle cx="60" cy="60" r="56" fill="none" stroke="' + ink + '" stroke-width="2.6"/><circle cx="60" cy="60" r="34" fill="none" stroke="' + ink + '" stroke-width="1.2"/>' +
+        '<defs><path id="u' + uid + '" d="M17 60A43 43 0 0 1 103 60"/><path id="l' + uid + '" d="M9 60A51 51 0 0 0 111 60"/></defs>' +
+        '<text font-family="Montserrat,system-ui,sans-serif" font-weight="600" font-size="8.2" letter-spacing="1.4" fill="' + ink + '" text-anchor="middle"><textPath href="#u' + uid + '" startOffset="50%">' + esc(clip(a.short, 20)) + '</textPath></text>' +
+        '<text font-family="Montserrat,system-ui,sans-serif" font-weight="600" font-size="7.4" letter-spacing="1.3" fill="' + ink + '" text-anchor="middle"><textPath href="#l' + uid + '" startOffset="50%">' + (st ? esc(dshort(st.date)) : esc(clip(a.place.split(',')[0], 16))) + '</textPath></text>' +
+        '<circle cx="14" cy="60" r="1.6" fill="' + ink + '"/><circle cx="106" cy="60" r="1.6" fill="' + ink + '"/>' + glyph;
+    } else {
+      const frame = sh === 'oct'
+        ? '<polygon points="36,6 84,6 114,36 114,84 84,114 36,114 6,84 6,36" fill="none" stroke="' + ink + '" stroke-width="2.6"/><polygon points="38,14 82,14 106,38 106,82 82,106 38,106 14,82 14,38" fill="none" stroke="' + ink + '" stroke-width="1.1"/>'
+        : '<rect x="6" y="14" width="108" height="92" rx="12" fill="none" stroke="' + ink + '" stroke-width="2.6"/><rect x="12" y="20" width="96" height="80" rx="8" fill="none" stroke="' + ink + '" stroke-width="1.1"/>';
+      const words = clip(a.short, 30).split(' '); let l1 = words[0], l2 = '';
+      for (let i = 1; i < words.length; i++) { if ((l1 + ' ' + words[i]).length <= 13 && !l2) l1 += ' ' + words[i]; else l2 += (l2 ? ' ' : '') + words[i]; }
+      const two = l2 ? t(60, 31, 7.2, l1, 1) + t(60, 40.5, 7.2, l2, 1) : t(60, 36, 8, l1, 1.1);
+      inner = frame + two + glyph.replace('translate(44 40)', 'translate(48 47)').replace('scale(1.5)', 'scale(1.05)') +
+        '<line x1="30" y1="84" x2="90" y2="84" stroke="' + ink + '" stroke-width="1"/>' + t(60, 95, 7, st ? dshort(st.date) : clip(a.place.split(',')[0], 16), 1.1);
+    }
+    const body = '<g transform="rotate(' + rot + ' 60 60)"' + (locked ? ' class="gh" stroke-dasharray="3 3"' : ' filter="url(#ink)"') + '>' + inner + '</g>';
+    return '<svg viewBox="0 0 120 120" role="img" aria-label="' + (locked ? 'Stempel ' + esc(a.short) + ', belum didapat' : 'Stempel ' + esc(a.short) + ', ' + esc(dshort(st.date))) + '">' + body + '</svg>';
+  }
+
+  function identity(got, regs, hosts){
+    const first = PS.me().name, nm = (!first || first === 'Anda') ? 'Traveler Pathora' : first;
+    const ini = nm.split(' ').map(function(w){ return w[0]; }).slice(0, 2).join('').toUpperCase();
+    const pct = Math.round(got.length / A.length * 100), no = 'PA-' + (1000 + hash(nm) % 9000);
+    const mz = function(t, n){ t = t.toUpperCase().replace(/[^A-Z0-9]+/g, '<'); while (t.length < n) t += '<'; return t.slice(0, n).replace(/</g, '&lt;'); };
+    return '<h3>Paspor Alam</h3><div class="rule"></div>' +
+      '<div class="pp-id"><div class="pp-av">' + esc(ini) + '</div><div><div class="pp-f"><small>Pemegang paspor</small><b>' + esc(nm) + '</b></div><div class="pp-f" style="margin:0"><small>Nomor paspor</small><b class="mono">' + no + '</b></div></div></div>' +
+      '<div class="pp-f"><small>Wilayah jelajah</small><b>Bali</b></div>' +
+      '<div class="pp-stats3"><div><b>' + got.length + '/' + A.length + '</b><small>Stempel</small></div><div><b>' + regs.length + '/' + REG.length + '</b><small>Wilayah dikunjungi</small></div><div><b>' + hosts + '</b><small>Host lokal ditemui</small></div></div>' +
+      '<div class="pp-bar" role="img" aria-label="Progres ' + pct + ' persen"><i style="width:' + pct + '%"></i></div><div class="pp-pct">' + (pct === 100 ? 'Paspor lengkap. Semua kegiatan sudah dijelajahi.' : pct + '% kegiatan sudah dijelajahi') + '</div>' +
+      '<p class="pp-note">Stempel diberikan setelah kegiatan lunas dan dikonfirmasi di lokasi. Stempel yang masih samar adalah kegiatan yang belum kamu jalani.</p>' +
+      '<div class="pp-mrz" aria-hidden="true">' + mz('P<BALI<<' + nm, 34) + '<br>' + mz(no.replace('-', '') + '<<' + got.length + 'STEMPEL<<' + A.length, 34) + '</div>';
+  }
+  const PER = 9; /* slot per halaman. Kegiatan bertambah di data.js, halaman ikut bertambah */
+  function regionPages(r, all){
+    const pp = PS.get().passport, n = all.filter(function(a){ return pp[a.id]; }).length, out = [], k = Math.ceil(all.length / PER);
+    for (let c = 0; c < k; c++) {
+      const items = all.slice(c * PER, c * PER + PER);
+      let h = '<h3>Bali ' + r + (k > 1 ? ' (' + (c + 1) + '/' + k + ')' : '') + '</h3><div class="rule"></div><div class="pp-slots">';
+      items.forEach(function(a, i){
+        const st = pp[a.id], d = ' style="--d:' + (i * 110) + 'ms"';
+        h += st ? '<div class="pp-slot"' + d + ' title="' + esc(a.name) + '">' + stampSVG(a, st, false) + '</div>'
+                : '<a class="pp-slot lock" href="kegiatan.html?id=' + a.id + '" aria-label="Lihat kegiatan ' + esc(a.short) + '">' + stampSVG(a, null, true) + '<span class="tip">Lihat kegiatan</span></a>';
+      });
+      h += '</div><p class="pp-free' + (n === all.length ? ' done' : '') + '">' + (n === all.length ? 'Lengkap. ' : '') + n + ' dari ' + all.length + ' stempel wilayah ini</p>';
+      out.push(h);
+    }
+    return out;
+  }
+
+  function pages(){
     const s = PS.get(), pp = s.passport, got = A.filter(function(a){ return pp[a.id]; });
     const regs = REG.filter(function(r){ return got.some(function(a){ return a.region === r; }); });
-    const pct = Math.round(got.length / A.length * 100);
-    const C = 2 * Math.PI * 58;
-    root.innerHTML = '<div class="cover"><div><span class="eyebrow on-dark">Paspor Alam</span><h1>Jejak perjalanan ' + esc(PS.me().name.split(' ')[0]) + ' di Bali</h1><p style="max-width:520px;color:rgba(244,241,226,.8)">Setiap kegiatan yang Anda selesaikan bersama host lokal mendapat satu stempel. Stempel diberikan setelah kegiatan lunas dan dikonfirmasi di lokasi.</p>' +
-      '<div class="meta"><div><b>' + got.length + '/' + A.length + '</b><small>Stempel</small></div><div><b>' + regs.length + '/' + REG.length + '</b><small>Wilayah dikunjungi</small></div><div><b>' + new Set(got.map(function(a){ return a.host.name; })).size + '</b><small>Host lokal ditemui</small></div></div></div>' +
-      '<svg class="ring" viewBox="0 0 140 140" aria-label="Progres ' + pct + ' persen"><circle cx="70" cy="70" r="58" fill="none" stroke="rgba(244,241,226,.14)" stroke-width="10"/><circle cx="70" cy="70" r="58" fill="none" stroke="#F0CF8A" stroke-width="10" stroke-linecap="round" stroke-dasharray="' + C + '" stroke-dashoffset="' + (C * (1 - pct/100)) + '" transform="rotate(-90 70 70)"/><text x="70" y="78" text-anchor="middle" fill="#F4F1E2" font-size="28" font-weight="800" font-family="inherit">' + pct + '%</text></svg></div>' +
-      (got.length ? '' : '<div class="card" style="margin-top:22px;padding:22px;display:flex;gap:16px;align-items:center;flex-wrap:wrap"><div style="flex:1;min-width:240px"><b>Belum ada stempel</b><p class="muted" style="font-size:14px">Pesan kegiatan, lakukan pembayaran, lalu tekan <b>Kegiatan selesai</b> di halaman Pembayaran. Untuk melihat tampilan paspor yang terisi, gunakan contoh di samping.</p></div><button class="btn btn-dark" id="demoS">Isi contoh stempel</button></div>') +
-      '<div class="stamps">' + A.map(function(a){ const st = pp[a.id];
-        return '<div class="stamp' + (st ? '' : ' lock') + '"><div class="seal"><div>' + PA.scene(a.art) + '</div></div><h3>' + esc(a.short) + '</h3>' + (st ? '<small>' + D.long(st.date) + '</small><span class="code">' + st.code + '</span>' : '<small>' + esc(a.place.split(',')[0]) + '</small><a class="btn btn-line btn-sm" href="kegiatan.html?id=' + a.id + '">Lihat kegiatan</a>') + '</div>'; }).join('') + '</div>';
-    const d = document.getElementById('demoS'); if (d) d.onclick = function(){ ['tukik','subak','tenun'].forEach(function(id, i){ PS.stamp(id, D.add('2026-09-05', i * 6)); }); render(); };
+    const hosts = new Set(got.map(function(a){ return a.host.name; })).size;
+    const out = [identity(got, regs, hosts)];
+    REG.forEach(function(r){ const it = A.filter(function(a){ return a.region === r; }); if (it.length) regionPages(r, it).forEach(function(h){ out.push(h); }); });
+    return { out: out, got: got };
   }
+
+  function render(anim){
+    const P = pages(), single = mq.matches, total = single ? P.out.length : Math.ceil(P.out.length / 2);
+    pg = Math.max(0, Math.min(pg, total - 1));
+    const cover = '<button type="button" class="pp-cover' + (opened ? ' is-off' : '') + '" id="cv" aria-label="Buka paspor"><div class="pp-emb">' + ic('leaf', 40) + '</div><div class="ttl">PASPOR</div><small>Alam Bali · Pathora</small><span class="pp-hint">Buka paspor</span></button>';
+    let book = '';
+    if (single) book = '<div class="pp-book one' + (opened ? '' : ' is-off') + '"><i class="pp-rib"></i><div class="pp-pg' + (anim ? ' pp-fade' : '') + '">' + P.out[pg] + '<div class="no">' + (pg + 1) + '</div></div></div>';
+    else { const i = pg * 2; book = '<div class="pp-book' + (opened ? '' : ' is-off') + '"><i class="pp-rib"></i><div class="pp-pg l' + (anim ? ' pp-fade' : '') + '">' + P.out[i] + '<div class="no">' + (i + 1) + '</div></div>' + (P.out[i + 1] ? '<div class="pp-pg r' + (anim ? ' pp-fade' : '') + '">' + P.out[i + 1] + '<div class="no">' + (i + 2) + '</div></div>' : '<div class="pp-pg r"></div>') + '</div>'; }
+    stage.innerHTML = cover + book;
+    nav2.hidden = !opened; demo.hidden = false;
+    nav2.innerHTML = '<button type="button" class="pp-nb" id="pv" aria-label="Halaman sebelumnya"' + (pg === 0 ? ' disabled' : '') + '>' + ic('left', 18) + '</button><span class="pp-ct">' + (single ? 'Halaman ' + (pg + 1) + ' dari ' + total : 'Halaman ' + (pg * 2 + 1) + (P.out[pg * 2 + 1] ? '-' + (pg * 2 + 2) : '') + ' dari ' + P.out.length) + '</span><button type="button" class="pp-nb" id="nx" aria-label="Halaman berikutnya"' + (pg >= total - 1 ? ' disabled' : '') + '>' + ic('right', 18) + '</button><button type="button" class="pp-ghost" id="cl">Tutup paspor</button>';
+    demo.innerHTML = P.got.length ? '' : 'Belum ada stempel. Pesan kegiatan, bayar, lalu tekan <b>Kegiatan selesai</b> di halaman Pembayaran.<button type="button" class="pp-ghost" id="demoS">Isi contoh stempel</button>';
+    const cv = document.getElementById('cv'); if (cv) {
+      cv.onclick = function(){ try { sessionStorage.setItem('pp_open', '1'); } catch (e) {} cv.classList.add('opening'); setTimeout(function(){ opened = true; pg = 0; render(true); }, 520); };
+      cv.addEventListener('pointermove', function(e){ const r = cv.getBoundingClientRect(); cv.style.setProperty('--ry', ((e.clientX - r.left) / r.width - .5) * 9 + 'deg'); cv.style.setProperty('--rx', (.5 - (e.clientY - r.top) / r.height) * 7 + 'deg'); });
+      cv.addEventListener('pointerleave', function(){ cv.style.setProperty('--ry', '0deg'); cv.style.setProperty('--rx', '0deg'); });
+    }
+    const cl = document.getElementById('cl'); if (cl) cl.onclick = function(){ opened = false; try { sessionStorage.removeItem('pp_open'); } catch (e) {} render(); };
+    const pv = document.getElementById('pv'); if (pv) pv.onclick = function(){ pg--; render(true); };
+    const nx = document.getElementById('nx'); if (nx) nx.onclick = function(){ pg++; render(true); };
+    const d = document.getElementById('demoS'); if (d) d.onclick = function(){ ['tukik','subak','tenun'].forEach(function(id, i){ PS.stamp(id, D.add('2026-09-05', i * 6)); }); opened = true; try { sessionStorage.setItem('pp_open', '1'); } catch (e) {} render(); };
+  }
+  const first = PS.me().name.split(' ')[0]; if (first && first !== 'Anda') document.getElementById('hTitle').textContent = 'Jejak perjalanan ' + first + ' di Bali.';
+  document.addEventListener('keydown', function(e){ if (!opened) return; if (e.key === 'ArrowRight') { const n = document.getElementById('nx'); if (n && !n.disabled) n.click(); } if (e.key === 'ArrowLeft') { const p = document.getElementById('pv'); if (p && !p.disabled) p.click(); } });
+  mq.addEventListener ? mq.addEventListener('change', function(){ pg = 0; render(); }) : mq.addListener(function(){ pg = 0; render(); });
   render();
 })();
 </script>
