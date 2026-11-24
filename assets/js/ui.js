@@ -10,8 +10,26 @@
   const $ = (sel, el) => (el || document).querySelector(sel);
   const $$ = (sel, el) => Array.from((el || document).querySelectorAll(sel));
 
+
+  /* avatar sementara: ikon sederhana bertema Bali. Nanti bisa diganti dengan gambar buatan sendiri
+     (ganti isi AVATARS, tiap item: id, label, bg, g = isi SVG 52x52) */
+  const CR = '#FFF3DF';
+  const pet = (n, rx, ry, off) => { let o = ''; for (let i = 0; i < n; i++) o += '<ellipse rx="' + rx + '" ry="' + ry + '" transform="rotate(' + (i * 360 / n) + ') translate(0,-' + off + ')" fill="' + CR + '"/>'; return o; };
+  const AVATARS = [
+    { id: 'sun', label: 'Matahari', bg: '#E8963F', g: '<circle cx="26" cy="26" r="8" fill="' + CR + '"/>' + [0, 45, 90, 135, 180, 225, 270, 315].map((a) => '<line x1="26" y1="8" x2="26" y2="13" stroke="' + CR + '" stroke-width="3" stroke-linecap="round" transform="rotate(' + a + ' 26 26)"/>').join('') },
+    { id: 'wave', label: 'Ombak', bg: '#3E8DA6', g: [19, 27, 35].map((y) => '<path d="M10 ' + y + ' q4 -6 8 0 t8 0 t8 0 t8 0" fill="none" stroke="' + CR + '" stroke-width="3" stroke-linecap="round"/>').join('') },
+    { id: 'frang', label: 'Kamboja', bg: '#F2C35B', g: '<g transform="translate(26 26)">' + pet(5, 5.5, 10, 8) + '<circle r="3.5" fill="#E8963F"/></g>' },
+    { id: 'hib', label: 'Kembang sepatu', bg: '#D9624A', g: '<g transform="translate(26 26)">' + pet(5, 7, 10, 8) + '<circle r="3" fill="#B8334F"/></g>' },
+    { id: 'turtle', label: 'Penyu', bg: '#4E7F44', g: '<ellipse cx="26" cy="28" rx="11" ry="9" fill="' + CR + '"/><circle cx="38" cy="25" r="4" fill="' + CR + '"/><ellipse cx="17" cy="37" rx="4" ry="2.5" fill="' + CR + '"/><ellipse cx="33" cy="37" rx="4" ry="2.5" fill="' + CR + '"/><path d="M22 24 l4 8 M30 24 l-4 8" stroke="#4E7F44" stroke-width="1.5"/>' },
+    { id: 'bird', label: 'Jalak bali', bg: '#8E87A8', g: '<g fill="' + CR + '"><circle cx="26" cy="29" r="12"/><path d="M26 17 l-6 -9 l6 5 l2 -8 l3 8 l6 -5 l-5 9z"/></g><path d="M22 31 l-6 2 l6 2z" fill="#F0B860"/><circle cx="24" cy="27" r="2" fill="#2B1A12"/>' },
+    { id: 'mount', label: 'Gunung', bg: '#406F8C', g: '<polygon points="8,40 22,16 34,40" fill="' + CR + '"/><polygon points="26,40 36,24 46,40" fill="' + CR + '" opacity=".85"/>' },
+    { id: 'leaf', label: 'Daun', bg: '#6E9B4E', g: '<path d="M14 38 C14 18 30 12 40 14 C40 28 34 38 14 38Z" fill="' + CR + '"/><path d="M16 36 L32 20" stroke="#6E9B4E" stroke-width="2"/>' },
+    { id: 'meru', label: 'Meru', bg: '#7A4A32', g: '<g fill="' + CR + '"><rect x="23" y="9" width="3" height="6"/><path d="M20 17 L26 12 L32 17Z"/><path d="M17 25 L26 17 L35 25Z"/><path d="M14 33 L26 24 L38 33Z"/><rect x="12" y="34" width="28" height="4"/></g>' }
+  ];
+  const avatarSVG = (id) => { const a = AVATARS.find((x) => x.id === id); return a ? '<svg viewBox="0 0 52 52" width="100%" height="100%" aria-hidden="true" style="display:block;border-radius:50%"><circle cx="26" cy="26" r="26" fill="' + a.bg + '"/>' + a.g + '</svg>' : ''; };
+
   const UI = {
-    esc, $, $$,
+    esc, $, $$, AVATARS, avatarSVG,
 
     /* mode: 'host' memakai navigasi khusus Studio Host, tanpa tautan traveler */
     mountNav(active, over, mode) {
@@ -37,7 +55,7 @@
         const mauth = acct ? '' : '<div class="m-auth"><a href="masuk.html?next=' + nx + '">Masuk</a><a class="pri" href="masuk.html?mode=daftar&next=' + nx + '">Daftar</a></div>';
         const right = acct && acct.role === 'traveler'
           ? '<a class="trip-pill" href="trip.html" title="Trip saya">' + ic('calendar', 16) + '<span>Trip</span><b id="navCount">' + n + '</b></a>' +
-            '<button class="av nav-av" id="avBtn" aria-haspopup="true" aria-expanded="false" style="background:' + me.color + ';border:0;box-shadow:0 0 0 2px rgba(81,50,41,.18)" title="' + esc(acct.name) + '">' + esc(me.ini) + '</button>'
+            '<button class="av nav-av" id="avBtn" aria-haspopup="true" aria-expanded="false" style="background:' + me.color + ';border:0;padding:0;overflow:hidden;box-shadow:0 0 0 2px rgba(81,50,41,.18)" title="' + esc(acct.name) + '">' + (avatarSVG(acct.avatar) || esc(me.ini)) + '</button>'
           : '<a class="btn btn-ghost btn-sm nav-login" href="masuk.html?next=' + encodeURIComponent(location.pathname.split('/').pop() + location.search) + '">Masuk</a>' +
             '<a class="btn btn-gold btn-sm" href="masuk.html?mode=daftar&next=' + encodeURIComponent(location.pathname.split('/').pop() + location.search) + '">Daftar</a>';
         html = '<header class="nav' + (over ? ' over' + (over === 'dark' ? ' dk' : '') : '') + '" id="nav"><div class="wrap">' +

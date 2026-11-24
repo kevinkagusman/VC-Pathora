@@ -1,0 +1,70 @@
+/* Halaman Akun: gaya kaca gelap */
+body.ak{--g-text:#F4F1E2;--g-mute:rgba(244,241,226,.72);--g-line:rgba(244,241,226,.18);--g-gold:#FCE6B7;--g-ink:#1A120D;--g-display:'Questrial','Plus Jakarta Sans',system-ui,sans-serif;margin:0;min-height:100svh;background:#15100c;color:var(--g-text);font-family:'Plus Jakarta Sans',system-ui,sans-serif;position:relative}
+body.ak *,body.ak *::before,body.ak *::after{box-sizing:border-box}
+.ak-bg{position:fixed;inset:0;background:url("../img/gallery/melukat-anggrek-hero.jpg") 50% 30%/cover no-repeat}
+.ak-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,10,7,.7),rgba(14,10,7,.62) 50%,rgba(14,10,7,.88))}
+.ak-main{position:relative;z-index:2;width:min(880px,100% - 32px);margin:0 auto;padding:36px 0 56px}
+.ak-main h1{font:400 clamp(28px,3vw,38px)/1.12 var(--g-display);letter-spacing:-.01em;margin:0 0 6px}
+.ak-lede{font-size:14px;color:var(--g-mute);margin:0}
+.ak-card{border:1px solid var(--g-line);background:rgba(20,14,10,.55);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-radius:22px}
+.ak-prof{margin-top:22px;padding:18px 22px}
+.ak-top{display:flex;align-items:center;gap:16px}
+.ak-ava{flex:none;width:56px;height:56px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:#5F6E3A;color:#F4F1E2;font:600 17px 'Plus Jakarta Sans',sans-serif}
+.ak-top>div{min-width:0}.ak-top b{font-size:16px;font-weight:600;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ak-top small{display:block;font-size:13px;color:var(--g-mute);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ak-top .sp{flex:1}
+.ak-bt{flex:none;white-space:nowrap;display:inline-grid;place-items:center;min-height:36px;padding:0 18px;border-radius:99px;border:1px solid rgba(244,241,226,.28);background:transparent;color:var(--g-text);font:600 13px 'Plus Jakarta Sans',sans-serif;cursor:pointer;transition:background .2s ease}
+.ak-bt:hover{background:rgba(244,241,226,.1)}
+.ak-bt.pri{background:var(--g-text);color:var(--g-ink);border-color:transparent;min-height:42px}
+.ak-bt.pri:hover{background:#fff}
+.ak-ed{margin-top:18px;padding-top:18px;border-top:1px solid var(--g-line)}
+.ak-ed[hidden]{display:none}
+.ak-lb{font-size:12px;color:var(--g-mute);margin:0 0 10px;display:block}
+.ak-grid{display:flex;gap:12px;flex-wrap:wrap}
+.ak-pick{width:58px;height:58px;padding:0;border-radius:50%;border:2px solid transparent;background:transparent;cursor:pointer;display:grid;place-items:center;transition:border-color .2s ease,box-shadow .2s ease}
+.ak-pick .in{width:48px;height:48px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:#5F6E3A;color:#F4F1E2;font:600 15px 'Plus Jakarta Sans',sans-serif}
+.ak-pick[aria-pressed="true"]{border-color:var(--g-gold);box-shadow:0 0 0 3px rgba(252,230,183,.18)}
+.ak-row{display:flex;gap:14px;align-items:flex-end;margin-top:18px}
+.ak-fld{flex:1;min-width:0}
+.ak-fld label{display:block;font-size:12px;color:var(--g-mute);margin-bottom:6px}
+.ak-fld input{width:100%;height:42px;border-radius:14px;border:1px solid rgba(244,241,226,.28);background:rgba(17,12,9,.45);padding:0 14px;font:400 13.5px 'Plus Jakarta Sans',sans-serif;color:var(--g-text);outline:none;transition:border-color .2s ease}
+.ak-fld input:focus{border-color:var(--g-gold)}
+.ak-plans{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+.ak-plan{padding:22px;display:flex;flex-direction:column;gap:14px}
+.ak-plan.cur{border-color:var(--g-gold);box-shadow:0 0 0 1px rgba(252,230,183,.3)}
+.ak-plan h2{font:400 20px/1.2 var(--g-display);margin:0}
+.ak-plan .d{font-size:13px;color:var(--g-mute);margin-top:2px}
+.ak-price{font:600 26px/1.1 'Plus Jakarta Sans',sans-serif;letter-spacing:-.01em}
+.ak-price small{font:400 12.5px 'Plus Jakarta Sans',sans-serif;color:var(--g-mute);margin-left:4px;letter-spacing:0}
+.ak-plan ul{list-style:none;padding:0;margin:0;display:grid;gap:9px;font-size:13px}
+.ak-plan li{display:flex;gap:10px;align-items:flex-start;color:rgba(244,241,226,.9)}
+.ak-plan li i{flex:none;width:18px;height:18px;border-radius:50%;border:1px solid var(--g-line);display:grid;place-items:center;color:var(--g-gold)}
+.ak-plan .ak-bt{margin-top:auto;width:100%;min-height:40px}
+.ak-tag{margin-top:auto;align-self:flex-start;font-size:12px;padding:7px 14px;border-radius:99px;background:rgba(244,241,226,.14)}
+.ak-bt:focus-visible,.ak-pick:focus-visible{outline:2px solid var(--g-gold);outline-offset:3px}
+@media(max-width:760px){
+.ak-main{padding:18px 0 40px;width:calc(100% - 28px)}
+.ak-main h1{font-size:23px}
+.ak-lede{font-size:12.5px}
+.ak-card{border-radius:18px}
+.ak-prof{margin-top:16px;padding:14px}
+.ak-top{gap:12px}
+.ak-ava{width:44px;height:44px;font-size:14px}
+.ak-top b{font-size:14px}.ak-top small{font-size:12px}
+.ak-bt{min-height:32px;padding:0 14px;font-size:12px}
+.ak-bt.pri{min-height:38px}
+.ak-ed{margin-top:14px;padding-top:14px}
+.ak-grid{gap:4px}
+.ak-pick{width:44px;height:44px}.ak-pick .in{width:36px;height:36px;font-size:12px}
+.ak-row{flex-direction:column;align-items:stretch;gap:10px;margin-top:14px}
+.ak-fld input{height:38px;font-size:13px}
+.ak-plans{grid-template-columns:1fr;gap:12px;margin-top:12px}
+.ak-plan{padding:16px;gap:11px}
+.ak-plan h2{font-size:17px}.ak-plan .d{font-size:12px}
+.ak-price{font-size:21px}.ak-price small{font-size:12px}
+.ak-plan ul{gap:7px;font-size:12.5px}
+.ak-plan li i{width:16px;height:16px}
+.ak-plan .ak-bt{min-height:38px}
+.ak-tag{font-size:11.5px;padding:6px 12px}
+}
+@media(prefers-reduced-motion:reduce){.ak-bt,.ak-pick,.ak-fld input{transition:none}}

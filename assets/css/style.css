@@ -6,6 +6,8 @@
           dari daun pada logo), emas #A87B36 (teks aksen di atas krem)
    Font : Plus Jakarta Sans
    ========================================================================== */
+/* tanpa efek memantul saat scroll sampai ujung halaman */
+html,body{overscroll-behavior:none}
 :root{
   --jungle:#2E1B13; --canopy:#513229; --olive:#5F6E3A;
   --bamboo:#A87B36; --sand:#D7D4B1; --rust:#A3431D; --sky:#D8EBF9;
@@ -17,8 +19,8 @@
   --r-sm:8px; --r:14px; --r-lg:22px; --r-xl:30px;
   --shadow:0 1px 2px rgba(46,27,19,.06),0 8px 24px rgba(46,27,19,.08);
   --shadow-lg:0 2px 4px rgba(46,27,19,.08),0 24px 60px rgba(46,27,19,.18);
-  --font:'Montserrat',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
-  --font-display:'Questrial','Montserrat',system-ui,sans-serif; --nav-h:76px;
+  --font:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --nav-h:76px;
   --lagoon:#A87B36; --tide:#513229; --foam:#D8EBF9;
   --g-sea:linear-gradient(180deg,#D8EBF9 0%,#EAF0EC 55%,#F4F1E2 100%);
   --g-deep:linear-gradient(180deg,#5A382D 0%,#2E1B13 100%);
@@ -31,7 +33,7 @@ a{color:inherit;text-decoration:none}
 button{font-family:inherit;font-size:inherit;color:inherit;cursor:pointer}
 input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
 h1,h2,h3,h4,p{margin:0}
-h1,h2,h3{font-family:var(--font-display);letter-spacing:-.02em;line-height:1.1;font-weight:400}
+h1,h2,h3{letter-spacing:-.02em;line-height:1.08;font-weight:700}
 :focus-visible{outline:2px solid var(--bamboo);outline-offset:2px;border-radius:6px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .wrap{width:min(1180px,100% - 48px);margin-inline:auto}
