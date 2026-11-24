@@ -316,6 +316,8 @@
 
     'Ceritakan perjalanan yang kamu inginkan. Pathora menyusun jadwal kegiatan alam dan budaya Bali bersama warga lokal, mengisi kalender, dan merinci biaya.': 'Tell us about the trip you want. Pathora builds a schedule of nature and culture activities in Bali with local people, fills in your calendar, and breaks down the cost.',
 
+    'Peta ilustrasi, posisi perkiraan': 'Illustrated map, approximate positions', 'LAUT BALI': 'BALI SEA',
+
     /* ---------- notifikasi dan lain-lain ---------- */
     'Pathora Plus aktif.': 'Pathora Plus is active.', 'Tamu baru dikenai biaya setelah kamu menyetujui permintaan.': 'Guests are only charged after you approve a request.'
   });
