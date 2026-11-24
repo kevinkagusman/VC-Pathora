@@ -18,12 +18,10 @@
 <div id="nav"></div>
 <div class="jel-bg" aria-hidden="true"></div>
 <main class="pp-main">
-  <header class="pp-head"><h1 id="hTitle">Jejak perjalanan kamu di Bali.</h1><p>Setiap kegiatan yang kamu selesaikan bersama host lokal mendapat satu stempel. Stempel diberikan setelah kegiatan lunas dan dikonfirmasi di lokasi.</p></header>
+  <header class="pp-head"><h1 id="hTitle">Jejak perjalanan kamu di Bali.</h1><p>Setiap kegiatan yang selesai bersama host lokal mendapat satu stempel.</p></header>
   <div class="pp-stage" id="stage"></div>
-  <div class="pp-nav" id="nav2" hidden></div>
-  <div class="pp-demo" id="demo" hidden></div>
+  <div class="pp-nav" id="nav2"></div>
 </main>
-<div id="footer"></div>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
   <filter id="ink" x="-6%" y="-6%" width="112%" height="112%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="1.5" result="d"/><feTurbulence type="fractalNoise" baseFrequency=".06 .8" numOctaves="2" seed="8" result="m"/><feColorMatrix in="m" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.4 1.85" result="mk"/><feComposite in="d" in2="mk" operator="in"/></filter>
 </defs></svg>
@@ -34,11 +32,11 @@
 <script>
 (function(){
   const { A, D } = PD, { ic } = PA, esc = UI.esc;
-  UI.mountNav('paspor', true); UI.mountFooter();
+  UI.mountNav('paspor', true);
   const REG = ['Selatan','Tengah','Barat','Utara','Timur'];
-  const stage = document.getElementById('stage'), nav2 = document.getElementById('nav2'), demo = document.getElementById('demo');
+  const stage = document.getElementById('stage'), nav2 = document.getElementById('nav2');
   const mq = window.matchMedia('(max-width:860px)');
-  let opened = false, pg = 0;
+  let opened = false, pg = 0, firstRender = true;
   try { opened = sessionStorage.getItem('pp_open') === '1'; } catch (e) {}
 
   /* ---------- gaya stempel per kategori: warna tinta, bentuk, lambang ---------- */
@@ -106,29 +104,27 @@
     const mz = function(t, n){ t = t.toUpperCase().replace(/[^A-Z0-9]+/g, '<'); while (t.length < n) t += '<'; return t.slice(0, n).replace(/</g, '&lt;'); };
     return '<h3>Paspor Alam</h3><div class="rule"></div>' +
       '<div class="pp-id"><div class="pp-av">' + esc(ini) + '</div><div><div class="pp-f"><small>Pemegang paspor</small><b>' + esc(nm) + '</b></div><div class="pp-f" style="margin:0"><small>Nomor paspor</small><b class="mono">' + no + '</b></div></div></div>' +
-      '<div class="pp-f"><small>Wilayah jelajah</small><b>Bali</b></div>' +
       '<div class="pp-stats3"><div><b>' + got.length + '/' + A.length + '</b><small>Stempel</small></div><div><b>' + regs.length + '/' + REG.length + '</b><small>Wilayah dikunjungi</small></div><div><b>' + hosts + '</b><small>Host lokal ditemui</small></div></div>' +
       '<div class="pp-bar" role="img" aria-label="Progres ' + pct + ' persen"><i style="width:' + pct + '%"></i></div><div class="pp-pct">' + (pct === 100 ? 'Paspor lengkap. Semua kegiatan sudah dijelajahi.' : pct + '% kegiatan sudah dijelajahi') + '</div>' +
-      '<p class="pp-note">Stempel diberikan setelah kegiatan lunas dan dikonfirmasi di lokasi. Stempel yang masih samar adalah kegiatan yang belum kamu jalani.</p>' +
+      '<p class="pp-note">' + (got.length ? 'Stempel diberikan setelah kegiatan lunas dan dikonfirmasi di lokasi. Stempel yang masih samar adalah kegiatan yang belum kamu jalani.' : 'Belum ada stempel. Pesan kegiatan, bayar, lalu tekan <b>Kegiatan selesai</b> di halaman Pembayaran.') + '</p>' +
       '<div class="pp-mrz" aria-hidden="true">' + mz('P<BALI<<' + nm, 34) + '<br>' + mz(no.replace('-', '') + '<<' + got.length + 'STEMPEL<<' + A.length, 34) + '</div>';
   }
-  const PER = 9; /* slot per halaman. Kegiatan bertambah di data.js, halaman ikut bertambah */
+  const PER = 9; /* slot per halaman (3 x 3), ukuran stempel selalu sama. Kegiatan baru di data.js menambah halaman otomatis */
   function regionPages(r, all){
     const pp = PS.get().passport, n = all.filter(function(a){ return pp[a.id]; }).length, out = [], k = Math.ceil(all.length / PER);
     for (let c = 0; c < k; c++) {
       const items = all.slice(c * PER, c * PER + PER);
       let h = '<h3>Bali ' + r + (k > 1 ? ' (' + (c + 1) + '/' + k + ')' : '') + '</h3><div class="rule"></div><div class="pp-slots">';
-      items.forEach(function(a, i){
-        const st = pp[a.id], d = ' style="--d:' + (i * 110) + 'ms"';
-        h += st ? '<div class="pp-slot"' + d + ' title="' + esc(a.name) + '">' + stampSVG(a, st, false) + '</div>'
-                : '<a class="pp-slot lock" href="kegiatan.html?id=' + a.id + '" aria-label="Lihat kegiatan ' + esc(a.short) + '">' + stampSVG(a, null, true) + '<span class="tip">Lihat kegiatan</span></a>';
+      items.forEach(function(a){
+        const st = pp[a.id];
+        h += st ? '<div class="pp-slot" title="' + esc(a.name) + '">' + stampSVG(a, st, false) + '</div>'
+                : '<div class="pp-slot lock" title="' + esc(a.name) + ' (belum didapat)">' + stampSVG(a, null, true) + '</div>';
       });
       h += '</div><p class="pp-free' + (n === all.length ? ' done' : '') + '">' + (n === all.length ? 'Lengkap. ' : '') + n + ' dari ' + all.length + ' stempel wilayah ini</p>';
       out.push(h);
     }
     return out;
   }
-
   function pages(){
     const s = PS.get(), pp = s.passport, got = A.filter(function(a){ return pp[a.id]; });
     const regs = REG.filter(function(r){ return got.some(function(a){ return a.region === r; }); });
@@ -138,30 +134,105 @@
     return { out: out, got: got };
   }
 
-  function render(anim){
+  /* sampul: kain gelap, cetak emas, lambang Pathora berwarna dalam medali krem */
+  const COVER = '<div class="cv-front"><span class="cv-t">Paspor Alam</span><span class="cv-s">Bali</span><span class="cv-m"><img src="assets/img/mark.png" alt=""></span><span class="cv-n"></span></div>';
+  const store = function(v){ try { v ? sessionStorage.setItem('pp_open', '1') : sessionStorage.removeItem('pp_open'); } catch (e) {} };
+  let animating = false;
+  const DUR = 1000;
+
+  const pgHTML = function(side, html, no){ return '<div class="pp-pg ' + side + '">' + html + (html && no ? '<div class="no">' + no + '</div>' : '') + '</div>'; };
+  function navHTML(){ return opened ? '<button type="button" class="pp-ghost" id="cl">Tutup paspor</button>' : '<button type="button" class="pp-open" id="op">Buka paspor</button>'; }
+
+  function render(){
     const P = pages(), single = mq.matches, total = single ? P.out.length : Math.ceil(P.out.length / 2);
     pg = Math.max(0, Math.min(pg, total - 1));
-    const cover = '<button type="button" class="pp-cover' + (opened ? ' is-off' : '') + '" id="cv" aria-label="Buka paspor"><div class="pp-emb">' + ic('leaf', 40) + '</div><div class="ttl">PASPOR</div><small>Alam Bali · Pathora</small><span class="pp-hint">Buka paspor</span></button>';
-    let book = '';
-    if (single) book = '<div class="pp-book one' + (opened ? '' : ' is-off') + '"><i class="pp-rib"></i><div class="pp-pg' + (anim ? ' pp-fade' : '') + '">' + P.out[pg] + '<div class="no">' + (pg + 1) + '</div></div></div>';
-    else { const i = pg * 2; book = '<div class="pp-book' + (opened ? '' : ' is-off') + '"><i class="pp-rib"></i><div class="pp-pg l' + (anim ? ' pp-fade' : '') + '">' + P.out[i] + '<div class="no">' + (i + 1) + '</div></div>' + (P.out[i + 1] ? '<div class="pp-pg r' + (anim ? ' pp-fade' : '') + '">' + P.out[i + 1] + '<div class="no">' + (i + 2) + '</div></div>' : '<div class="pp-pg r"></div>') + '</div>'; }
-    stage.innerHTML = cover + book;
-    nav2.hidden = !opened; demo.hidden = false;
-    nav2.innerHTML = '<button type="button" class="pp-nb" id="pv" aria-label="Halaman sebelumnya"' + (pg === 0 ? ' disabled' : '') + '>' + ic('left', 18) + '</button><span class="pp-ct">' + (single ? 'Halaman ' + (pg + 1) + ' dari ' + total : 'Halaman ' + (pg * 2 + 1) + (P.out[pg * 2 + 1] ? '-' + (pg * 2 + 2) : '') + ' dari ' + P.out.length) + '</span><button type="button" class="pp-nb" id="nx" aria-label="Halaman berikutnya"' + (pg >= total - 1 ? ' disabled' : '') + '>' + ic('right', 18) + '</button><button type="button" class="pp-ghost" id="cl">Tutup paspor</button>';
-    demo.innerHTML = P.got.length ? '' : 'Belum ada stempel. Pesan kegiatan, bayar, lalu tekan <b>Kegiatan selesai</b> di halaman Pembayaran.<button type="button" class="pp-ghost" id="demoS">Isi contoh stempel</button>';
-    const cv = document.getElementById('cv'); if (cv) {
-      cv.onclick = function(){ try { sessionStorage.setItem('pp_open', '1'); } catch (e) {} cv.classList.add('opening'); setTimeout(function(){ opened = true; pg = 0; render(true); }, 520); };
-      cv.addEventListener('pointermove', function(e){ const r = cv.getBoundingClientRect(); cv.style.setProperty('--ry', ((e.clientX - r.left) / r.width - .5) * 9 + 'deg'); cv.style.setProperty('--rx', (.5 - (e.clientY - r.top) / r.height) * 7 + 'deg'); });
-      cv.addEventListener('pointerleave', function(){ cv.style.setProperty('--ry', '0deg'); cv.style.setProperty('--rx', '0deg'); });
+    if (single) {
+      stage.innerHTML = opened ? '<div class="pp-m" id="pm" aria-label="Ketuk sisi kanan untuk halaman berikutnya, sisi kiri untuk sebelumnya"><div class="pp-pg">' + P.out[pg] + '<div class="no">' + (pg + 1) + '</div></div></div>' : '<button type="button" class="pp-mcv" id="cv" aria-label="Buka paspor">' + COVER + '</button>';
+    } else {
+      const i = pg * 2;
+      stage.innerHTML = '<div class="bk' + (opened ? ' open landed' : '') + (pg >= total - 1 ? ' end' : '') + (firstRender ? ' noanim' : '') + '" id="bk"><div class="bk-shell"></div>' +
+        pgHTML('l', P.out[i], i + 1) + pgHTML('r', P.out[i + 1] || '', i + 2) +
+        '<button type="button" class="bk-leaf" id="cv" aria-label="Buka paspor">' + COVER + '<div class="bk-back pp-pg l">' + P.out[0] + '<div class="no">1</div></div></button></div>';
     }
-    const cl = document.getElementById('cl'); if (cl) cl.onclick = function(){ opened = false; try { sessionStorage.removeItem('pp_open'); } catch (e) {} render(); };
-    const pv = document.getElementById('pv'); if (pv) pv.onclick = function(){ pg--; render(true); };
-    const nx = document.getElementById('nx'); if (nx) nx.onclick = function(){ pg++; render(true); };
-    const d = document.getElementById('demoS'); if (d) d.onclick = function(){ ['tukik','subak','tenun'].forEach(function(id, i){ PS.stamp(id, D.add('2026-09-05', i * 6)); }); opened = true; try { sessionStorage.setItem('pp_open', '1'); } catch (e) {} render(); };
+    nav2.innerHTML = navHTML();
+    const nb = document.getElementById('bk'); if (nb && nb.classList.contains('noanim')) requestAnimationFrame(function(){ requestAnimationFrame(function(){ nb.classList.remove('noanim'); }); });
+    const me = PS.me().name, nm = (!me || me === 'Anda') ? 'Traveler Pathora' : me;
+    stage.querySelectorAll('.cv-n').forEach(function(e){ e.textContent = nm; });
+    snap(); firstRender = false; bind();
   }
+  /* posisi buku dibulatkan ke piksel utuh supaya teks tidak bergeser setengah piksel saat sampul mendarat */
+  function snap(){
+    const bk = document.getElementById('bk'); if (!bk) return;
+    bk.style.marginTop = bk.style.marginLeft = '0px';
+    const st = stage.getBoundingClientRect(), cs = getComputedStyle(stage);
+    const iw = st.width - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight), ih = st.height - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+    const w = bk.offsetWidth, h = bk.offsetHeight;
+    const x = st.left + parseFloat(cs.paddingLeft) + (iw - w) / 2, y = st.top + parseFloat(cs.paddingTop) + (ih - h) / 2;
+    bk.style.marginLeft = (-2 * (x - Math.round(x))) + 'px'; bk.style.marginTop = (-2 * (y - Math.round(y))) + 'px';
+  }
+  window.addEventListener('resize', snap);
+
+  function open(){
+    if (animating) return; store(true);
+    const bk = document.getElementById('bk');
+    if (!bk) { opened = true; pg = 0; render(); return; }
+    animating = true; void bk.offsetWidth; bk.classList.add('open');
+    setTimeout(function(){ opened = true; pg = 0; bk.classList.add('landed'); animating = false; nav2.innerHTML = navHTML(); bind(); }, DUR + 60);
+  }
+  function close(){
+    if (animating) return; store(false); const bk = document.getElementById('bk');
+    if (!bk || mq.matches) { opened = false; pg = 0; render(); return; }
+    animating = true; opened = false;
+    const b = document.getElementById('bk'), from = pg;
+    /* sampul menutup membawa halaman kiri yang sedang dibuka (tanpa kembali ke halaman 1 dulu) */
+    if (from !== 0) { const P = pages(), back = b.querySelector('.bk-back'); if (back) back.innerHTML = P.out[from * 2] + '<div class="no">' + (from * 2 + 1) + '</div>'; }
+    pg = 0; b.classList.remove('landed', 'end'); void b.offsetWidth; b.classList.remove('open');
+    nav2.innerHTML = navHTML(); bind();
+    setTimeout(function(){
+      if (from !== 0) { const P = pages(), L = b.querySelector('.bk>.pp-pg.l'), R = b.querySelector('.bk>.pp-pg.r'), back = b.querySelector('.bk-back');
+        L.innerHTML = P.out[0] + '<div class="no">1</div>'; R.innerHTML = (P.out[1] || '') + (P.out[1] ? '<div class="no">2</div>' : ''); if (back) back.innerHTML = P.out[0] + '<div class="no">1</div>'; }
+      animating = false; }, DUR + 60);
+  }
+
+  /* membalik halaman: kanan = berikutnya, kiri = sebelumnya (dari halaman pertama, kiri menutup paspor) */
+  function go(dir){
+    if (!opened || animating) return;
+    const P = pages(), single = mq.matches, total = single ? P.out.length : Math.ceil(P.out.length / 2);
+    if (single) { if (dir < 0 && pg === 0) { close(); return; } if (dir > 0 && pg >= total - 1) return; pg += dir; render(); return; }
+    if (dir < 0 && pg === 0) { close(); return; }
+    if (dir > 0 && pg >= total - 1) return;
+    const bk = document.getElementById('bk'), L = bk.querySelector('.pp-pg.l'), R = bk.querySelector('.pp-pg.r');
+    const n = pg + dir, i = pg * 2, j = n * 2;
+    const leaf = document.createElement('div'); leaf.className = 'turn ' + (dir > 0 ? 'fwd' : 'bwd');
+    animating = true;
+    if (dir > 0) {
+      leaf.innerHTML = pgHTML('r f', P.out[i + 1] || '', i + 2) + pgHTML('l b', P.out[j], j + 1);
+      R.innerHTML = (P.out[j + 1] || '') + (P.out[j + 1] ? '<div class="no">' + (j + 2) + '</div>' : '');
+    } else {
+      leaf.innerHTML = pgHTML('l f', P.out[i], i + 1) + pgHTML('r b', P.out[j + 1] || '', j + 2);
+      L.innerHTML = P.out[j] + '<div class="no">' + (j + 1) + '</div>';
+    }
+    bk.appendChild(leaf); void leaf.offsetWidth; leaf.classList.add('go');
+    setTimeout(function(){
+      pg = n;
+      if (dir > 0) L.innerHTML = P.out[j] + '<div class="no">' + (j + 1) + '</div>'; else R.innerHTML = (P.out[j + 1] || '') + (P.out[j + 1] ? '<div class="no">' + (j + 2) + '</div>' : '');
+      bk.classList.toggle('end', pg >= total - 1); leaf.remove(); animating = false;
+    }, 900);
+  }
+
+  function bind(){
+    const $ = function(id){ return document.getElementById(id); };
+    const cv = $('cv'); if (cv) cv.onclick = function(){ if (mq.matches) { opened = true; pg = 0; store(true); render(); } else open(); };
+    const op = $('op'); if (op) op.onclick = function(){ if (mq.matches) { opened = true; pg = 0; store(true); render(); } else open(); };
+    if ($('cl')) $('cl').onclick = close;
+    const zone = function(box){ return function(e){ if (e.target.closest('a')) return; const r = box.getBoundingClientRect(); go(e.clientX < r.left + r.width / 2 ? -1 : 1); }; };
+    const bk = $('bk'); if (bk) bk.onclick = function(e){ if (!bk.classList.contains('landed')) return; zone(bk)(e); };
+    const pm = $('pm'); if (pm) pm.onclick = zone(pm);
+  }
+  if (/[?&]demo\b/.test(location.search)) { ['tukik','subak','tenun'].forEach(function(id, i){ if (!PS.get().passport[id]) PS.stamp(id, D.add('2026-09-05', i * 6)); }); }
   const first = PS.me().name.split(' ')[0]; if (first && first !== 'Anda') document.getElementById('hTitle').textContent = 'Jejak perjalanan ' + first + ' di Bali.';
-  document.addEventListener('keydown', function(e){ if (!opened) return; if (e.key === 'ArrowRight') { const n = document.getElementById('nx'); if (n && !n.disabled) n.click(); } if (e.key === 'ArrowLeft') { const p = document.getElementById('pv'); if (p && !p.disabled) p.click(); } });
-  mq.addEventListener ? mq.addEventListener('change', function(){ pg = 0; render(); }) : mq.addListener(function(){ pg = 0; render(); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'ArrowRight') go(1); if (e.key === 'ArrowLeft') go(-1); });
+  mq.addEventListener ? mq.addEventListener('change', function(){ pg = 0; firstRender = true; render(); }) : mq.addListener(function(){ pg = 0; firstRender = true; render(); });
   render();
 })();
 </script>
